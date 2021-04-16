@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="igloosec.monitor.mapper.HomeMapper">
+    <select id="selectUsage" resultType="UsageVo">
+        SELECT substring(event_date,9,2) AS idate ,round(SUM(event_volume)/1024/1024) AS usage_data FROM IS_STATS
+        WHERE event_date LIKE '2021-04%' AND stats_period ='day'
+        GROUP BY event_date;
+
+    </select>
+
+
+    <select id="selectUsagebefore" resultType="UsageVo">
+        SELECT substring(event_date,9,2) AS idate ,round(SUM(event_volume)/1024/1024) AS usage_data FROM IS_STATS
+        WHERE event_date LIKE '2021-03%' AND stats_period ='day'
+        GROUP BY event_date;
+
+    </select>
+
+</mapper>
+
+
