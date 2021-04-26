@@ -6,7 +6,11 @@ public class UsageVo {
     private String usage_data;
     private String usage_money;
     private String idate;
-
+    private String meterCategory;
+    private String meterSubCategory;
+    private String quantity;
+    private String unitOfMeasure;
+    private String costInBillingCurrency;
 
     public String getId() {
         return id;
@@ -37,5 +41,45 @@ public class UsageVo {
 
     public void setUsage_money(String usage_money) {
         this.usage_money = usage_money;
+    }
+
+    public String getMeterCategory() {
+        return meterCategory;
+    }
+
+    public void setMeterCategory(String meterCategory) {
+        this.meterCategory = meterCategory;
+    }
+
+    public String getMeterSubCategory() {
+        return meterSubCategory;
+    }
+
+    public void setMeterSubCategory(String meterSubCategory) {
+        this.meterSubCategory = meterSubCategory;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getUnitOfMeasure() {
+        return unitOfMeasure;
+    }
+
+    public void setUnitOfMeasure(String unitOfMeasure) {
+        this.unitOfMeasure = unitOfMeasure;
+    }
+
+    public String getCostInBillingCurrency() {
+        return costInBillingCurrency;
+    }
+
+    public void setCostInBillingCurrency(String costInBillingCurrency) {
+        this.costInBillingCurrency = costInBillingCurrency;
     }
 }

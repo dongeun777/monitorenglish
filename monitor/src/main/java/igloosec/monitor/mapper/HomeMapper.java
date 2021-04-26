@@ -12,4 +12,8 @@ public interface HomeMapper {
     List<UsageVo> selectUsage();
 
     List<UsageVo> selectUsagebefore();
+
+    List<UsageVo> selectMeterDetail();
+
+    List<UsageVo> selectMeterSum();
 }

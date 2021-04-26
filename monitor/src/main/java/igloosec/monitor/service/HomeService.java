@@ -23,5 +23,13 @@ public class HomeService {
         return mapper.selectUsagebefore();
     }
 
+    public List<UsageVo> selectMeterDetail() {
+        return mapper.selectMeterDetail();
+    }
+
+    public List<UsageVo> selectMeterSum() {
+        return mapper.selectMeterSum();
+    }
+
 
 }

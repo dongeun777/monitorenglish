@@ -4,7 +4,7 @@
 
 <mapper namespace="igloosec.monitor.mapper.HomeMapper">
     <select id="selectUsage" resultType="UsageVo">
-        SELECT substring(event_date,9,2) AS idate ,round(SUM(event_volume)/1024/1024) AS usage_data FROM IS_STATS
+        SELECT substring(event_date,9,2) AS idate ,round(SUM(event_volume)/1024/1024) AS usage_data FROM ERD.is_stats
         WHERE event_date LIKE '2021-04%' AND stats_period ='day'
         GROUP BY event_date;
 
@@ -12,9 +12,25 @@
 
 
     <select id="selectUsagebefore" resultType="UsageVo">
-        SELECT substring(event_date,9,2) AS idate ,round(SUM(event_volume)/1024/1024) AS usage_data FROM IS_STATS
+        SELECT substring(event_date,9,2) AS idate ,round(SUM(event_volume)/1024/1024) AS usage_data FROM ERD.is_stats
         WHERE event_date LIKE '2021-03%' AND stats_period ='day'
         GROUP BY event_date;
+
+    </select>
+
+
+    <select id="selectMeterDetail" resultType="UsageVo">
+        SELECT meterCategory,meterSubCategory, SUM(quantity) as quantity,unitOfMeasure FROM ERD.USED_AMOUNT
+        WHERE DATE ='04/18/2021'
+        GROUP BY meterCategory,unitOfMeasure,meterSubCategory ;
+
+    </select>
+
+
+    <select id="selectMeterSum" resultType="UsageVo">
+        SELECT meterCategory, round(SUM(costInBillingCurrency),2) as costInBillingCurrency FROM ERD.USED_AMOUNT
+        WHERE DATE ='04/18/2021'
+        GROUP BY meterCategory ;
 
     </select>
 
