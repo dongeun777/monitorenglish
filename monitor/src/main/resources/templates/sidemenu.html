@@ -8,7 +8,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/main">
 
             <div class="sidebar-brand-text mx-3">Monintoring System</div>
         </a>
@@ -18,50 +18,45 @@
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
-            <a class="nav-link" href="/">
+            <a class="nav-link" href="/main">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Dashboard</span></a>
         </li>
 
-        <!-- Nav Item - Pages Collapse Menu -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-               aria-expanded="true" aria-controls="collapseTwo">
-                <i class="fas fa-fw fa-chart-area"></i>
-                <span>비용관리</span>
-            </a>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
 
-                    <a class="collapse-item" href="buttons.html">상세비용</a>f
-                    <a class="collapse-item" href="cards.html">report</a>
-                </div>
-            </div>
+        <li class="nav-item active">
+            <a class="nav-link" href="">
+                <i class="fas fa-fw fa-money-check"></i>
+                <span>비용관리</span></a>
         </li>
 
-        <!-- Nav Item - Utilities Collapse Menu -->
-        <li class="nav-item">
-            <a class="nav-link" href="charts.html">
 
+
+        <li class="nav-item active">
+            <a class="nav-link" href="">
+                <i class="fas fa-fw fa-chart-pie"></i>
+                <span>자원관리</span></a>
+        </li>
+
+
+        <!-- Nav Item - Utilities Collapse Menu -->
+        <li class="nav-item active" th:if="${session['auth']} =='ROLE_ADMIN'">
+            <a class="nav-link" href="/member">
+                <i class="fas fa-fw fa-user"></i>
                 <span>사용자관리</span></a>
         </li>
 
+
+
+
         <!-- Divider -->
         <hr class="sidebar-divider">
-
-
-
-
-
-
-
 
 
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
 
 
     </ul>

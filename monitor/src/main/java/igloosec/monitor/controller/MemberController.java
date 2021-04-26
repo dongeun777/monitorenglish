@@ -68,9 +68,9 @@ public class MemberController {
         return "/";
     }
 
-    @GetMapping("/join")
+    @GetMapping("/member")
     public String joinPage(Model model) {
-        return "join";
+        return "member";
     }
 
 

@@ -559,7 +559,7 @@
 <!-- Page Wrapper -->
 <div id="wrapper" >
 
-    <!--<div th:insert="mainbody.html :: side_menu"></div>-->
+    <!--<div th:insert="sidemenu.html :: side_menu"></div>-->
 
     <div id="div_load_image" style="position: absolute; top:50%; left: 50%; width:0px ; height: 0px; z-index: 9999; background: #f0f0f0; margin:auto; ">
         <img src="/image/loading.gif" style="width:100px; height: 100px; ">
@@ -602,8 +602,8 @@
 
 
         <!-- Nav Item - Utilities Collapse Menu -->
-        <li class="nav-item" th:if="${session['auth']} =='ROLE_ADMIN'">
-            <a class="nav-link" href="/join">
+        <li class="nav-item active" th:if="${session['auth']} =='ROLE_ADMIN'">
+            <a class="nav-link" href="/member">
                 <i class="fas fa-fw fa-user"></i>
                 <span>사용자관리</span></a>
         </li>
@@ -976,25 +976,6 @@
     </div>
 </div>
 
-<!-- Bootstrap core JavaScript-->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-<!-- Core plugin JavaScript-->
-<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<!-- Custom scripts for all pages-->
-<script src="js/sb-admin-2.min.js"></script>
-
-<!-- Page level plugins -->
-<script src="vendor/chart.js/Chart.min.js"></script>
-
-
-
-
-<!-- Page level plugins -->
-<script src="vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 
 </body>
