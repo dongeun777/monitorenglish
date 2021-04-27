@@ -15,6 +15,8 @@ public interface MemberMapper {
     MemberVo selectMember(String username);
 
     void joinMember(MemberVo memberVo);
+    void createTmTable(MemberVo memberVo);
+
 
     List<MemberVo> selectMemberList();
 }

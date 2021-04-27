@@ -35,6 +35,11 @@ public class MemberService implements UserDetailsService {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         memberVo.setPasswd(passwordEncoder.encode(memberVo.getPasswd()));
         mapper.joinMember(memberVo);
+
+        if (memberVo.getAuth().equals("ROLE_USER")){
+            mapper.createTmTable(memberVo);
+        }
+
        // return memberRepository.save(memberDto.toEntity()).getId();
     }
 

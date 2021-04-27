@@ -15,12 +15,12 @@ public class HomeService {
     }
 
 
-    public List<UsageVo> selectUsage() {
-        return mapper.selectUsage();
+    public List<UsageVo> selectUsage(UsageVo param) {
+        return mapper.selectUsage(param);
     }
 
-    public List<UsageVo> selectUsagebefore() {
-        return mapper.selectUsagebefore();
+    public List<UsageVo> selectUsagebefore(UsageVo param) {
+        return mapper.selectUsagebefore(param);
     }
 
     public List<UsageVo> selectMeterDetail() {

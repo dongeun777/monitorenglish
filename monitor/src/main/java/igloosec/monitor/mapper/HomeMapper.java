@@ -9,9 +9,9 @@ import java.util.List;
 @Repository
 @Mapper
 public interface HomeMapper {
-    List<UsageVo> selectUsage();
+    List<UsageVo> selectUsage(UsageVo param);
 
-    List<UsageVo> selectUsagebefore();
+    List<UsageVo> selectUsagebefore(UsageVo param);
 
     List<UsageVo> selectMeterDetail();
 

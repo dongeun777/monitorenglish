@@ -11,6 +11,8 @@ public class UsageVo {
     private String quantity;
     private String unitOfMeasure;
     private String costInBillingCurrency;
+    private String paramDate;
+
 
     public String getId() {
         return id;
@@ -81,5 +83,13 @@ public class UsageVo {
 
     public void setCostInBillingCurrency(String costInBillingCurrency) {
         this.costInBillingCurrency = costInBillingCurrency;
+    }
+
+    public String getParamDate() {
+        return paramDate;
+    }
+
+    public void setParamDate(String paramDate) {
+        this.paramDate = paramDate;
     }
 }
