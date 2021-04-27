@@ -4,6 +4,7 @@ package igloosec.monitor.controller;
 
 import igloosec.monitor.service.MemberService;
 import igloosec.monitor.vo.MemberVo;
+import igloosec.monitor.vo.UsageVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -63,7 +65,7 @@ public class MemberController {
     public String logoutProcess(HttpSession session) {
 
         session.setAttribute("loginCheck",null);
-        session.setAttribute("id",null);
+        session.setAttribute("email",null);
 
         return "/";
     }
@@ -75,10 +77,20 @@ public class MemberController {
 
 
 
-    @PostMapping("/user/join")
+    @ResponseBody
+    @RequestMapping(value = "/getMemberList.do")
+    public List<MemberVo> getMemberList(Model model) {
+
+        List<MemberVo>  list = memberService.selectMemberList();
+        model.addAttribute("list",list);
+
+        return list;
+    }
+
+    @PostMapping("/joinUser")
     public String joinMember(MemberVo memberVo) {
         memberService.joinUser(memberVo);
-        return "redirect:/join";
+        return "redirect:/member";
     }
 
 

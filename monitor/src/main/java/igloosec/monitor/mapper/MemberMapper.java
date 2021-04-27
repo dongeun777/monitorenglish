@@ -15,4 +15,6 @@ public interface MemberMapper {
     MemberVo selectMember(String username);
 
     void joinMember(MemberVo memberVo);
+
+    List<MemberVo> selectMemberList();
 }

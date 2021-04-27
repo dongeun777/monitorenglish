@@ -3,6 +3,7 @@ package igloosec.monitor.service;
 
 import igloosec.monitor.mapper.MemberMapper;
 import igloosec.monitor.vo.MemberVo;
+import igloosec.monitor.vo.UsageVo;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -51,6 +52,10 @@ public class MemberService implements UserDetailsService {
 
 
 
+    }
+
+    public List<MemberVo> selectMemberList() {
+        return mapper.selectMemberList();
     }
 
 }

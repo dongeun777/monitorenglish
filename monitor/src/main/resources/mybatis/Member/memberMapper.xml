@@ -10,8 +10,26 @@
 
 
     <select id="joinMember" parameterType="MemberVo">
-        insert into USER_LIST (email, passwd,regDate)
-        values (#{email}, #{passwd},NOW())
+        insert into USER_LIST (email, passwd,regDate,auth,rscGrp,ipAddr)
+        values (#{email}, #{passwd},NOW(),#{auth},#{rscGrp},#{ipAddr});
+
+        CREATE TABLE `student_tb${rscGrp}` (`agent_id` VARCHAR(16) NOT NULL,
+                                              `table_name` VARCHAR(255) NOT NULL,
+                                              `category` VARCHAR(8) NULL DEFAULT NULL,
+                                              `stats_period` VARCHAR(8) NOT NULL,
+                                              `event_date` DATETIME NOT NULL,
+                                              `event_count` BIGINT(20) NULL DEFAULT '0',
+                                              `event_undefined` BIGINT(20) NULL DEFAULT '0',
+                                              `event_volume` BIGINT(20) NULL DEFAULT '0',
+                                              `event_compressed` BIGINT(20) NULL DEFAULT '0',
+                                              `update_date` DATETIME NULL DEFAULT current_timestamp()) COLLATE='utf8mb4_general_ci';
+
+    </select>
+
+
+    <select id="selectMemberList" resultType="MemberVo">
+        SELECT email,auth,substring(regDate,1,10) AS regDate,rscGrp,ipAddr, CASE WHEN enabled =1 THEN 'ENABLED' ELSE 'DISABLED' END AS enableVal
+        FROM USER_LIST
 
     </select>
 

@@ -16,6 +16,10 @@ public class MemberVo implements UserDetails {
     private String isAccountNonLocked;
     private String isCredentialsNonExpired;
     private String regDate;
+    private String ipAddr;
+    private String rscGrp;
+    private String enableVal;
+
 
     public String getEmail() {
         return email;
@@ -112,5 +116,29 @@ public class MemberVo implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public String getIpAddr() {
+        return ipAddr;
+    }
+
+    public void setIpAddr(String ipAddr) {
+        this.ipAddr = ipAddr;
+    }
+
+    public String getRscGrp() {
+        return rscGrp;
+    }
+
+    public void setRscGrp(String rscGrp) {
+        this.rscGrp = rscGrp;
+    }
+
+    public String getEnableVal() {
+        return enableVal;
+    }
+
+    public void setEnableVal(String enableVal) {
+        this.enableVal = enableVal;
     }
 }
