@@ -9,6 +9,7 @@ public class ResourceVo {
     private String quantity;
     private String unitOfMeasure;
     private String costInBillingCurrency;
+    private String meterSubCategory;
 
     public String getId() {
         return id;
@@ -64,5 +65,13 @@ public class ResourceVo {
 
     public void setCostInBillingCurrency(String costInBillingCurrency) {
         this.costInBillingCurrency = costInBillingCurrency;
+    }
+
+    public String getMeterSubCategory() {
+        return meterSubCategory;
+    }
+
+    public void setMeterSubCategory(String meterSubCategory) {
+        this.meterSubCategory = meterSubCategory;
     }
 }
