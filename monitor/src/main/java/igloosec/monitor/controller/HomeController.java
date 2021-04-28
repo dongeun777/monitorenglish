@@ -41,6 +41,13 @@ public class HomeController {
     }
 
 
+    @GetMapping("/resource")
+    public String resource(Model model) {
+
+        return "resource";
+    }
+
+
 
     @ResponseBody
     @RequestMapping(value = "/getUsageList.do")
@@ -55,9 +62,9 @@ public class HomeController {
 
     @ResponseBody
     @RequestMapping(value = "/getMeterDetailList.do")
-    public List<UsageVo> getMeterDetailList(Model model) {
+    public List<UsageVo> getMeterDetailList(Model model, UsageVo param) {
 
-        List<UsageVo>  list = homeService.selectMeterDetail();
+        List<UsageVo>  list = homeService.selectMeterDetail(param);
         model.addAttribute("list",list);
 
         return list;
@@ -88,11 +95,11 @@ public class HomeController {
 
 
     @RequestMapping(value = "/getMeterSum.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-    public @ResponseBody String getMeterSum(Locale locale, Model model) {
+    public @ResponseBody String getMeterSum(Locale locale, Model model, UsageVo param) {
 
         Gson gson = new Gson();
 
-        List<UsageVo>  list = homeService.selectMeterSum();
+        List<UsageVo>  list = homeService.selectMeterSum(param);
 
         return gson.toJson(list);
 
