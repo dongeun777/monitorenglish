@@ -46,6 +46,7 @@ public class MemberController {
                 session.setAttribute("loginCheck",true);
                 session.setAttribute("email",memberVo.getEmail());
                 session.setAttribute("auth",user.getAuth());
+                session.setAttribute("rscgrp",user.getRscGrp());
                 //session.setAttribute();
                 System.out.println(user.getAuth());
               //  session.setAttribute("auth",memberVo.getAuthorities());
