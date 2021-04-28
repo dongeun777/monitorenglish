@@ -44,9 +44,9 @@ public class HomeController {
 
     @ResponseBody
     @RequestMapping(value = "/getUsageList.do")
-    public List<UsageVo> getUsageList(Model model) {
+    public List<UsageVo> getUsageList(Model model, UsageVo param ) {
 
-        List<UsageVo>  list = homeService.selectUsage();
+        List<UsageVo>  list = homeService.selectUsage(param);
         model.addAttribute("list",list);
 
         return list;
@@ -64,11 +64,11 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/getChartList.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-    public @ResponseBody String chartList(Locale locale, Model model) {
+    public @ResponseBody String chartList(Locale locale, Model model, UsageVo param) {
 
         Gson gson = new Gson();
 
-        List<UsageVo>  list = homeService.selectUsage();
+        List<UsageVo>  list = homeService.selectUsage(param);
 
         return gson.toJson(list);
 
@@ -76,11 +76,11 @@ public class HomeController {
 
 
     @RequestMapping(value = "/getChartListbefore.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
-    public @ResponseBody String chartListbefore(Locale locale, Model model) {
+    public @ResponseBody String chartListbefore(Locale locale, Model model , UsageVo param) {
 
         Gson gson = new Gson();
 
-        List<UsageVo>  list = homeService.selectUsagebefore();
+        List<UsageVo>  list = homeService.selectUsagebefore(param);
 
         return gson.toJson(list);
 

@@ -41,10 +41,22 @@
     var thisLabel ="";
     var lastLabel ="";
 
+    let parameter ="";
+    let lastparameter ="";
+
+
     window.onload = function () {
 
         let today = new Date();
+        let year = today.getFullYear();  // 월
         let month = today.getMonth() + 1;  // 월
+
+       // console.log(month);
+
+        if( month < 10) parameter = year +"-0"+month;
+        else parameter = year +"-"+month;
+
+
         let monthVal =month*1;
 
         document.getElementById("thisMon1").innerText =monthVal+ '월처리량'
@@ -57,7 +69,15 @@
         let firstDayOfMonth = new Date( date.getFullYear(), date.getMonth() , 1 );
         let lastMonth = new Date ( firstDayOfMonth.setDate( firstDayOfMonth.getDate() - 1 ) );
 
+
         let monthValLast =(lastMonth.getMonth()+1)*1;
+        let yearLast = lastMonth.getFullYear();
+
+        if( monthValLast < 10) lastparameter = yearLast +"-0"+monthValLast;
+        else lastparameter = yearLast +"-"+monthValLast;
+
+        console.log(lastparameter);
+
         document.getElementById("lastMon1").innerText =monthValLast+ '월처리량'
         document.getElementById("lastMon2").innerText =monthValLast+ '월 LOG 처리량'
 
@@ -81,6 +101,7 @@
         $.ajax({
             url: "/getUsageList.do",
             type: "GET",
+            data : { paramDate : parameter },
             success: function (data) {
                 tablelength = data.length;
                 var table = $('#usageTable').dataTable({
@@ -188,7 +209,15 @@
 
     function getChatdata(){
 
-        $.getJSON("/getChartList.do", function (data) {
+        var params = {
+            paramDate: parameter
+        };
+
+        var lastparams = {
+            paramDate: lastparameter
+        };
+
+        $.getJSON("/getChartList.do",params, function (data) {
 
 
             $.each(data, function (inx, obj) {
@@ -202,7 +231,7 @@
 
             });
 
-            $.getJSON("/getChartListbefore.do", function (data2) {
+            $.getJSON("/getChartListbefore.do", lastparams, function (data2) {
 
 
                 $.each(data2, function (inx, obj) {
