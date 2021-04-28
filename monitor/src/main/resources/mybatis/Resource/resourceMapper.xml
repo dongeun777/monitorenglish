@@ -6,7 +6,7 @@
 
 
     <select id="selectResourceList" resultType="ResourceVo">
-        SELECT date, MeterCategory As meterCategory ,SubscriptionName As subscriptionName ,quantity,unitOfMeasure, round(costInBillingCurrency,5) As costInBillingCurrency
+        SELECT date, MeterCategory As meterCategory ,meterSubCategory ,quantity,unitOfMeasure, round(costInBillingCurrency,5) As costInBillingCurrency
         FROM USED_AMOUNT
 
 
