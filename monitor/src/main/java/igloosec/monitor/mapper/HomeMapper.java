@@ -13,7 +13,7 @@ public interface HomeMapper {
 
     List<UsageVo> selectUsagebefore(UsageVo param);
 
-    List<UsageVo> selectMeterDetail();
+    List<UsageVo> selectMeterDetail(UsageVo param);
 
-    List<UsageVo> selectMeterSum();
+    List<UsageVo> selectMeterSum(UsageVo param);
 }

@@ -12,6 +12,8 @@ public class UsageVo {
     private String unitOfMeasure;
     private String costInBillingCurrency;
     private String paramDate;
+    private String paraYear;
+    private String paraMonth;
 
 
     public String getId() {
@@ -91,5 +93,22 @@ public class UsageVo {
 
     public void setParamDate(String paramDate) {
         this.paramDate = paramDate;
+    }
+
+
+    public String getParaYear() {
+        return paraYear;
+    }
+
+    public void setParaYear(String paraYear) {
+        this.paraYear = paraYear;
+    }
+
+    public String getParaMonth() {
+        return paraMonth;
+    }
+
+    public void setParaMonth(String paraMonth) {
+        this.paraMonth = paraMonth;
     }
 }

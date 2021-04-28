@@ -67,7 +67,7 @@ public class MemberController {
         session.setAttribute("loginCheck",null);
         session.setAttribute("email",null);
 
-        return "/";
+        return "redirect:/";
     }
 
     @GetMapping("/member")

@@ -44,6 +44,9 @@
     let parameter ="";
     let lastparameter ="";
 
+    let parameterYear ="";
+    let parameterMonth ="";
+
 
     window.onload = function () {
 
@@ -51,10 +54,16 @@
         let year = today.getFullYear();  // 월
         let month = today.getMonth() + 1;  // 월
 
-       // console.log(month);
 
+       // parameter setting;
         if( month < 10) parameter = year +"-0"+month;
         else parameter = year +"-"+month;
+
+
+        if( month < 10) parameterMonth = "0"+month;
+        else  parameterMonth = month;
+        parameterYear= year;
+
 
 
         let monthVal =month*1;
@@ -156,7 +165,13 @@
 
     function getMeterSum(){
 
-        $.getJSON("/getMeterSum.do", function (data) {
+        var params = {
+            paraYear : parameterYear ,
+            paraMonth : parameterMonth
+        };
+
+
+        $.getJSON("/getMeterSum.do",params, function (data) {
 
          $.each(data, function (inx, obj) {
 
@@ -176,6 +191,8 @@
         $.ajax({
             url: "/getMeterDetailList.do",
             type: "GET",
+            data : { paraYear : parameterYear ,
+                paraMonth : parameterMonth  },
             success: function (data) {
                 var table = $('#meterDetailTable').dataTable({
                     aaData: data,
