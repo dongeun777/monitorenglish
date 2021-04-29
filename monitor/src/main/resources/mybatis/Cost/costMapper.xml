@@ -7,7 +7,7 @@
 
     <select id="selectCostList" resultType="CostVo">
         SELECT substring(event_date,1,10) AS idate ,round(SUM(event_volume)/1024/1024) AS usage_data ,
-               round(SUM(event_volume)/1024/1024) * 3.497 As usage_cost FROM ERD.is_stats
+               round(round(SUM(event_volume)/1024/1024) * 3.497) As usage_cost FROM ERD.is_stats
         WHERE stats_period ='day'
         GROUP BY event_date;
 
