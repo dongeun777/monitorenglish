@@ -14,12 +14,12 @@
 
     var chartData = [, , , , , , , , , ,
         , , , , , , , , , ,
-        , , , , , , , , , , ];
+        , , , , , , , , , ,];
     var chartLabels = [];
 
     var chartData2 = [, , , , , , , , , ,
         , , , , , , , , , ,
-        , , , , , , , , , , ];
+        , , , , , , , , , ,];
     var chartLabels2 = [];
 
     var pieChartData = [];
@@ -31,78 +31,96 @@
         '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'];
 
 
-
-
     var barData = [];
 
     let sumUsage = 0;
     let sumMoney = 0;
     var sumbefore = 0;
-    var thisLabel ="";
-    var lastLabel ="";
+    var thisLabel = "";
+    var lastLabel = "";
 
-    let parameter ="";
-    let lastparameter ="";
+    let parameter = "";
+    let lastparameter = "";
 
-    let parameterYear ="";
-    let parameterMonth ="";
+    let parameterYear = "";
+    let parameterMonth = "";
 
 
     window.onload = function () {
 
-        let today = new Date();
-        let year = today.getFullYear();  // 월
-        let month = today.getMonth() + 1;  // 월
+
+        //console.log();
+
+        let sessionRsc = document.getElementById("rscgrp").innerText;
+
+        if (sessionRsc != "") {
+
+            document.getElementById("dashboard").hidden = false;
+
+            document.getElementById("logsource").hidden = true;
+
+            let today = new Date();
+            let year = today.getFullYear();  // 월
+            let month = today.getMonth() + 1;  // 월
 
 
-       // parameter setting;
-        if( month < 10) parameter = year +"-0"+month;
-        else parameter = year +"-"+month;
+            // parameter setting;
+            if (month < 10) parameter = year + "-0" + month;
+            else parameter = year + "-" + month;
 
 
-        if( month < 10) parameterMonth = "0"+month;
-        else  parameterMonth = month;
-        parameterYear= year;
+            if (month < 10) parameterMonth = "0" + month;
+            else parameterMonth = month;
+            parameterYear = year;
 
 
+            let monthVal = month * 1;
 
-        let monthVal =month*1;
+            document.getElementById("thisMon1").innerText = monthVal + '월처리량'
+            document.getElementById("thisMon2").innerText = monthVal + '월 일평균처리량'
+            document.getElementById("thisMon3").innerText = monthVal + '월 LOG 사용금액'
+            document.getElementById("thisMon4").innerText = monthVal + '월 LOG 처리량'
+            thisLabel = monthVal + '월';
 
-        document.getElementById("thisMon1").innerText =monthVal+ '월처리량'
-        document.getElementById("thisMon2").innerText =monthVal+ '월 일평균처리량'
-        document.getElementById("thisMon3").innerText =monthVal+ '월 LOG 사용금액'
-        document.getElementById("thisMon4").innerText =monthVal+ '월 LOG 처리량'
-        thisLabel =  monthVal+ '월';
-
-        let date = new Date();
-        let firstDayOfMonth = new Date( date.getFullYear(), date.getMonth() , 1 );
-        let lastMonth = new Date ( firstDayOfMonth.setDate( firstDayOfMonth.getDate() - 1 ) );
-
-
-        let monthValLast =(lastMonth.getMonth()+1)*1;
-        let yearLast = lastMonth.getFullYear();
-
-        if( monthValLast < 10) lastparameter = yearLast +"-0"+monthValLast;
-        else lastparameter = yearLast +"-"+monthValLast;
-
-        console.log(lastparameter);
-
-        document.getElementById("lastMon1").innerText =monthValLast+ '월처리량'
-        document.getElementById("lastMon2").innerText =monthValLast+ '월 LOG 처리량'
-
-        lastLabel =  monthValLast+ '월';
+            let date = new Date();
+            let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+            let lastMonth = new Date(firstDayOfMonth.setDate(firstDayOfMonth.getDate() - 1));
 
 
+            let monthValLast = (lastMonth.getMonth() + 1) * 1;
+            let yearLast = lastMonth.getFullYear();
 
-        getMeterSum();
-        getMeterDetailList();
-        getUsageList();
-        setTimeout(getChatdata(), 1000);
+            if (monthValLast < 10) lastparameter = yearLast + "-0" + monthValLast;
+            else lastparameter = yearLast + "-" + monthValLast;
+
+            console.log(lastparameter);
+
+            document.getElementById("lastMon1").innerText = monthValLast + '월처리량'
+            document.getElementById("lastMon2").innerText = monthValLast + '월 LOG 처리량'
+
+            lastLabel = monthValLast + '월';
+
+
+            getMeterSum();
+            getMeterDetailList();
+            getUsageList();
+            setTimeout(getChatdata(), 1000);
+        } else {
+
+            document.getElementById("dashboard").hidden = true;
+            document.getElementById("div_load_image").hidden = true;
+
+            document.getElementById("logsource").hidden = false;
+        }
 
 
     }
 
-
+    function addFrm() {
+        var el = $("input").attr({"type":"text", "name":"", "class":"" });
+        console.log(el);
+        $("#pnl").append(el);
+    }
 
 
     function getUsageList() {
@@ -110,7 +128,7 @@
         $.ajax({
             url: "/getUsageList.do",
             type: "GET",
-            data : { paramDate : parameter },
+            data: {paramDate: parameter},
             success: function (data) {
                 tablelength = data.length;
                 var table = $('#usageTable').dataTable({
@@ -134,7 +152,6 @@
                 var rows = document.getElementById("usageTable").getElementsByTagName("tr");
 
 
-
                 for (var r = 1; r < tablelength + 1; r++) {
                     var cells = rows[r].getElementsByTagName("td");
 
@@ -150,7 +167,7 @@
                 document.getElementById("everage").innerText = Math.round(sumUsage / tablelength) + "MB";
                 document.getElementById("money").innerText = comma(Math.round(sumMoney)) + "원";
 
-                sumMoney =Math.round(sumMoney);
+                sumMoney = Math.round(sumMoney);
 
             }, error: function (request, status, error) {
                 getUsageList();
@@ -159,24 +176,23 @@
         });
 
 
-
     }
 
 
-    function getMeterSum(){
+    function getMeterSum() {
 
         var params = {
-            paraYear : parameterYear ,
-            paraMonth : parameterMonth
+            paraYear: parameterYear,
+            paraMonth: parameterMonth
         };
 
 
-        $.getJSON("/getMeterSum.do",params, function (data) {
+        $.getJSON("/getMeterSum.do", params, function (data) {
 
-         $.each(data, function (inx, obj) {
+            $.each(data, function (inx, obj) {
 
                 pieChartLabels.push(obj.meterCategory);
-                pieChartData.push(obj.costInBillingCurrency*1);
+                pieChartData.push(obj.costInBillingCurrency * 1);
 
             });
             createPieChart();
@@ -185,14 +201,15 @@
     }
 
 
-
     function getMeterDetailList() {
 
         $.ajax({
             url: "/getMeterDetailList.do",
             type: "GET",
-            data : { paraYear : parameterYear ,
-                paraMonth : parameterMonth  },
+            data: {
+                paraYear: parameterYear,
+                paraMonth: parameterMonth
+            },
             success: function (data) {
                 var table = $('#meterDetailTable').dataTable({
                     aaData: data,
@@ -224,7 +241,7 @@
     }
 
 
-    function getChatdata(){
+    function getChatdata() {
 
         var params = {
             paramDate: parameter
@@ -234,16 +251,13 @@
             paramDate: lastparameter
         };
 
-        $.getJSON("/getChartList.do",params, function (data) {
+        $.getJSON("/getChartList.do", params, function (data) {
 
 
             $.each(data, function (inx, obj) {
 
                 chartLabels.push(obj.idate + "일");
-                chartData[(obj.idate*1)-1] =obj.usage_data;
-
-
-
+                chartData[(obj.idate * 1) - 1] = obj.usage_data;
 
 
             });
@@ -254,9 +268,8 @@
                 $.each(data2, function (inx, obj) {
 
                     chartLabels2.push(obj.idate + "일");
-                    chartData2[(obj.idate*1)-1] =obj.usage_data;
+                    chartData2[(obj.idate * 1) - 1] = obj.usage_data;
                     sumbefore += obj.usage_data * 1;
-
 
 
                 });
@@ -266,9 +279,9 @@
 
                     labels:
 
-                         ['1일','2일','3일','4일','5일','6일','7일','8일','9일','10일',
-                          '11일','12일','13일','14일','15일','16일','17일','18일','19일','20일',
-                           '21일','22일','23일','24일','25일','26일','27일','28일','29일','30일','31일'
+                        ['1일', '2일', '3일', '4일', '5일', '6일', '7일', '8일', '9일', '10일',
+                            '11일', '12일', '13일', '14일', '15일', '16일', '17일', '18일', '19일', '20일',
+                            '21일', '22일', '23일', '24일', '25일', '26일', '27일', '28일', '29일', '30일', '31일'
 
                         ],
                     //chartLabels2,
@@ -328,15 +341,19 @@
                 createBarChart();
 
 
-                document.getElementById("div_load_image").hidden =true;
+                document.getElementById("div_load_image").hidden = true;
 
-            }).fail(function() {  getChatdata();  });
+            }).fail(function () {
+                getChatdata();
+            });
 
-        }).fail(function() {  getChatdata();  });
+        }).fail(function () {
+            getChatdata();
+        });
 
     }
 
-    function createBarChart(){
+    function createBarChart() {
         var ctx = document.getElementById("myBarChart");
 
         var data = {
@@ -384,8 +401,8 @@
                             maxTicksLimit: 5,
                             padding: 5,
                             // Include a dollar sign in the ticks
-                            callback: function(value, index, values) {
-                                return  number_format(value)+'원';
+                            callback: function (value, index, values) {
+                                return number_format(value) + '원';
                             }
                         },
                         gridLines: {
@@ -413,9 +430,9 @@
                     displayColors: false,
                     caretPadding: 10,
                     callbacks: {
-                        label: function(tooltipItem, chart) {
+                        label: function (tooltipItem, chart) {
                             var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                            return datasetLabel + ':' + number_format(tooltipItem.yLabel) + '원' ;
+                            return datasetLabel + ':' + number_format(tooltipItem.yLabel) + '원';
                         }
                     }
                 },
@@ -434,8 +451,8 @@
                 labels: pieChartLabels,
                 datasets: [{
                     data: pieChartData,
-                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc','#9467BD','#FFA95D','#D62728','#69A4CD'],
-                    hoverBackgroundColor: ['#858796', '#858796', '#858796','#858796', '#858796', '#858796', '#858796'],
+                    backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#9467BD', '#FFA95D', '#D62728', '#69A4CD'],
+                    hoverBackgroundColor: ['#858796', '#858796', '#858796', '#858796', '#858796', '#858796', '#858796'],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
                 }],
             },
@@ -451,14 +468,14 @@
                     displayColors: false,
                     caretPadding: 5,
                     callbacks: {
-                        label: function(tooltipItem, data) {
+                        label: function (tooltipItem, data) {
                             var dataset = data.datasets[tooltipItem.datasetIndex];
-                            var total = dataset.data.reduce(function(previousValue, currentValue, currentIndex, array) {
+                            var total = dataset.data.reduce(function (previousValue, currentValue, currentIndex, array) {
                                 return previousValue + currentValue;
                             });
                             var currentValue = dataset.data[tooltipItem.index];
-                            var percentage = Math.floor(((currentValue/total) * 100)+0.5);
-                            return "비율: "+ percentage + "%, 금액:"+ currentValue +"원";
+                            var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+                            return "비율: " + percentage + "%, 금액:" + currentValue + "원";
                         }
                     }
 
@@ -581,7 +598,7 @@
             sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
             dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
             s = '',
-            toFixedFix = function(n, prec) {
+            toFixedFix = function (n, prec) {
                 var k = Math.pow(10, prec);
                 return '' + Math.round(n * k) / k;
             };
@@ -598,16 +615,16 @@
     }
 
 
-
 </script>
 <body id="page-top">
 
 <!-- Page Wrapper -->
-<div id="wrapper" >
+<div id="wrapper">
 
     <!--<div th:insert="sidemenu.html :: side_menu"></div>-->
 
-    <div id="div_load_image" style="position: absolute; top:50%; left: 50%; width:0px ; height: 0px; z-index: 9999; background: #f0f0f0; margin:auto; ">
+    <div id="div_load_image"
+         style="position: absolute; top:50%; left: 50%; width:0px ; height: 0px; z-index: 9999; background: #f0f0f0; margin:auto; ">
         <img src="/image/loading.gif" style="width:100px; height: 100px; ">
     </div>
 
@@ -639,7 +656,6 @@
         </li>
 
 
-
         <li class="nav-item active">
             <a class="nav-link" href="/resource">
                 <i class="fas fa-fw fa-chart-pie"></i>
@@ -653,8 +669,6 @@
                 <i class="fas fa-fw fa-user"></i>
                 <span>사용자관리</span></a>
         </li>
-
-
 
 
         <!-- Divider -->
@@ -695,25 +709,13 @@
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small" th:text="${session['email']}"> </span>
-
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small"
+                                  th:text="${session['email']}"> </span>
+                            <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                              aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Profile
-                            </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Settings
-                            </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                Activity Log
-                            </a>
-                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Logout
@@ -728,7 +730,7 @@
 
 
             <!-- Begin Page Content -->
-            <div class="container-fluid">
+            <div class="container-fluid" id="dashboard">
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -834,11 +836,12 @@
                                 </div>
                                 <div class="mt-4 text-center small">
                                     <i class="fas fa-circle text-primary"></i>
-                                        <span class="mr-2"  id="thisMon4">
+                                    <span class="mr-2" id="thisMon4">
 
                                         </span>
 
-                                    <i class="fas fa-circle text-success"  style="color:rgba(255, 115, 223, 1) !important; "></i>
+                                    <i class="fas fa-circle text-success"
+                                       style="color:rgba(255, 115, 223, 1) !important; "></i>
                                     <span class="mr-2" id="lastMon2">
 
 
@@ -861,7 +864,7 @@
                             </div>
                             <!-- Card Body -->
                             <div class="card-body">
-                                <div class="chart-area"  style="height: 365px !important;">
+                                <div class="chart-area" style="height: 365px !important;">
                                     <canvas id="myPieChart"></canvas>
                                 </div>
 
@@ -896,7 +899,6 @@
                     <!-- Area Chart -->
 
 
-
                     <div class="col-xl-3 col-lg-4">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
@@ -908,7 +910,7 @@
                             </div>
                             <!-- Card Body -->
                             <div class="card-body" style="height: 290px;">
-                                <div class="card shadow h-100 py-2" >
+                                <div class="card shadow h-100 py-2">
                                     <div class="table-responsive" style="overflow:auto; height: 100%">
                                         <table class="table table-bordered" id="usageTable" cellspacing="0">
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
@@ -936,7 +938,7 @@
                     </div>
 
 
-                    <div class="col-xl-6 col-lg-6" >
+                    <div class="col-xl-6 col-lg-6">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                             <div
@@ -976,13 +978,49 @@
                     </div>
 
 
-
-
-`
+                    `
                 </div>
 
             </div>
             <!-- /.container-fluid -->
+
+            <div class="container-fluid" id="logsource">
+
+                <form method="post">
+                    <div class="modal-body">
+                        <div class="row mt-1 mb-3">
+                            <div class="col-xl-12 col-lg-6" >
+                                <span style="color: black; font-size: 50px; font-weight: bold; " > WELCOME Page. </span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-xl-3 col-lg-6" >
+                                <span class="text-dark"> Email: </span>
+                            </div>
+
+                            <input  type="text" name="email" placeholder="이메일 입력해주세요">
+                            <button type="button" id="addBtn" class="btn btn-sm" onclick="addFrm();">
+                                <i class="fas fa-plus"></i> 추가추가
+                            </button>
+
+                        </div>
+                        <div id="pnl"></div>
+
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary"  type="submit" >등록</button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+
+                    </div>
+
+                </form>
+            </div>
+
+
+
 
         </div>
         <!-- End of Main Content -->
@@ -1021,7 +1059,6 @@
         </div>
     </div>
 </div>
-
 
 
 </body>
