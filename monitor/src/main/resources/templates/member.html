@@ -9,7 +9,6 @@
     }
 
 
-
     function getMemberList() {
 
         $.ajax({
@@ -46,7 +45,6 @@
         });
 
 
-
     }
 
 
@@ -70,9 +68,8 @@
             <div th:insert="topmenu.html :: top_menu"></div>
 
 
-
             <!-- Begin Page Content -->
-            <div class="container-fluid">
+            <div class="container-fluid"  th:if="${session['auth']} =='ROLE_ADMIN'">
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -92,13 +89,75 @@
                                 <h6 class="m-0 font-weight-bold text-primary">사용자리스트</h6>
 
 
-                                <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#memberModal">
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#memberModal">
                                     사용자 추가
                                 </button>
                             </div>
                             <!-- Card Body -->
                             <div class="card-body">
-                                <div class="card shadow h-100 py-2" >
+                                <div class="card shadow h-100 py-2">
+                                    <div class="table-responsive" style="overflow:auto; height: 100%">
+                                        <table class="table table-bordered" id="userTable" cellspacing="0">
+                                            <thead style="text-align: center; position: sticky; top: 0px; ">
+                                            <tr>
+
+                                                <th>Email 주소</th>
+                                                <th>권한</th>
+                                                <th>등록일</th>
+                                                <th>리소스그룹</th>
+                                                <th>TM IP 주소</th>
+                                                <th>사용여부</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody style="text-align: center">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="container-fluid"  th:if="${session['auth']} =='ROLE_USER'">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">비밀번호변경 </h1>
+
+                </div>
+
+                <div class="row">
+
+                    <!-- Area Chart -->
+                    <div class="col-xl-12 col-lg-10">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+
+                            <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">사용자리스트</h6>
+
+
+                                <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#memberModal">
+                                    사용자 추가
+                                </button>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="card shadow h-100 py-2">
                                     <div class="table-responsive" style="overflow:auto; height: 100%">
                                         <table class="table table-bordered" id="userTable" cellspacing="0">
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
@@ -150,63 +209,63 @@
                 </button>
             </div>
             <form th:action="@{/joinUser}" method="post">
-           <div class="modal-body">
-<!--               <div class="row mt-1 mb-3">
-                   <div class="col-xl-12 col-lg-6" >
-                       <span style="color: red"> TM을 설치한 후에 진행하시고, 리소스 그룹명을 정확히 입력해주시기 바랍니다. </span>
-                   </div>
-               </div>-->
+                <div class="modal-body">
+                    <!--               <div class="row mt-1 mb-3">
+                                       <div class="col-xl-12 col-lg-6" >
+                                           <span style="color: red"> TM을 설치한 후에 진행하시고, 리소스 그룹명을 정확히 입력해주시기 바랍니다. </span>
+                                       </div>
+                                   </div>-->
 
-               <div class="row mt-1 mb-3">
-                   <div class="col-xl-3 col-lg-6" >
-                       <span class="text-dark"> Email: </span>
-                   </div>
+                    <div class="row mt-1 mb-3">
+                        <div class="col-xl-3 col-lg-6">
+                            <span class="text-dark"> Email: </span>
+                        </div>
 
-                   <input  type="text" name="email" placeholder="이메일 입력해주세요">
+                        <input type="text" name="email" placeholder="이메일 입력해주세요">
 
-               </div>
-               <div class="row mb-3">
-                   <div class="col-xl-3 col-lg-6" >
-                       <span class="text-dark"> Password: </span>
-                   </div>
-                   <input type="password" name="passwd" placeholder="비밀번호">
-               </div>
-               <div class="row mb-3">
-                   <div class="col-xl-3 col-lg-6" >
-                       <span class="text-dark"> 권한: </span>
-                   </div>
-                   <!--<input type="text" name="auth" placeholder="권한">-->
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-xl-3 col-lg-6">
+                            <span class="text-dark"> Password: </span>
+                        </div>
+                        <input type="password" name="passwd" placeholder="비밀번호">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-xl-3 col-lg-6">
+                            <span class="text-dark"> 권한: </span>
+                        </div>
+                        <!--<input type="text" name="auth" placeholder="권한">-->
 
-                   <label class="radio-inline mr-1">
-                       <input type="radio" name="auth" id="inlineRadio1" value="ROLE_USER" > 사용자
-                   </label>
-                   <label class="radio-inline">
-                       <input type="radio" name="auth" id="inlineRadio2" value="ROLE_ADMIN"> 관리자
-                   </label>
-               </div>
+                        <label class="radio-inline mr-1">
+                            <input type="radio" name="auth" id="inlineRadio1" value="ROLE_USER"> 사용자
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="auth" id="inlineRadio2" value="ROLE_ADMIN"> 관리자
+                        </label>
+                    </div>
 
-               <div class="row mb-3">
-                   <div class="col-xl-3 col-lg-6" >
-                       <span class="text-dark"> 리소스그룹: </span>
-                   </div>
-                   <input type="text" name="rscGrp" >
-               </div>
-
-
-               <div class="row mb-3">
-                   <div class="col-xl-3 col-lg-6" >
-                       <span class="text-dark"> TM IP 주소: </span>
-                   </div>
-                   <input type="text" name="ipAddr" >
-               </div>
+                    <div class="row mb-3">
+                        <div class="col-xl-3 col-lg-6">
+                            <span class="text-dark"> 리소스그룹: </span>
+                        </div>
+                        <input type="text" name="rscGrp">
+                    </div>
 
 
-           </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary"  type="submit" >등록</button>
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+                    <div class="row mb-3">
+                        <div class="col-xl-3 col-lg-6">
+                            <span class="text-dark"> TM IP 주소: </span>
+                        </div>
+                        <input type="text" name="ipAddr">
+                    </div>
 
-            </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit">등록</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+
+                </div>
 
             </form>
         </div>
