@@ -17,14 +17,14 @@
         <hr class="sidebar-divider my-0">
 
         <!-- Nav Item - Dashboard -->
-        <li class="nav-item active">
+        <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/main">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Dashboard</span></a>
         </li>
 
 
-        <li class="nav-item active">
+        <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/cost">
                 <i class="fas fa-fw fa-money-check"></i>
                 <span>비용관리</span></a>
@@ -32,7 +32,7 @@
 
 
 
-        <li class="nav-item active">
+        <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/resource">
                 <i class="fas fa-fw fa-chart-pie"></i>
                 <span>자원관리</span></a>
@@ -40,7 +40,7 @@
 
 
         <!-- Nav Item - Utilities Collapse Menu -->
-        <li class="nav-item active" th:if="${session['auth']} =='ROLE_ADMIN'">
+        <li class="nav-item active">
             <a class="nav-link" href="/member">
                 <i class="fas fa-fw fa-user"></i>
                 <span>사용자관리</span></a>
