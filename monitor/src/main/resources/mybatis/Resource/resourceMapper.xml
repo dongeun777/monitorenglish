@@ -8,9 +8,8 @@
     <select id="selectResourceList" resultType="ResourceVo"  parameterType="ResourceVo">
         SELECT CONCAT(substring(date,7,10),"-",substring(date,1,2),"-",substring(date,4,2)) As date
         , MeterCategory As meterCategory ,meterSubCategory ,quantity,unitOfMeasure, round(costInBillingCurrency,5) As costInBillingCurrency
+        FROM ERD.USED_AMOUNT
         WHERE resourceGroupName ='${rscparam}'
-        FROM USED_AMOUNT
-
 
     </select>
 
