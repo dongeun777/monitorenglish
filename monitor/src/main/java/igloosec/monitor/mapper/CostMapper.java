@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 @Mapper
 public interface CostMapper {
-    List<CostVo> selectCostList();
+    List<CostVo> selectCostList(CostVo param);
 
 }

@@ -23,10 +23,10 @@ public class CostController {
 
     @ResponseBody
     @RequestMapping(value = "/getCostList.do")
-    public List<CostVo> getCostList(Model model) {
+    public List<CostVo> getCostList(Model model,  CostVo param)  {
 
 
-        List<CostVo> list = costService.selectCostList();
+        List<CostVo> list = costService.selectCostList(param);
 
         model.addAttribute("list",list);
 

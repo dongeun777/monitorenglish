@@ -23,12 +23,7 @@ public class MemberService implements UserDetailsService {
     }
 
 
-/*    public MemberVo selectMember(MemberVo memberVo) {
-        System.out.println(memberVo.getEmail());
-        System.out.println(memberVo.getPasswd());
 
-        return mapper.selectMember(username);
-    }*/
 
     public void joinUser(MemberVo memberVo) {
         // 비밀번호 암호화
@@ -36,11 +31,15 @@ public class MemberService implements UserDetailsService {
         memberVo.setPasswd(passwordEncoder.encode(memberVo.getPasswd()));
         mapper.joinMember(memberVo);
 
-        if (memberVo.getAuth().equals("ROLE_USER")){
+        /*if (memberVo.getAuth().equals("ROLE_USER")){
             mapper.createTmTable(memberVo);
-        }
+        }*/
 
        // return memberRepository.save(memberDto.toEntity()).getId();
+
+
+        //1단계 사용자테이블 rscgrp - tm5SArsg
+        //2단계 for is_stats_+       select rscgrp, event_date, event_volume
     }
 
 

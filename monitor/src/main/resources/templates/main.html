@@ -44,14 +44,14 @@
 
     let parameterYear = "";
     let parameterMonth = "";
-
+    let sessionRsc =  "";
 
     window.onload = function () {
 
 
         //console.log();
 
-        let sessionRsc = document.getElementById("rscgrp").innerText;
+        sessionRsc = document.getElementById("rscgrp").innerText;
 
         if (sessionRsc != "") {
 
@@ -124,11 +124,13 @@
 
 
     function getUsageList() {
-
+        console.log(sessionRsc)
         $.ajax({
             url: "/getUsageList.do",
             type: "GET",
-            data: {paramDate: parameter},
+            data: {paramDate: parameter,
+                rscparam: sessionRsc
+            },
             success: function (data) {
                 tablelength = data.length;
                 var table = $('#usageTable').dataTable({
@@ -170,7 +172,8 @@
                 sumMoney = Math.round(sumMoney);
 
             }, error: function (request, status, error) {
-                getUsageList();
+                //getUsageList();
+                location.reload();
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
@@ -183,7 +186,8 @@
 
         var params = {
             paraYear: parameterYear,
-            paraMonth: parameterMonth
+            paraMonth: parameterMonth,
+            rscparam: sessionRsc
         };
 
 
@@ -208,7 +212,8 @@
             type: "GET",
             data: {
                 paraYear: parameterYear,
-                paraMonth: parameterMonth
+                paraMonth: parameterMonth,
+                rscparam: sessionRsc
             },
             success: function (data) {
                 var table = $('#meterDetailTable').dataTable({
@@ -223,7 +228,6 @@
                     serverSide: false,
                     searching: false,
                     columns: [
-                        {data: "meterCategory"},
                         {data: "meterSubCategory"},
                         {data: "unitOfMeasure"},
                         {data: "quantity"}
@@ -244,11 +248,13 @@
     function getChatdata() {
 
         var params = {
-            paramDate: parameter
+            paramDate: parameter,
+            rscparam: sessionRsc
         };
 
         var lastparams = {
-            paramDate: lastparameter
+            paramDate: lastparameter,
+            rscparam: sessionRsc
         };
 
         $.getJSON("/getChartList.do", params, function (data) {
@@ -640,8 +646,8 @@
 
         <!-- Divider -->
         <hr class="sidebar-divider my-0">
-
-        <!-- Nav Item - Dashboard -->
+        <div  th:if="${session['rscgrp']} !=''">
+                <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
             <a class="nav-link" href="/main">
                 <i class="fas fa-fw fa-chart-area"></i>
@@ -650,7 +656,7 @@
 
 
         <li class="nav-item active">
-            <a class="nav-link" href="">
+            <a class="nav-link" href="/cost">
                 <i class="fas fa-fw fa-money-check"></i>
                 <span>비용관리</span></a>
         </li>
@@ -679,7 +685,7 @@
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
+        </div>
 
     </ul>
     <!-- End of Sidebar -->
@@ -730,7 +736,7 @@
 
 
             <!-- Begin Page Content -->
-            <div class="container-fluid" id="dashboard">
+            <div class="container-fluid" id="dashboard"  hidden="false">
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -955,8 +961,8 @@
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
                                             <tr>
 
-                                                <th>리소스분류</th>
-                                                <th>세부</th>
+
+                                                <th>리소스 분류</th>
                                                 <th>단위</th>
                                                 <th>사용량</th>
 
@@ -984,7 +990,7 @@
             </div>
             <!-- /.container-fluid -->
 
-            <div class="container-fluid" id="logsource">
+            <div class="container-fluid" id="logsource" hidden="false">
 
                 <form method="post">
                     <div class="modal-body">
@@ -994,7 +1000,15 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
+
+                        <div class="row mt-1 mb-3">
+                            <div class="col-xl-12 col-lg-6" >
+                                <span style="color: black; font-size: 25px; font-weight: normal; " >이글루시큐리티 모니터링 시스템입니다. </span>
+                            </div>
+                        </div>
+
+
+                        <!--<div class="row mb-3">
                             <div class="col-xl-3 col-lg-6" >
                                 <span class="text-dark"> Email: </span>
                             </div>
@@ -1004,17 +1018,17 @@
                                 <i class="fas fa-plus"></i> 추가추가
                             </button>
 
-                        </div>
+                        </div>-->
                         <div id="pnl"></div>
 
 
 
                     </div>
-                    <div class="modal-footer">
+    <!--                <div class="modal-footer">
                         <button class="btn btn-primary"  type="submit" >등록</button>
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
 
-                    </div>
+                    </div>-->
 
                 </form>
             </div>

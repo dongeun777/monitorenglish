@@ -4,8 +4,7 @@ public class CostVo {
     private String idate;
     private String usage_data;
     private String usage_cost;
-
-
+    private String rscparam;
 
     public String getUsage_data() {
         return usage_data;
@@ -30,5 +29,13 @@ public class CostVo {
 
     public void setUsage_cost(String usage_cost) {
         this.usage_cost = usage_cost;
+    }
+
+    public String getRscparam() {
+        return rscparam;
+    }
+
+    public void setRscparam(String rscparam) {
+        this.rscparam = rscparam;
     }
 }

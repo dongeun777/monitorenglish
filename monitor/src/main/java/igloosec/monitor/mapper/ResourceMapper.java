@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface ResourceMapper {
 
-    List<ResourceVo> selectResourceList();
+    List<ResourceVo> selectResourceList(ResourceVo param);
 
 
 }

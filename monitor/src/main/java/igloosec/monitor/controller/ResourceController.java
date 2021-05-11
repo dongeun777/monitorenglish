@@ -23,10 +23,10 @@ public class ResourceController {
 
     @ResponseBody
     @RequestMapping(value = "/getResourceList.do")
-    public List<ResourceVo> getResourceList(Model model) {
+    public List<ResourceVo> getResourceList(Model model,ResourceVo param) {
 
 
-        List<ResourceVo>  list = resourceService.selectResourceList();
+        List<ResourceVo>  list = resourceService.selectResourceList(param);
 
         model.addAttribute("list",list);
 

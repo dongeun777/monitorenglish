@@ -15,8 +15,8 @@ public class ResourceService {
 
     }
 
-    public List<ResourceVo> selectResourceList() {
-        return mapper.selectResourceList();
+    public List<ResourceVo> selectResourceList(ResourceVo param) {
+        return mapper.selectResourceList(param);
     }
 
 

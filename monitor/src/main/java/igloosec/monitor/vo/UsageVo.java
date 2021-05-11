@@ -14,6 +14,7 @@ public class UsageVo {
     private String paramDate;
     private String paraYear;
     private String paraMonth;
+    private String rscparam;
 
 
     public String getId() {
@@ -110,5 +111,13 @@ public class UsageVo {
 
     public void setParaMonth(String paraMonth) {
         this.paraMonth = paraMonth;
+    }
+
+    public String getRscparam() {
+        return rscparam;
+    }
+
+    public void setRscparam(String rscparam) {
+        this.rscparam = rscparam;
     }
 }

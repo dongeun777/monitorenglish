@@ -10,6 +10,7 @@ public class ResourceVo {
     private String unitOfMeasure;
     private String costInBillingCurrency;
     private String meterSubCategory;
+    private String rscparam;
 
     public String getId() {
         return id;
@@ -73,5 +74,13 @@ public class ResourceVo {
 
     public void setMeterSubCategory(String meterSubCategory) {
         this.meterSubCategory = meterSubCategory;
+    }
+
+    public String getRscparam() {
+        return rscparam;
+    }
+
+    public void setRscparam(String rscparam) {
+        this.rscparam = rscparam;
     }
 }

@@ -3,6 +3,7 @@ package igloosec.monitor.service;
 import igloosec.monitor.mapper.CostMapper;
 import igloosec.monitor.vo.CostVo;
 import igloosec.monitor.vo.ResourceVo;
+import igloosec.monitor.vo.UsageVo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +17,8 @@ public class CostService {
 
     }
 
-    public List<CostVo> selectCostList() {
-        return mapper.selectCostList();
+    public List<CostVo> selectCostList( CostVo param ) {
+        return mapper.selectCostList(param);
     }
 
 

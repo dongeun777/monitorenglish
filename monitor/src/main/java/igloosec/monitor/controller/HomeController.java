@@ -48,6 +48,13 @@ public class HomeController {
     }
 
 
+    @GetMapping("/cost")
+    public String cost(Model model) {
+
+        return "cost";
+    }
+
+
 
     @ResponseBody
     @RequestMapping(value = "/getUsageList.do")
@@ -74,8 +81,13 @@ public class HomeController {
     public @ResponseBody String chartList(Locale locale, Model model, UsageVo param) {
 
         Gson gson = new Gson();
-
-        List<UsageVo>  list = homeService.selectUsage(param);
+        List<UsageVo>  list =null;
+        try
+        {
+            list = homeService.selectUsage(param);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return gson.toJson(list);
 

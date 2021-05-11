@@ -6,7 +6,11 @@
 
 
 <script type="text/javascript">
+    let sessionRsc =  "";
+
+
     window.onload = function () {
+        sessionRsc = document.getElementById("rscgrp").innerText;
         getCostList();
 
     }
@@ -17,6 +21,8 @@
         $.ajax({
             url: "/getCostList.do",
             type: "GET",
+            data: { rscparam: sessionRsc
+            },
             success: function (data) {
                 tablelength = data.length;
                 var table = $('#userTable').dataTable({
@@ -79,7 +85,7 @@
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">비용관리</h1>
-
+                    <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                 </div>
 
                 <div class="row">

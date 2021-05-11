@@ -4,33 +4,31 @@
 
 <mapper namespace="igloosec.monitor.mapper.HomeMapper">
     <select id="selectUsage" parameterType="UsageVo" resultType="UsageVo">
-        SELECT substring(event_date,9,2) AS idate ,round(SUM(event_volume)/1024/1024) AS usage_data FROM ERD.is_stats
-        WHERE event_date LIKE '${paramDate}%' AND stats_period ='day'
-        GROUP BY event_date;
-
+        SELECT substring(event_date,9,2) AS idate ,round(event_volume/1024/1024) AS usage_data FROM ERD.tm_stats
+        WHERE event_date LIKE '${paramDate}%' AND rscgrp ='${rscparam}'
     </select>
 
 
     <select id="selectUsagebefore" parameterType="UsageVo"  resultType="UsageVo">
-        SELECT substring(event_date,9,2) AS idate ,round(SUM(event_volume)/1024/1024) AS usage_data FROM ERD.is_stats
-        WHERE event_date LIKE '${paramDate}%' AND stats_period ='day'
-        GROUP BY event_date;
-
+        SELECT substring(event_date,9,2) AS idate ,round(event_volume/1024/1024) AS usage_data FROM ERD.tm_stats
+        WHERE event_date LIKE '${paramDate}%' AND rscgrp ='${rscparam}'
     </select>
 
 
     <select id="selectMeterDetail" parameterType="UsageVo" resultType="UsageVo">
         SELECT meterCategory,meterSubCategory, SUM(quantity) as quantity,unitOfMeasure FROM ERD.USED_AMOUNT
-        WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}'
-        GROUP BY meterCategory,unitOfMeasure,meterSubCategory ;
+        WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
+        GROUP BY meterCategory,unitOfMeasure,meterSubCategory
+        ORDER BY quantity desc
+        ;
 
     </select>
 
 
     <select id="selectMeterSum" parameterType="UsageVo"  resultType="UsageVo">
         SELECT meterCategory, round(SUM(costInBillingCurrency),2) as costInBillingCurrency FROM ERD.USED_AMOUNT
-        WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}'
-        GROUP BY meterCategory ;
+        WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
+        GROUP BY meterCategory;
 
     </select>
 
