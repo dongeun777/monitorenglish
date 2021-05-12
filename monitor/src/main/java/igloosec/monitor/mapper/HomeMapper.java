@@ -1,5 +1,6 @@
 package igloosec.monitor.mapper;
 
+import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -16,4 +17,6 @@ public interface HomeMapper {
     List<UsageVo> selectMeterDetail(UsageVo param);
 
     List<UsageVo> selectMeterSum(UsageVo param);
+
+    void registerLog(UsageVo param);
 }

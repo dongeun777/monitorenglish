@@ -2,11 +2,13 @@ package igloosec.monitor.controller;
 
 import com.google.gson.Gson;
 import igloosec.monitor.service.HomeService;
+import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 
@@ -116,6 +118,18 @@ public class HomeController {
         return gson.toJson(list);
 
     }
+
+    @PostMapping("/registerLog.do")
+    public String registerLog(UsageVo param, HttpSession session) {
+        String emailStr = (String) session.getAttribute("email");
+        param.setEmailparam(emailStr);
+        homeService.registerLog(param);
+        return "redirect:/main";
+    }
+
+
+
+
 
 
 

@@ -16,14 +16,12 @@ public class UsageVo {
     private String paraMonth;
     private String rscparam;
 
+    private String equipparam;
+    private String usageparam;
+    private String emailparam;
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+
     public String getUsage_data() {
         return usage_data;
     }
@@ -119,5 +117,37 @@ public class UsageVo {
 
     public void setRscparam(String rscparam) {
         this.rscparam = rscparam;
+    }
+
+    public String getEquipparam() {
+        return equipparam;
+    }
+
+    public void setEquipparam(String equipparam) {
+        this.equipparam = equipparam;
+    }
+
+    public String getUsageparam() {
+        return usageparam;
+    }
+
+    public void setUsageparam(String usageparam) {
+        this.usageparam = usageparam;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getEmailparam() {
+        return emailparam;
+    }
+
+    public void setEmailparam(String emailparam) {
+        this.emailparam = emailparam;
     }
 }

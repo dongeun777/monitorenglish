@@ -32,4 +32,8 @@ public class HomeService {
     }
 
 
+    public void registerLog(UsageVo param) {
+        mapper.registerLog(param);
+    }
+
 }

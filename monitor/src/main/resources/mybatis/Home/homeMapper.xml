@@ -32,6 +32,13 @@
 
     </select>
 
+
+    <select id="registerLog" parameterType="UsageVo">
+        insert into ERD.USER_EQUIP_LIST (email, equip,usages)
+        values (#{emailparam}, #{equipparam},${usageparam});
+    </select>
+
+
 </mapper>
 
 
