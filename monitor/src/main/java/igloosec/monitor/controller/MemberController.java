@@ -10,10 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -93,6 +90,21 @@ public class MemberController {
         memberService.joinUser(memberVo);
         return "redirect:/member";
     }
+
+
+    @PostMapping("/modifyUser")
+    public String updatePw(MemberVo memberVo,HttpSession session) {
+        memberVo.setEmail((String) session.getAttribute("email"));
+        memberService.modifyUser(memberVo);
+        return "redirect:/member";
+    }
+
+    @PostMapping("/modifyGrpIp")
+    public String modifyGrpIpMember(MemberVo memberVo) {
+        memberService.modifyGrpIp(memberVo);
+        return "redirect:/member";
+    }
+
 
 
 }

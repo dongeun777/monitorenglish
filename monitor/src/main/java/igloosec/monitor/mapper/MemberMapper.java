@@ -16,7 +16,8 @@ public interface MemberMapper {
 
     void joinMember(MemberVo memberVo);
     void createTmTable(MemberVo memberVo);
-
+    void updatePw(MemberVo memberVo);
+    void modifyGrpIpMember(MemberVo memberVo);
 
     List<MemberVo> selectMemberList();
 }

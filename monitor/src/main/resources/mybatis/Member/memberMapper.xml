@@ -45,6 +45,16 @@
     </select>
 
 
+    <update id="updatePw" parameterType="MemberVo">
+        update USER_LIST SET passwd = #{passwd} where email = #{email};
+
+    </update>
+
+    <update id="modifyGrpIpMember" parameterType="MemberVo">
+        update USER_LIST SET rscGrp= #{rscGrp}, ipAddr= #{ipAddr} where email = #{email};
+    </update>
+
+
 
 </mapper>
 

@@ -42,6 +42,24 @@ public class MemberService implements UserDetailsService {
         //2단계 for is_stats_+       select rscgrp, event_date, event_volume
     }
 
+    public void modifyUser(MemberVo memberVo) {
+        // 비밀번호 암호화
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        memberVo.setPasswd(passwordEncoder.encode(memberVo.getPasswd()));
+
+        mapper.updatePw(memberVo);
+
+    }
+
+    public void modifyGrpIp(MemberVo memberVo) {
+
+        mapper.modifyGrpIpMember(memberVo);
+
+    }
+
+
+
+
 
     @Override
     public UserDetails  loadUserByUsername(String username) throws UsernameNotFoundException {
