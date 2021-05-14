@@ -7,7 +7,7 @@
 
     <select id="selectCostList" resultType="CostVo" parameterType="CostVo">
         SELECT substring(event_date,1,10) AS idate ,round(event_volume/1024/1024) AS usage_data ,
-               round(event_volume/1024/1024) * 3.497 As usage_cost
+               round((event_volume/1024/1024 * 3.497)) As usage_cost
        FROM ERD.tm_stats
        WHERE  rscgrp ='${rscparam}'
 

@@ -16,12 +16,12 @@
 
 
     <select id="selectMeterDetail" parameterType="UsageVo" resultType="UsageVo">
-        SELECT meterCategory,meterSubCategory, SUM(quantity) as quantity,unitOfMeasure FROM ERD.USED_AMOUNT
-        WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
-        GROUP BY meterCategory,unitOfMeasure,meterSubCategory
-        ORDER BY quantity desc
-        ;
+        SELECT meterCategory,meterSubCategory,ROUND(quantity,2) AS quantity, unitOfMeasure FROM(
 
+             SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
+             WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
+             GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
+        )a where quantity <![CDATA[>=]]> 0.01
     </select>
 
 
