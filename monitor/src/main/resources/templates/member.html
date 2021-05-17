@@ -13,7 +13,7 @@
     }
 
     function check_pw(){
-       /* var pw = document.getElementById('pw').value;
+        var pw = document.getElementById('pw').value;
         var SC = ["!","@","#","$","%","^","&","*"];
         var check_SC = 0;
 
@@ -40,14 +40,17 @@
                 document.getElementById('check').innerHTML='비밀번호가 일치하지 않습니다.';
                 document.getElementById('check').style.color='red';
             }
-        }*/
+        }
     }
 
     function goData(){
         if ( document.getElementById('pw').value =='') {
             window.alert('비밀번호는 공백이 불가합니다.');
-
-        }else{
+        }
+        else if(document.getElementById('pw').value!=document.getElementById('pw2').value){
+            window.alert('비밀번호가 일치하지 않습니다.');
+        }
+        else{
             modify();
         }
     }
