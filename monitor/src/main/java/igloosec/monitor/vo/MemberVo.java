@@ -19,6 +19,12 @@ public class MemberVo implements UserDetails {
     private String ipAddr;
     private String rscGrp;
     private String enableVal;
+    private String company;
+    private String step;
+
+    //shell parameter
+    private String totalParam;
+
 
 
     public String getEmail() {
@@ -140,5 +146,29 @@ public class MemberVo implements UserDetails {
 
     public void setEnableVal(String enableVal) {
         this.enableVal = enableVal;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public String getStep() {
+        return step;
+    }
+
+    public void setStep(String step) {
+        this.step = step;
+    }
+
+    public String getTotalParam() {
+        return totalParam;
+    }
+
+    public void setTotalParam(String totalParam) {
+        this.totalParam = totalParam;
     }
 }

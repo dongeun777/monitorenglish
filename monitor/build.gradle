@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -29,6 +30,9 @@ dependencies {
 	compile 'org.springframework.security:spring-security-web:5.1.5.RELEASE'
 	compile 'org.springframework.security:spring-security-config:5.1.5.RELEASE'
 	compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.0.4.RELEASE'
+	compile('org.springframework.boot:spring-boot-devtools')
+	compile("org.springframework.boot:spring-boot-starter-mail")
+
 }
 
 test {

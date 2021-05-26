@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head th:replace="mainheader.html :: mainHead"></head>
+
+
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!--<div th:insert="sidemenu.html :: side_menu"></div>-->
+
+
+
+    <!--    <th:block layout:fragment="side_menu"></th:block>-->
+
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Sidebar - Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/main">
+
+            <div class="sidebar-brand-text mx-3">Monintoring System</div>
+        </a>
+
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+
+
+
+            </nav>
+            <!-- End of Topbar -->
+
+
+
+            <div class="container-fluid" >
+
+
+                <div class="modal-body">
+                    <div class="row mt-1 mb-3">
+                        <div class="col-xl-12 col-lg-6">
+                            <span style="color: black; font-size: 50px; font-weight: bold; "> Register Page. </span>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-1 mb-3">
+
+                        <div class="col-xl-12 col-lg-6">
+                            <span style="color: black; font-size: 25px; font-weight: bold; ">아래 정보를 입력해주세요. </span>
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="row mt-1 mb-3">
+                        <form th:action="@{/userRegister}" method="post">
+                            <input type="text" name="company" placeholder="회사명을 입력해주세요">
+                            <input type="text" name="email" placeholder="이메일을 입력해주세요">
+
+                            <button type="submit">등록</button>
+                        </form>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer th:replace="mainfooter.html :: footer"></footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+
+
+
+</body>
+
+</html>

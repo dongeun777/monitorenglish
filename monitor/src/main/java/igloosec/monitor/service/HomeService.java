@@ -1,7 +1,9 @@
 package igloosec.monitor.service;
 
 import igloosec.monitor.mapper.HomeMapper;
+import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,4 +38,32 @@ public class HomeService {
         mapper.registerLog(param);
     }
 
+    public void joinUser(MemberVo memberVo) {
+        // 비밀번호 암호화
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        memberVo.setPasswd(passwordEncoder.encode(memberVo.getPasswd()));
+        mapper.joinMember(memberVo);
+
+
+    }
+
+    public List<MemberVo> checkMember(MemberVo memberVo) {
+        // 비밀번호 암호화
+        return mapper.checkMember(memberVo);
+
+
+    }
+
+
+    public List<UsageVo> selectLogList(UsageVo param) {
+        return mapper.selectLogList(param);
+    }
+
+    public void completeLog(MemberVo memberVo) {
+        mapper.completeLog(memberVo);
+    }
+
+    public UsageVo selectCostTotal(UsageVo param) {
+        return mapper.selectCostTotal(param);
+    }
 }

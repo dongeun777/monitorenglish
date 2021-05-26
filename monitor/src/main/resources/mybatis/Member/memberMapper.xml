@@ -10,8 +10,8 @@
 
 
     <select id="joinMember" parameterType="MemberVo">
-        insert into USER_LIST (email, passwd,regDate,auth,rscGrp,ipAddr)
-        values (#{email}, #{passwd},NOW(),#{auth},#{rscGrp},#{ipAddr});
+        insert into USER_LIST (email, passwd,regDate,auth,rscGrp,ipAddr,company)
+        values (#{email}, #{passwd},NOW(),#{auth},#{rscGrp},#{ipAddr},#{company});
 
 
 

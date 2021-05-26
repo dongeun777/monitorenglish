@@ -40,10 +40,12 @@ public class MemberController {
                 return "redirect:/";
             }else{
 
+
                 session.setAttribute("loginCheck",true);
                 session.setAttribute("email",memberVo.getEmail());
                 session.setAttribute("auth",user.getAuth());
                 session.setAttribute("rscgrp",user.getRscGrp());
+                session.setAttribute("step",user.getStep());
                 //session.setAttribute();
                 System.out.println(user.getAuth());
               //  session.setAttribute("auth",memberVo.getAuthorities());
@@ -64,6 +66,9 @@ public class MemberController {
 
         session.setAttribute("loginCheck",null);
         session.setAttribute("email",null);
+        session.setAttribute("step",null);
+        session.setAttribute("rscgrp",null);
+        session.setAttribute("auth",null);
 
         return "redirect:/";
     }

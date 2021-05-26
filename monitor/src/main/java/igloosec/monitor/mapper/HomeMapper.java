@@ -19,4 +19,15 @@ public interface HomeMapper {
     List<UsageVo> selectMeterSum(UsageVo param);
 
     void registerLog(UsageVo param);
+
+    void joinMember(MemberVo memberVo);
+
+    List<MemberVo> checkMember(MemberVo memberVo);
+
+    List<UsageVo> selectLogList(UsageVo param);
+
+    void completeLog(MemberVo memberVo);
+
+    UsageVo selectCostTotal(UsageVo param);
+
 }

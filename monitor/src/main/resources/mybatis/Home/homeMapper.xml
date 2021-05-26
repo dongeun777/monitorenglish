@@ -38,6 +38,31 @@
         values (#{emailparam}, #{equipparam},${usageparam});
     </select>
 
+    <select id="joinMember" parameterType="MemberVo">
+        insert into USER_LIST (email, passwd,regDate,company)
+        values (#{email}, #{passwd},NOW(),#{company});
+    </select>
+
+    <select id="checkMember" parameterType="MemberVo" resultType="MemberVo">
+       select * from USER_LIST where email ='${email}'
+    </select>
+
+    <select id="selectLogList" parameterType="UsageVo" resultType="UsageVo">
+        select equip,usages from ERD.USER_EQUIP_LIST where email ='${emailparam}'
+    </select>
+
+    <update id="completeLog" parameterType="MemberVo">
+        update USER_LIST SET step = 1 where email = #{email};
+
+    </update>
+
+
+    <select id="selectCostTotal" parameterType="UsageVo" resultType="UsageVo">
+        SELECT round(costtotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS costtotal, cpu, ram, disk, vmseries, pathStr, shellcom
+        FROM azurecost WHERE beforeSize<![CDATA[<]]> #{usageparam} AND #{usageparam}<![CDATA[<=]]>logSize;
+    </select>
+
+
 
 </mapper>
 

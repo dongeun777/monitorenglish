@@ -20,6 +20,19 @@ public class UsageVo {
     private String usageparam;
     private String emailparam;
 
+    private String equip;
+    private String usages;
+
+    private String costtotal;
+
+    private String cpu;
+    private String ram;
+    private String disk;
+    private String vmseries;
+    private String pathStr;
+    private String shellcom;
+
+
 
 
     public String getUsage_data() {
@@ -149,5 +162,81 @@ public class UsageVo {
 
     public void setEmailparam(String emailparam) {
         this.emailparam = emailparam;
+    }
+
+    public String getEquip() {
+        return equip;
+    }
+
+    public void setEquip(String equip) {
+        this.equip = equip;
+    }
+
+    public String getUsages() {
+        return usages;
+    }
+
+    public void setUsages(String usages) {
+        this.usages = usages;
+    }
+
+
+
+    public String getCpu() {
+        return cpu;
+    }
+
+    public void setCpu(String cpu) {
+        this.cpu = cpu;
+    }
+
+    public String getRam() {
+        return ram;
+    }
+
+    public void setRam(String ram) {
+        this.ram = ram;
+    }
+
+    public String getDisk() {
+        return disk;
+    }
+
+    public void setDisk(String disk) {
+        this.disk = disk;
+    }
+
+    public String getCosttotal() {
+        return costtotal;
+    }
+
+    public void setCosttotal(String costtotal) {
+        this.costtotal = costtotal;
+    }
+
+    public String getVmseries() {
+        return vmseries;
+    }
+
+    public void setVmseries(String vmseries) {
+        this.vmseries = vmseries;
+    }
+
+
+
+    public String getPathStr() {
+        return pathStr;
+    }
+
+    public void setPathStr(String pathStr) {
+        this.pathStr = pathStr;
+    }
+
+    public String getShellcom() {
+        return shellcom;
+    }
+
+    public void setShellcom(String shellcom) {
+        this.shellcom = shellcom;
     }
 }
