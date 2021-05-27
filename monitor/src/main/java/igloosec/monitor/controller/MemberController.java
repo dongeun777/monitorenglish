@@ -24,20 +24,22 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/login")
+
+    @ResponseBody
+    @RequestMapping(value = "/login.do")
     public String Login(MemberVo memberVo, HttpSession session) {
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-
         MemberVo user = (MemberVo) memberService.loadUserByUsername(memberVo.getEmail());
         if (user == null){
-            return "redirect:/";
+            return "idNull";
+
         }else{
 
             if(!passwordEncoder.matches(memberVo.getPasswd(), user.getPassword())) {
+                return "pwCheck";
 
-                return "redirect:/";
             }else{
 
 
@@ -49,7 +51,7 @@ public class MemberController {
                 //session.setAttribute();
                 System.out.println(user.getAuth());
               //  session.setAttribute("auth",memberVo.getAuthorities());
-                return "redirect:/main";
+                return "Success";
             }
 
         }
@@ -109,7 +111,6 @@ public class MemberController {
         memberService.modifyGrpIp(memberVo);
         return "redirect:/member";
     }
-
 
 
 }

@@ -4,8 +4,38 @@
 
 <head th:replace="mainheader.html :: mainHead"></head>
 
-<script type="text/javascript" sec:authorize="isAuthenticated()">
-    location.href = "/main"
+<script type="text/javascript">
+
+
+    function loginCheck() {
+        $.ajax({
+            url: "/login.do",
+            type: "GET",
+            data: {
+                username: document.getElementById('email2').value,
+                email: document.getElementById('email2').value,
+                passwd: document.getElementById('pw2').value
+            },
+            success: function (data) {
+                if(data == "idNull")
+                    window.alert("등록되어 있지 않은 회원입니다.")
+
+                else{
+                    if(data == "pwCheck") {
+                        document.getElementById('pw2').value = "";
+                        window.alert("비밀번호가 일치하지 않습니다.")
+                    }
+                    else if(data == "Success")
+                        location.href="/main"
+                }
+
+            }
+        });
+    }
+
+
+
+
 </script>
 
 <!--<script type="text/javascript">
@@ -19,72 +49,68 @@
 <body class="bg-gradient-primary">
 
 
+<div class="container">
 
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
 
+        <div class="col-xl-10 col-lg-12 col-md-9">
 
-
-    <div class="container">
-
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-
-            <div class="col-xl-10 col-lg-12 col-md-9">
-
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                           <div class="col-lg-6 d-none d-lg-block"  style="background: url(image/IGLOO.jpg); background-position: center; background-size: contain;" ></div>
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Monitoring System</h1>
-                                    </div>
-                                    <form th:action="@{/login}" method="post" class="user">
-                                        <div class="form-group">
-                                            <input type="email"  name="email" class="form-control form-control-user"
-                                                id="email" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address...">
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="password" name="passwd" class="form-control form-control-user"
-                                                id="passwd" placeholder="Password">
-                                        </div>
-                                        <div class="form-group">
-
-                                        </div>
-                                        <button  class="btn btn-primary btn-user btn-block" type="submit">
-                                            Login
-                                        </button>
-
-                                        <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}">
-
-
-                                    </form>
-
-
-
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <div class="col-lg-6 d-none d-lg-block"
+                             style="background: url(image/IGLOO.jpg); background-position: center; background-size: contain;"></div>
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-4">Monitoring System</h1>
                                 </div>
+<!--                                <div class="user">-->
+                                    <div class="form-group">
+                                        <input type="email" name="email" class="form-control form-control-user"
+                                               id="email2" aria-describedby="emailHelp"
+                                               placeholder="Enter Email Address...">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" name="passpw" class="form-control form-control-user"
+                                               id="pw2" placeholder="Password">
+                                    </div>
+                                    <div class="form-group">
+
+                                    </div>
+                                    <button class="btn btn-primary btn-user btn-block" id="button" onclick="loginCheck()">
+                                        Login
+                                    </button>
+
+                                    <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}">
+
+
+<!--                                </div>-->
+
+
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
         </div>
 
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</div>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Bootstrap core JavaScript-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="js/sb-admin-2.min.js"></script>
 
 </body>
 
