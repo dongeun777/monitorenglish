@@ -83,7 +83,8 @@ public class HomeController {
         return "cost";
     }
 
-    @PostMapping("/userRegister")
+    @ResponseBody
+    @RequestMapping(value = "/userRegister")
     public String joinMember(MemberVo memberVo) throws MessagingException {
         memberVo.setPasswd("1234");
         //memberVo.setAuth("ROLE_USER");
@@ -99,9 +100,13 @@ public class HomeController {
                 e.printStackTrace();
             }
             homeService.joinUser(memberVo);
+            return "Success";
         }
 
-        return "redirect:/register";
+        else{
+            return "fail";
+        }
+
     }
 
     @ResponseBody
