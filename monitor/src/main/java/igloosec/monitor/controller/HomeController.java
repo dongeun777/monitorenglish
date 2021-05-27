@@ -203,20 +203,29 @@ public class HomeController {
     public String completeLog(HttpSession session,MemberVo param) throws MessagingException, IOException {
         String emailStr = (String) session.getAttribute("email");
 
+        param.setEmail(emailStr);
+
+        homeService.completeLog(param);
+        session.setAttribute("step","1");
+        return "redirect:/main";
+    }
+
+
+    @PostMapping("/createvm.do")
+    public String createvm(HttpSession session,MemberVo param) throws MessagingException, IOException {
+        String emailStr = (String) session.getAttribute("email");
+
         UsageVo param2 = new UsageVo();
         System.out.println(param.getTotalParam());
         param2.setUsageparam(param.getTotalParam());
         UsageVo result = homeService.selectCostTotal(param2);
         param.setEmail(emailStr);
-        //sendmail(emailStr);
+        sendtmmail(emailStr);
         //server 업로드시 주석해제
         emailStr = emailStr.replace("@","");
         emailStr = emailStr.replace(".","");
 
         result.setEmailparam(emailStr);
-
-
-
 
 
         try {
@@ -226,8 +235,8 @@ public class HomeController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        homeService.completeLog(param);
-        session.setAttribute("step","1");
+        homeService.completeLog2(param);
+        session.setAttribute("step","2");
         return "redirect:/main";
     }
 
@@ -319,6 +328,51 @@ public class HomeController {
     }
 
 
+    public void sendtmmail(String email)  throws MessagingException {
+
+
+
+        String host = "outlook.office365.com";
+        int port = 587;
+        String from = "cloudhelp@igloosec.com";
+        String emailstr=email;
+        emailstr = emailstr.replace("@","");
+        emailstr = emailstr.replace(".","");
+
+        Properties props = System.getProperties();
+
+
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.port", port);
+        props.put("mail.smtp.from", from);
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", true);
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.trust", host);
+
+
+
+        Session session = Session.getInstance(props, new MyAuthentication());
+        session.setDebug(true); //for debug
+
+        Message mimeMessage = new MimeMessage(session);
+        mimeMessage.setFrom(new InternetAddress(from));
+        mimeMessage.setRecipient(Message.RecipientType.TO,
+                new InternetAddress(email));
+        mimeMessage.setSubject("#SmartTM 접속정보");
+        mimeMessage.setText("https://"+emailstr+".igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid:igloosec \n" + "pw:sp!dertm40" );
+
+        Transport transport = session.getTransport();
+
+        transport.connect();
+
+        transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+        transport.close();
+
+
+    }
+
+
 
     public class MyAuthentication extends Authenticator {
 
@@ -350,12 +404,9 @@ public class HomeController {
         boolean isWindows = System.getProperty("os.name")
                 .toLowerCase().startsWith("windows");
 
-        System.out.println("실행환경이 윈도우인가? " + isWindows);
-
-
         String homeDirectory = System.getProperty("user.home");
 
-        System.out.println(homeDirectory);
+
         Process process;
         if (isWindows) {
             process = Runtime.getRuntime()
@@ -364,9 +415,12 @@ public class HomeController {
             System.out.println(result.getPathStr()+"/"+result.getShellcom()+" \""+result.getEmailparam()+"\" \""+result.getVmseries()+"\"");
             //System.out.println(result.getPathStr());
         } else {
+            //Runtime.getRuntime().exec().
             process = Runtime.getRuntime()
                     .exec(result.getPathStr()+"/"+result.getShellcom()+" "+result.getEmailparam()+" "+result.getVmseries());
         }
+
+        //process.
 
 
 /*        String psRetMsg = "";

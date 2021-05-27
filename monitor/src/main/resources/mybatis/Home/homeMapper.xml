@@ -56,6 +56,11 @@
 
     </update>
 
+    <update id="completeLog2" parameterType="MemberVo">
+        update USER_LIST SET step = 2 where email = #{email};
+
+    </update>
+
 
     <select id="selectCostTotal" parameterType="UsageVo" resultType="UsageVo">
         SELECT round(costtotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS costtotal, cpu, ram, disk, vmseries, pathStr, shellcom
