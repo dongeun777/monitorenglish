@@ -5,13 +5,28 @@
 
 <script type="text/javascript">
 
+
+    function check(){
+        if ( document.getElementById('company').value =='') {
+            window.alert('회사명을 입력해주세요.');
+        }
+        else if(document.getElementById('email1').value ==''){
+            window.alert('이메일을 입력해주세요.');
+        }
+        else{
+            modify();
+        }
+    }
+
+
     function modify(){
 
         $.ajax({
             url: "/userRegister",
             type: "GET",
             data: {
-                email: document.getElementById('email1').value
+                email: document.getElementById('email1').value,
+                company: document.getElementById('company').value
             },
 
             success: function (data) {
@@ -96,7 +111,7 @@
                             <input class="form-control" type="text" name="company" id="company" placeholder="회사명을 입력해주세요">
                             <input class="form-control"  type="text" name="email" id="email1" placeholder="이메일을 입력해주세요">
 
-                            <button class="form-control"  id = "btn" onclick="modify()">등록</button>
+                            <button class="form-control"  id = "btn" onclick="check()">등록</button>
                         </div>
 
                     </div>
