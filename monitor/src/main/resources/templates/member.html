@@ -204,23 +204,24 @@
                             <!-- Card Header - Dropdown -->
 
                             <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="color:white;">
                                 <h6 class="m-0 font-weight-bold text-primary">사용자리스트</h6>
 
+                                <span id="emailChk" hidden="true"></span>
+                                <li class="nav-item dropdown no-arrow" >
 
-                                <li class="nav-item dropdown no-arrow">
-                                <span id="emailChk"></span>
 
-                                <button type="button" class="btn btn-primary" data-toggle="modal"
+
+                                <a type="button"  class="btn btn-primary" data-toggle="modal"
                                         data-target="#memberModal">
                                     사용자 추가
-                                </button>
+                                </a>
 
 
-                                <button type="button2" class="btn btn-primary" data-toggle="modal"
+                                <a type="button" class="btn btn-primary" data-toggle="modal"
                                         onclick="checkUser()">
                                     사용자 제거
-                                </button>
+                                </a>
 
                                 </li>
                             </div>
