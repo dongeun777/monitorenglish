@@ -3,7 +3,6 @@ package igloosec.monitor.service;
 
 import igloosec.monitor.mapper.MemberMapper;
 import igloosec.monitor.vo.MemberVo;
-import igloosec.monitor.vo.UsageVo;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,6 +39,11 @@ public class MemberService implements UserDetailsService {
 
         //1단계 사용자테이블 rscgrp - tm5SArsg
         //2단계 for is_stats_+       select rscgrp, event_date, event_volume
+    }
+
+    public void deleteUser(MemberVo memberVo) {
+        mapper.deleteMember(memberVo);
+        mapper.deleteEquipList(memberVo);
     }
 
     public void modifyUser(MemberVo memberVo) {

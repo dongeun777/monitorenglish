@@ -18,6 +18,8 @@ public interface MemberMapper {
     void createTmTable(MemberVo memberVo);
     void updatePw(MemberVo memberVo);
     void modifyGrpIpMember(MemberVo memberVo);
+    void deleteMember(MemberVo memberVo);
+    void deleteEquipList(MemberVo memberVo);
 
     List<MemberVo> selectMemberList();
 }

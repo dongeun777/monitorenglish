@@ -20,6 +20,8 @@ table.dataTable.nowrap td {
   white-space: nowrap;
 }
 
+table.dataTable tbody tr.selected {background-color : aliceblue}
+
 div.dataTables_wrapper div.dataTables_length label {
   font-weight: normal;
   text-align: left;

@@ -54,6 +54,13 @@
         update USER_LIST SET rscGrp= #{rscGrp}, ipAddr= #{ipAddr} where email = #{email};
     </update>
 
+    <delete id="deleteMember" parameterType="MemberVo">
+       delete from USER_LIST where email = #{email};
+    </delete>
+
+    <delete id="deleteEquipList" parameterType="MemberVo">
+        delete from USER_EQUIP_LIST where email = #{email};
+    </delete>
 
 
 </mapper>

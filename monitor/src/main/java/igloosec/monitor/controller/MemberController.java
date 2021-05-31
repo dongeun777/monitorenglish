@@ -113,4 +113,10 @@ public class MemberController {
     }
 
 
+    @PostMapping("/deleteUser")
+    public String deleteMember(MemberVo memberVo) {
+        memberService.deleteUser(memberVo);
+        return "redirect:/member";
+    }
+
 }

@@ -113,6 +113,26 @@
 
                 } );
 
+                $('#userTable tbody').on( 'click', 'tr', function () {
+                    let this_row = table.row(this).data();
+
+                    if ( $(this).hasClass('selected') ) {
+                        $(this).removeClass('selected');
+                        document.getElementById("emailChk").innerHTML='';
+                    }
+                    else {
+                        table.$('tr.selected').removeClass('selected');
+                        $(this).addClass('selected');
+                        document.getElementById("emailChk").innerHTML=this_row.email;
+                    }
+
+
+
+                } );
+
+
+
+
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -120,6 +140,31 @@
 
     }
 
+    function checkUser(){
+        console.log(document.getElementById("emailChk").innerHTML)
+        if(document.getElementById("emailChk").innerHTML == '')
+            window.alert("삭제할 행을 선택해주세요.");
+        else
+            deleteUser();
+    }
+
+
+    function deleteUser(){
+
+        $.ajax({
+            url: "/deleteUser",
+            type: "POST",
+            data: {
+                email: document.getElementById('emailChk').innerHTML
+            },
+
+            success: function (data) {
+                window.alert("삭제가 완료되었습니다.");
+                location.reload();
+
+            }
+        })
+    }
 
 
 </script>
@@ -163,10 +208,21 @@
                                 <h6 class="m-0 font-weight-bold text-primary">사용자리스트</h6>
 
 
+                                <li class="nav-item dropdown no-arrow">
+                                <span id="emailChk"></span>
+
                                 <button type="button" class="btn btn-primary" data-toggle="modal"
                                         data-target="#memberModal">
                                     사용자 추가
                                 </button>
+
+
+                                <button type="button2" class="btn btn-primary" data-toggle="modal"
+                                        onclick="checkUser()">
+                                    사용자 제거
+                                </button>
+
+                                </li>
                             </div>
                             <!-- Card Body -->
                             <div class="card-body">
