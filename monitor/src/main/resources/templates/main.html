@@ -106,10 +106,10 @@
             lastLabel = monthValLast + '월';
 
 
-            getMeterSum();
-            getMeterDetailList();
-            getUsageList();
-            setTimeout(getChatdata(), 1500);
+            getMeterSum(sessionRsc);
+            getMeterDetailList(sessionRsc);
+            getUsageList(sessionRsc);
+            setTimeout(getChatdata(sessionRsc), 1500);
         } else {
 
 
@@ -156,6 +156,26 @@
 
     let tempVal = 0;
     let logSumVal =0;
+    function clearChart(){
+
+        chartData = [, , , , , , , , , ,
+            , , , , , , , , , ,
+            , , , , , , , , , ,];
+        chartLabels = [];
+
+        chartData2 = [, , , , , , , , , ,
+            , , , , , , , , , ,
+            , , , , , , , , , ,];
+        chartLabels2 = [];
+
+        pieChartData = [];
+        pieChartLabels = [];
+
+        barData = [];
+
+    }
+
+
     function setLogTotal(){
 
         var rows = document.getElementById("logListTable").getElementsByTagName("tr");
@@ -284,6 +304,17 @@
     }
 
 
+    function selectData() {
+        //console.log($("#grpSelcet option:selected").val());
+        clearChart();
+        getChatdata($("#grpSelcet option:selected").val());
+        getMeterSum($("#grpSelcet option:selected").val());
+        getMeterDetailList($("#grpSelcet option:selected").val());
+        getUsageList($("#grpSelcet option:selected").val());
+
+    }
+
+
 
     function createvm() {
 
@@ -406,19 +437,19 @@
     }
 
 
-    function getUsageList() {
+    function getUsageList(rscParam) {
         $.ajax({
             url: "/getUsageList.do",
             type: "GET",
             data: {
                 paramDate: parameter,
-                rscparam: sessionRsc
+                rscparam: rscParam
             },
             success: function (data) {
                 tablelength = data.length;
                 var table = $('#usageTable').dataTable({
                     aaData: data,
-
+                    destroy: true,
                     bPaginate: false,
                     bLengthChange: true,
                     bInfo: false,
@@ -468,12 +499,12 @@
     }
 
 
-    function getMeterSum() {
+    function getMeterSum(paramRsc) {
 
         var params = {
             paraYear: parameterYear,
             paraMonth: parameterMonth,
-            rscparam: sessionRsc
+            rscparam: paramRsc
         };
 
 
@@ -491,7 +522,8 @@
     }
 
 
-    function getMeterDetailList() {
+    var meterDetailTable;
+    function getMeterDetailList(rscParam) {
 
         $.ajax({
             url: "/getMeterDetailList.do",
@@ -499,12 +531,16 @@
             data: {
                 paraYear: parameterYear,
                 paraMonth: parameterMonth,
-                rscparam: sessionRsc
+                rscparam: rscParam
             },
             success: function (data) {
-                var table = $('#meterDetailTable').dataTable({
-                    aaData: data,
 
+
+
+
+                meterDetailTable = $('#meterDetailTable').dataTable({
+                    aaData: data,
+                    destroy: true,
                     bPaginate: false,
                     bLengthChange: true,
                     bInfo: false,
@@ -522,6 +558,8 @@
                 });
 
 
+
+
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -531,16 +569,16 @@
     }
 
 
-    function getChatdata() {
+    function getChatdata(rscparam) {
 
         var params = {
             paramDate: parameter,
-            rscparam: sessionRsc
+            rscparam: rscparam
         };
 
         var lastparams = {
             paramDate: lastparameter,
-            rscparam: sessionRsc
+            rscparam: rscparam
         };
 
         $.getJSON("/getChartList.do", params, function (data) {
@@ -636,14 +674,16 @@
                 document.getElementById("div_load_image").hidden = true;
 
             }).fail(function () {
-                getChatdata();
+
             });
 
         }).fail(function () {
-            getChatdata();
+
         });
 
     }
+
+    var barChart;
 
     function createBarChart() {
         var ctx = document.getElementById("myBarChart");
@@ -730,14 +770,23 @@
                 },
             }
         }
-        var chart = new Chart(ctx, data);
+
+        if (barChart) {
+            barChart.destroy();
+        }
+        barChart = new Chart(ctx, data);
 
     }
 
-
+    var myPieChart;
     function createPieChart() {
         var ctx = document.getElementById("myPieChart");
-        var myPieChart = new Chart(ctx, {
+
+
+        if (myPieChart) {
+            myPieChart.destroy();
+        }
+        myPieChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: pieChartLabels,
@@ -782,12 +831,17 @@
 
     }
 
+
+    var myChart
     function createChart() {
 
         var ctx = document.getElementById("myDailyChart").getContext("2d");
 
-
-        var myChart = Chart.Line(ctx, {
+        if (myChart) {
+            myChart.destroy();
+        }
+        //var myChart = Chart.clear()
+        myChart = Chart.Line(ctx, {
 
             data: lineChartData,
 
@@ -859,6 +913,8 @@
             }
 
         })
+
+
 
 
     }
@@ -1019,9 +1075,28 @@
             <!-- Begin Page Content -->
             <div class="container-fluid" id="dashboard" hidden="false">
 
+
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+
+                </div>
+
+
+                    <div class="row" th:if="${session['auth']} =='ROLE_ADMIN'" style="margin-left: 2px;margin-bottom: 10px;">
+                <select class="select float-right" name="itemId" id="grpSelcet" >
+
+                    <option value="tm5SArsg">선택</option>
+
+                    <option th:each="itemData : ${grpList}" th:value="${itemData.rscGrp}" th:text="${itemData.company}"></option>
+
+                </select><i></i>
+
+
+                <div class="btn btn-primary btn-sm float-right mr-1" type="button"
+                     onclick='selectData()'>조회
+                </div>
+
 
                 </div>
 

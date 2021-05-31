@@ -75,4 +75,7 @@ public class HomeService {
         return mapper.selectPath();
     }
 
+    public List<MemberVo> getGrpList() {
+        return  mapper.getGrpList();
+    }
 }

@@ -74,6 +74,13 @@
     </select>
 
 
+    <select id="getGrpList"  resultType="MemberVo">
+        SELECT rscGrp,company
+        FROM USER_LIST
+
+    </select>
+
+
 
 </mapper>
 
