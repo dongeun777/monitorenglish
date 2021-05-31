@@ -67,6 +67,12 @@
         FROM azurecost WHERE beforeSize<![CDATA[<]]> #{usageparam} AND #{usageparam}<![CDATA[<=]]>logSize;
     </select>
 
+    <select id="selectPath"  resultType="String">
+        SELECT pathStr
+        FROM azurecost
+        LIMIT 1
+    </select>
+
 
 
 </mapper>

@@ -75,10 +75,6 @@ public class MemberController {
         return "redirect:/";
     }
 
-    @GetMapping("/member")
-    public String joinPage(Model model) {
-        return "member";
-    }
 
 
 

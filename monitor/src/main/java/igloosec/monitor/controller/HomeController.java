@@ -6,6 +6,7 @@ import igloosec.monitor.service.HomeService;
 import igloosec.monitor.service.MemberService;
 import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -17,10 +18,15 @@ import javax.mail.*;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 
@@ -51,16 +57,16 @@ public class HomeController {
 
     @GetMapping("/register")
     public String register(Model model) {
-
         return "register";
     }
 
 
 
     @GetMapping("/main")
-    public String main(Model model) {
-
-        return "main";
+    public String main(Model model, HttpServletRequest request) {
+        HttpSession session =request.getSession(false);
+        if(session==null) return "redirect:/";
+        else return "main";
     }
 
     @GetMapping("/policy")
@@ -71,17 +77,27 @@ public class HomeController {
 
 
     @GetMapping("/resource")
-    public String resource(Model model) {
-
-        return "resource";
+    public String resource(Model model, HttpServletRequest request) {
+        HttpSession session =request.getSession(false);
+        if(session==null) return "redirect:/";
+        else return "resource";
     }
 
 
     @GetMapping("/cost")
-    public String cost(Model model) {
-
-        return "cost";
+    public String cost(Model model, HttpServletRequest request) {
+        HttpSession session =request.getSession(false);
+        if(session==null) return "redirect:/";
+        else return "cost";
     }
+
+    @GetMapping("/member")
+    public String member(Model model, HttpServletRequest request) {
+        HttpSession session =request.getSession(false);
+        if(session==null) return "redirect:/";
+        else return "member";
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/userRegister")
@@ -219,6 +235,7 @@ public class HomeController {
     @PostMapping("/createvm.do")
     public String createvm(HttpSession session,MemberVo param) throws MessagingException, IOException {
         String emailStr = (String) session.getAttribute("email");
+        String emailStr2 = (String) session.getAttribute("email");
 
         UsageVo param2 = new UsageVo();
         System.out.println(param.getTotalParam());
@@ -234,15 +251,68 @@ public class HomeController {
 
 
         try {
-            shellVMcreate(result);
+            shellVMcreate(result,emailStr2);
         } catch (IOException e) {
-            e.printStackTrace();
+
         } catch (InterruptedException e) {
-            e.printStackTrace();
+
         }
         homeService.completeLog2(param);
         session.setAttribute("step","2");
         return "redirect:/main";
+    }
+
+
+    @RequestMapping(value = "/readLog.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+    public @ResponseBody String readLog(Model model, HttpSession session ) {
+
+        String emailStr = (String) session.getAttribute("email");
+        emailStr = emailStr.replace("@","");
+        emailStr = emailStr.replace(".","");
+
+        String emailStr2 =emailStr+"Rsg";
+
+        String result="notyet";
+
+        String path = homeService.selectPath();
+        //System.out.println(path+"/tm5deploy."+emailStr+".log");
+
+
+        boolean isWindows = System.getProperty("os.name")
+                .toLowerCase().startsWith("windows");
+
+
+        BufferedReader br = null;
+        StringBuffer sb = new StringBuffer(); // 테스트용 변수
+        try {
+
+            if(isWindows) br = new BufferedReader(new FileReader("C:\\monitor\\monitor\\src\\main\\resources\\static\\tm5deploy.log"));
+            else  br = new BufferedReader(new FileReader(path+"/tm5deploy."+emailStr+".log"));
+            String line = null;
+
+            while ((line = br.readLine()) != null) {
+                //System.out.println(line);
+                if (line.contains("end..")) {
+                    result ="end";
+                    session.setAttribute("rscgrp", emailStr2);
+                    break;
+
+                }
+
+                //sb.append(line);
+            }
+
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
+        } finally {
+            try {
+                if (br != null)
+                    br.close();
+            } catch (Exception e) {
+            }
+        }
+
+        return result;
     }
 
 
@@ -364,7 +434,7 @@ public class HomeController {
         mimeMessage.setFrom(new InternetAddress(from));
         mimeMessage.setRecipient(Message.RecipientType.TO,
                 new InternetAddress(email));
-        mimeMessage.setSubject("#SmartTM 접속정보");
+        mimeMessage.setSubject("#SPiDERTM 접속정보");
         mimeMessage.setText("https://"+emailstr+".igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid:igloosec \n" + "pw:sp!dertm40" );
 
         Transport transport = session.getTransport();
@@ -401,7 +471,7 @@ public class HomeController {
 
     }
 
-    private void shellVMcreate(UsageVo result) throws IOException, InterruptedException {
+    private void shellVMcreate(UsageVo result,String emailStr) throws IOException, InterruptedException {
 
 
 
@@ -417,45 +487,101 @@ public class HomeController {
             process = Runtime.getRuntime()
                     .exec(String.format("cmd.exe /c dir %s", homeDirectory));
 
-            System.out.println(result.getPathStr()+"/"+result.getShellcom()+" \""+result.getEmailparam()+"\" \""+result.getVmseries()+"\"");
+            System.out.println(result.getPathStr()+"/"+result.getShellcom()+" "+result.getEmailparam()+" "+result.getVmseries()+" "+emailStr);
             //System.out.println(result.getPathStr());
         } else {
             //Runtime.getRuntime().exec().
             process = Runtime.getRuntime()
-                    .exec(result.getPathStr()+"/"+result.getShellcom()+" "+result.getEmailparam()+" "+result.getVmseries());
+                    .exec(result.getPathStr()+"/"+result.getShellcom()+" "+result.getEmailparam()+" "+result.getVmseries()+" "+emailStr);
         }
 
-        //process.
+
+/*        while(i==1) {
+            String test = readFile("C:\\monitor\\monitor\\src\\main\\resources\\static\\tm5deploy.log");
+            if (test.equals("end")) break;
+            else continue;
+        }*/
+
+        //readFile test = new readFile();
+        //test.start();
 
 
-/*        String psRetMsg = "";
-        StreamGobbler streamGobbler =
-                new StreamGobbler(process.getInputStream(), (item)->{
-                    System.out.println(item);
-                });
-        Executors.newSingleThreadExecutor().submit(streamGobbler);
-        int exitCode = process.waitFor();
-        assert exitCode == 0;*/
     }
 
+    /*public String readFile(String filePath) {
+        BufferedReader br = null;
+        StringBuffer sb = new StringBuffer(); // 테스트용 변수
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+            String line = null;
 
-    private static class StreamGobbler implements Runnable {
-        private InputStream inputStream;
-        private Consumer<String> consumer;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+                if (line.contains("end..")) return "end";
 
-        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
-            this.inputStream = inputStream;
-            this.consumer = consumer;
+                //sb.append(line);
+            }
+
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
+        } finally {
+            try {
+                if (br!=null)
+                    br.close();
+            } catch (Exception e) {}
         }
 
+        return "notend";
+    }*/
 
-        public void run() {
-            try {
-                new BufferedReader(new InputStreamReader(inputStream, "euc-kr")).lines()
-                        .forEach(consumer);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+
+
+    private static class readFile extends Thread{
+
+
+        public int readFile(){
+
+        int i =1;
+        //String
+            while(i==1) {
+                BufferedReader br = null;
+                StringBuffer sb = new StringBuffer(); // 테스트용 변수
+                try {
+                    br = new BufferedReader(new FileReader("C:\\monitor\\monitor\\src\\main\\resources\\static\\tm5deploy.log"));
+                    String line = null;
+
+                    while ((line = br.readLine()) != null) {
+                        System.out.println(line);
+                        if (line.contains("end..")) {
+                            i--;
+                            System.out.println("끝!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                            break;
+
+                        }
+
+                        //sb.append(line);
+                    }
+
+                } catch (IOException ioe) {
+                    System.out.println(ioe.getMessage());
+                } finally {
+                    try {
+                        if (br != null)
+                            br.close();
+                    } catch (Exception e) {
+                    }
+                }
+
+
+
             }
+
+            return i;
+        }
+
+        public void run(){
+            int i = readFile();
+
         }
     }
 

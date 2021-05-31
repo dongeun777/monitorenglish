@@ -31,5 +31,7 @@ public interface HomeMapper {
 
     UsageVo selectCostTotal(UsageVo param);
 
+    String selectPath();
+
 
 }

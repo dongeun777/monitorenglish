@@ -70,4 +70,9 @@ public class HomeService {
     public void completeLog2(MemberVo param) {
         mapper.completeLog2(param);
     }
+
+    public String selectPath() {
+        return mapper.selectPath();
+    }
+
 }

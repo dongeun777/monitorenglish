@@ -3,7 +3,32 @@
 
 <head th:replace="mainheader.html :: mainHead"></head>
 
+<script type="text/javascript">
 
+    function modify(){
+
+        $.ajax({
+            url: "/userRegister",
+            type: "GET",
+            data: {
+                email: document.getElementById('email1').value
+            },
+
+            success: function (data) {
+                if(data == "Success")
+                    window.alert("등록되었습니다.\n메일을 확인해주세요.")
+                else
+                    window.alert("이미 등록된 회원입니다.")
+
+                document.getElementById('company').value="";
+                document.getElementById('email1').value="";
+
+            }
+        })
+    }
+
+
+</script>
 
 <body id="page-top">
 
@@ -21,7 +46,7 @@
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/main">
 
-            <div class="sidebar-brand-text mx-3">Monintoring System</div>
+            <div class="sidebar-brand-text mx-3">Monitoring System</div>
         </a>
 
 
@@ -67,12 +92,12 @@
                     </div>
 
                     <div class="row mt-1 mb-3">
-                        <form th:action="@{/userRegister}" method="post">
-                            <input type="text" name="company" placeholder="회사명을 입력해주세요">
-                            <input type="text" name="email" placeholder="이메일을 입력해주세요">
+                        <div>
+                            <input class="form-control" type="text" name="company" id="company" placeholder="회사명을 입력해주세요">
+                            <input class="form-control"  type="text" name="email" id="email1" placeholder="이메일을 입력해주세요">
 
-                            <button type="submit">등록</button>
-                        </form>
+                            <button class="form-control"  id = "btn" onclick="modify()">등록</button>
+                        </div>
 
                     </div>
                 </div>
