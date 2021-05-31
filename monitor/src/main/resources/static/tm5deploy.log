@@ -1,0 +1,184 @@
+mv log file..
+2021-05-27 19:20:17 start date 
+-------------------------------------------------------------------------------
+      ____  ____  _ ____  _____ ____    _____ __  __         ____   ____   
+     / ___||  _ \(_)  _ \| ____|  _ \  |_   _|  \/  | __   _| ___| | ___|  
+     \___ \| |_) | | | | |  _| | |_) |   | | | |\/| | \ \ / /___ \ |___ \  
+      ___) |  __/| | |_| | |___|  _ <    | | | |  | |  \ V / ___) | ___) | 
+     |____/|_|   |_|____/|_____|_| \_\   |_| |_|  |_|   \_/ |____(_)____/  
+                   __                 _                                    
+                  / _| ___  _ __     / \    _____   _ _ __ ___             
+                 | |_ / _ \| '__|   / _ \  |_  / | | | '__/ _ \            
+                 |  _| (_) | |     / ___ \  / /| |_| | | |  __/            
+                 |_|  \___/|_|    /_/   \_\/___|\__,_|_|  \___|            
+                                                                           
+-------------------------------------------------------------------------------
+2021-05-27 19:20:17 az login 
+[
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "e9e73fcb-e845-49a3-8759-0f73918ac399",
+    "id": "9d13ee1b-1329-4fb3-8d09-945ce7fecd8f",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "Azure subscription 1",
+    "state": "Enabled",
+    "tenantId": "e9e73fcb-e845-49a3-8759-0f73918ac399",
+    "user": {
+      "name": "admin@igloosec365.onmicrosoft.com",
+      "type": "user"
+    }
+  }
+]
+2021-05-27 19:20:18 create resource group : insang1983gmailcomRsg 
+{
+  "id": "/subscriptions/9d13ee1b-1329-4fb3-8d09-945ce7fecd8f/resourceGroups/insang1983gmailcomRsg",
+  "location": "koreacentral",
+  "managedBy": null,
+  "name": "insang1983gmailcomRsg",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+2021-05-27 19:20:19 create storage account 
+{
+  "accessTier": "Hot",
+  "allowBlobPublicAccess": null,
+  "allowSharedKeyAccess": null,
+  "azureFilesIdentityBasedAuthentication": null,
+  "blobRestoreStatus": null,
+  "creationTime": "2021-05-27T10:20:21.040508+00:00",
+  "customDomain": null,
+  "enableHttpsTrafficOnly": true,
+  "enableNfsV3": null,
+  "encryption": {
+    "encryptionIdentity": null,
+    "keySource": "Microsoft.Storage",
+    "keyVaultProperties": null,
+    "requireInfrastructureEncryption": null,
+    "services": {
+      "blob": {
+        "enabled": true,
+        "keyType": "Account",
+        "lastEnabledTime": "2021-05-27T10:20:21.087376+00:00"
+      },
+      "file": {
+        "enabled": true,
+        "keyType": "Account",
+        "lastEnabledTime": "2021-05-27T10:20:21.087376+00:00"
+      },
+      "queue": null,
+      "table": null
+    }
+  },
+  "extendedLocation": null,
+  "failoverInProgress": null,
+  "geoReplicationStats": null,
+  "id": "/subscriptions/9d13ee1b-1329-4fb3-8d09-945ce7fecd8f/resourceGroups/insang1983gmailcomRsg/providers/Microsoft.Storage/storageAccounts/storage0527192017",
+  "identity": null,
+  "isHnsEnabled": null,
+  "keyCreationTime": {
+    "key1": "2021-05-27T10:20:21.087376+00:00",
+    "key2": "2021-05-27T10:20:21.087376+00:00"
+  },
+  "keyPolicy": null,
+  "kind": "StorageV2",
+  "largeFileSharesState": null,
+  "lastGeoFailoverTime": null,
+  "location": "koreacentral",
+  "minimumTlsVersion": null,
+  "name": "storage0527192017",
+  "networkRuleSet": {
+    "bypass": "AzureServices",
+    "defaultAction": "Allow",
+    "ipRules": [],
+    "resourceAccessRules": null,
+    "virtualNetworkRules": []
+  },
+  "primaryEndpoints": {
+    "blob": "https://storage0527192017.blob.core.windows.net/",
+    "dfs": "https://storage0527192017.dfs.core.windows.net/",
+    "file": "https://storage0527192017.file.core.windows.net/",
+    "internetEndpoints": null,
+    "microsoftEndpoints": null,
+    "queue": "https://storage0527192017.queue.core.windows.net/",
+    "table": "https://storage0527192017.table.core.windows.net/",
+    "web": "https://storage0527192017.z12.web.core.windows.net/"
+  },
+  "primaryLocation": "koreacentral",
+  "privateEndpointConnections": [],
+  "provisioningState": "Succeeded",
+  "resourceGroup": "insang1983gmailcomRsg",
+  "routingPreference": null,
+  "sasPolicy": null,
+  "secondaryEndpoints": {
+    "blob": "https://storage0527192017-secondary.blob.core.windows.net/",
+    "dfs": "https://storage0527192017-secondary.dfs.core.windows.net/",
+    "file": null,
+    "internetEndpoints": null,
+    "microsoftEndpoints": null,
+    "queue": "https://storage0527192017-secondary.queue.core.windows.net/",
+    "table": "https://storage0527192017-secondary.table.core.windows.net/",
+    "web": "https://storage0527192017-secondary.z12.web.core.windows.net/"
+  },
+  "secondaryLocation": "koreasouth",
+  "sku": {
+    "name": "Standard_RAGRS",
+    "tier": "Standard"
+  },
+  "statusOfPrimary": "available",
+  "statusOfSecondary": "available",
+  "tags": {},
+  "type": "Microsoft.Storage/storageAccounts"
+}
+2021-05-27 19:20:45 create storage container 
+{
+  "created": true
+}
+2021-05-27 19:20:46 create vm 
+{
+  "fqdns": "",
+  "id": "/subscriptions/9d13ee1b-1329-4fb3-8d09-945ce7fecd8f/resourceGroups/insang1983gmailcomRsg/providers/Microsoft.Compute/virtualMachines/insang1983gmailcomRsgVM",
+  "location": "koreacentral",
+  "macAddress": "00-22-48-05-14-D2",
+  "powerState": "VM running",
+  "privateIpAddress": "10.0.0.7",
+  "publicIpAddress": "20.194.50.172",
+  "resourceGroup": "insang1983gmailcomRsg",
+  "zones": ""
+}
+2021-05-27 19:21:20 add dns record 
+{
+  "aRecords": [
+    {
+      "ipv4Address": "20.194.50.172"
+    }
+  ],
+  "etag": "aa9fffd9-8a6b-48d2-bf78-88a31ecd7c96",
+  "fqdn": "insang1983gmailcom.igloocld.com.",
+  "id": "/subscriptions/9d13ee1b-1329-4fb3-8d09-945ce7fecd8f/resourceGroups/igloocldrsg/providers/Microsoft.Network/dnszones/igloocld.com/A/insang1983gmailcom",
+  "metadata": null,
+  "name": "insang1983gmailcom",
+  "provisioningState": "Succeeded",
+  "resourceGroup": "igloocldrsg",
+  "targetResource": {
+    "id": null
+  },
+  "ttl": 3600,
+  "type": "Microsoft.Network/dnszones/A"
+}
+2021-05-27 19:21:23 run extend.sh 
+{
+  "value": [
+    {
+      "code": "ProvisioningState/succeeded",
+      "displayStatus": "Provisioning succeeded",
+      "level": "Info",
+      "message": "Enable succeeded: \n[stdout]\nm.properties\t2021-05-26 17:45:08.361518136 +0900\n+++ ./patch/sptm4/tm.properties\t2021-05-27 19:22:22.450648423 +0900\n@@ -21,7 +21,7 @@\n ################################################################################\n ## MiddleWare Config\n ################################################################################\n-mw.ip=10.1.0.4\n+mw.ip=10.0.0.7\n mw.port=8443\n \n ################################################################################\n@@ -46,7 +46,7 @@\n ## for MySQL(MariaDB)\n JDBC.DbType=mysql\n JDBC.Driver=org.mariadb.jdbc.Driver\n-JDBC.ConnectionURL=jdbc:mariadb://10.1.0.4:13306/siem\n+JDBC.ConnectionURL=jdbc:mariadb://10.0.0.7:13306/siem\n JDBC.Username=admin\n JDBC.Password=admin\n Pool.MaximumActiveConnections=50\n@@ -65,7 +65,7 @@\n ## Virgo GM\n ################################################################################\n ## GM\n-esper.service=http://10.1.0.4:9090/service\n+esper.service=http://10.0.0.7:9090/service\n EVENTReceive.Port=9098\n \n ## LM\n[ENCRYPTION] patch/SPiDERmgrX/spider.conf.p -> /data/SIEM/SPiDERmgrX/conf/spider.conf\nfinish!!\n[ENCRYPTION] patch/SPiDERmwX/spider.properties.p -> /data/SIEM/SPiDERmwX/conf/spider-x/spider.properties\nfinish!!\n[ENCRYPTION] patch/SPiDERmwX/db.properties.p -> /data/SIEM/SPiDERmwX/conf/spider-x/db.properties\nfinish!!\n[ENCRYPTION] patch/SPiDERmwX/bigdatadb.properties.p -> /data/SIEM/SPiDERmwX/conf/spider-x/bigdatadb.properties\nfinish!!\n210527 19:22:23 mysqld_safe Logging to '/data/SIEM/mariadb/data/mysqld.err'.\n210527 19:22:23 mysqld_safe Starting mysqld daemon with databases from /data/SIEM/mariadb/data\n* indexer starting........done.\n* searcher(zk) starting..........done.\n* searcher starting..........done.\n********************\n* middleware starting.............................................................done.\n********************\nWill you delete old event data file(/data/SIEM/SPiDERmgrX/evt_file)?\n(y)es/(n)o?(default:no)?\n********************\n* isd-db starting.....done.\n********************\n********************\n* was starting.........................................done.\n********************\nstatsCheckModule start!!!\nRiskCalc start!!!\nh2Database start.\n                                                                                                 \n██████╗  █████╗ ████████╗ █████╗  █████╗ ███╗   ██╗ █████╗ ██╗  ██╗   ██╗███████╗███████╗██████╗ \n██╔══██╗██╔══██╗╚══██╔══╝██╔══██╗██╔══██╗████╗  ██║██╔══██╗██║  ╚██╗ ██╔╝╚══███╔╝██╔════╝██╔══██╗\n██║  ██║███████║   ██║   ███████║███████║██╔██╗ ██║███████║██║   ╚████╔╝   ███╔╝ █████╗  ██████╔╝\n██║  ██║██╔══██║   ██║   ██╔══██║██╔══██║██║╚██╗██║██╔══██║██║    ╚██╔╝   ███╔╝  ██╔══╝  ██╔══██╗\n██████╔╝██║  ██║   ██║   ██║  ██║██║  ██║██║ ╚████║██║  ██║███████╗██║   ███████╗███████╗██║  ██║\n╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚═╝   ╚══════╝╚══════╝╚═╝  ╚═╝\nv2.0.1.2\n\nH2database connection check... 127.0.0.1\nconnection success!\n\n\u001b[1mdata analyzer ip bind setting\u001b[0m\n====================================\n 0. 0.0.0.0\n 1. 10.0.0.7\n 2. 127.0.0.1\n====================================\nselect address (timeout 5 sec) : default\nvirgo gm/lm start.\nstarted data sender\n\n[stderr]\n",
+      "time": null
+    }
+  ]
+}
+2021-05-27 19:24:54 end..

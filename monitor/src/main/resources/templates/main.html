@@ -47,6 +47,7 @@
     let sessionRsc = "";
     let sessionStep = 0;
 
+
     window.onload = function () {
 
 
@@ -54,6 +55,8 @@
 
         sessionRsc = document.getElementById("rscgrp").innerText;
         sessionStep = document.getElementById("step").innerText * 1;
+
+
 
         if (sessionRsc != "") {
 
@@ -95,7 +98,7 @@
             if (monthValLast < 10) lastparameter = yearLast + "-0" + monthValLast;
             else lastparameter = yearLast + "-" + monthValLast;
 
-            console.log(lastparameter);
+            //console.log(lastparameter);
 
             document.getElementById("lastMon1").innerText = monthValLast + '월처리량'
             document.getElementById("lastMon2").innerText = monthValLast + '월 LOG 처리량'
@@ -110,23 +113,35 @@
         } else {
 
 
-            if (sessionStep > 0) document.getElementById("registerLog").hidden = true;
-            else document.getElementById("registerLog").hidden = false;
-
-            if (sessionStep > 0){
-                document.getElementById("logTitle").innerText = "Step2: 등록된 정보 기반으로 VM,TM 생성중입니다.";
 
 
+            if (sessionStep == 1) {
+                document.getElementById("logTitle").innerText = "Step2: 등록된 정보를 확인하시고, 배포버튼을 눌러주세요.";
                 $('#step2bar').css({"background": "darkblue"});
-
+                document.getElementById("registerLog").hidden = true;
+                getLogList();
             }
-            else {
+            else if(sessionStep == 0) {
 
                 $('#step1bar').css({"background": "darkblue"});
-                document.getElementById("logTitle").innerText = "Step1: 장비 등록 단계입니다.";
+                document.getElementById("logTitle").innerText = "Step1: 장비를 등록하시고 완료버튼을 눌러주세요.";
+                document.getElementById("registerLog").hidden = false;
+                getLogList();
+            }else{
+                document.getElementById("logTitle").innerText = "Step3: 배포중입니다, 배포에는 5분정도 소요됩니다.";
+                $('#step3bar').css({"background": "darkblue"});
+                document.getElementById("registerLog").hidden = true;
+                document.getElementById("registerLog2").hidden = true;
+                document.getElementById("registerLog3").hidden = true;
+
+                var timer = setInterval(function(){
+                    readLog();;
+                }, 5000)
+                //getLogList();
             }
 
-            getLogList();
+
+
 
 
 
@@ -165,7 +180,7 @@
         logSumVal = 0;
         var rows = document.getElementById("logListTable").getElementsByTagName("tr");
 
-        console.log(rows.length);
+        //console.log(rows.length);
         for (var r = 1; r < rows.length; r++) {
             var cells = rows[r].getElementsByTagName("td");
 
@@ -199,14 +214,14 @@
         $("#addDiv").append('                                <div class="row mb-3 ml-4"  id="equip' + ++tempVal + '">\n' +
             '        <select class="form-control" style="width: 26%;"  name="fire" id="logSrc' + tempVal + '">\n' +
             '           <option value="">선택</option>\n' +
-            '            <option value="FW">방화벽</option>\n' +
+            '            <option value="FW">FW</option>\n' +
             '            <option value="IPS">IPS</option>\n' +
             '            <option value="IDS">IDS</option>\n' +
             '            <option value="WAF">WAF</option>\n' +
             '            <option value="ETC">기타</option>\n' +
             '        </select>\n' +
             '       <div class="input-group-append ml-1"  style="width: 60%;" >\n' +
-            '           <input class="form-control ml-1" type="text"  oninput="this.value = this.value.replace(/[^0-9.]/g, \'\').replace(/(\\..*)\\./g, \'$1\');" style="text-align: right;"  placeholder="일일 전체로그량" id="data' + tempVal + '">\n' +
+            '           <input class="form-control ml-1" type="number"  oninput="this.value = this.value.replace(/[^0-9.]/g, \'\').replace(/(\\..*)\\./g, \'$1\');" style="text-align: right;"  placeholder="일일 전체로그량" id="data' + tempVal + '">\n' +
             '           <span class="ml-1" style="font-size: 25px; font-weight: bold;line-height: 39px;">GB</span>\n' +
             '       </div>\n' +
             '   </div>');
@@ -225,6 +240,27 @@
 
     }
 
+    function readLog() {
+
+        $.ajax({
+            url: "/readLog.do",
+            type: "GET",
+            success: function (data) {
+               // console.log(data);
+
+                if(data=='end') location.reload();
+
+
+            }, error: function (request, status, error) {
+                resultChk--;
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+
+    }
+
+
 
     function completeLog() {
 
@@ -240,6 +276,28 @@
                 location.reload();
             }, error: function (request, status, error) {
                 resultChk--;
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+
+    }
+
+
+
+    function createvm() {
+
+        $.ajax({
+            url: "/createvm.do",
+            type: "POST",
+            data: {
+                totalParam: document.getElementById("logTotal").innerText
+            },
+            success: function (data) {
+                alert("완료되었습니다.");
+
+                location.reload();
+            }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
@@ -335,8 +393,8 @@
 
 
                 setLogTotal();
-                if(sessionStep>0) getCostTotal();
-
+                //if(sessionStep>0) getCostTotal();
+                getCostTotal();
 
 
             }, error: function (request, status, error) {
@@ -349,7 +407,6 @@
 
 
     function getUsageList() {
-        console.log(sessionRsc)
         $.ajax({
             url: "/getUsageList.do",
             type: "GET",
@@ -392,7 +449,10 @@
                 }
 
                 document.getElementById("usage").innerText = sumUsage / 1000 + "GB";
-                document.getElementById("everage").innerText = Math.round(sumUsage / tablelength) + "MB";
+                if (sumUsage == 0)  document.getElementById("everage").innerText = "0MB";
+                else document.getElementById("everage").innerText = Math.round(sumUsage / tablelength) + "MB";
+
+
                 document.getElementById("money").innerText = comma(Math.round(sumMoney)) + "원";
 
                 sumMoney = Math.round(sumMoney);
@@ -867,7 +927,7 @@
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/main">
 
-            <div class="sidebar-brand-text mx-3">Monintoring System</div>
+            <div class="sidebar-brand-text mx-3">Monitoring System</div>
         </a>
 
         <!-- Divider -->
@@ -938,7 +998,7 @@
 
                     <li class="nav-item dropdown no-arrow">
 
-                        <span th:text="${session['email']}" hidden="true"> </span>
+                        <span id="email" th:text="${session['email']}" hidden="true"> </span>
                         <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                         <span id="step" hidden="true" th:text="${session['step']}"> </span>
 
@@ -968,24 +1028,6 @@
                 <!-- Content Row -->
                 <div class="row">
 
-                    <!-- Earnings (Monthly) Card Example -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-
-
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1"
-                                             style="font-size: 20px;" id="lastMon1">
-
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="beforedata"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-3 col-md-6 mb-4">
@@ -1040,6 +1082,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Earnings (Monthly) Card Example -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+
+
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1"
+                                             style="font-size: 20px;" id="lastMon1">
+
+                                        </div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="beforedata"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Content Row -->
@@ -1234,10 +1296,10 @@
                                     Step1: 장비 등록
                                 </div>
                                 <div class="progress-bar progress-bar-warning" role="progressbar" style="width:33.3%" id="step2bar">
-                                    Step2: VM, TM 생성
+                                    Step2: VM, TM 배포
                                 </div>
-                                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:33.3%">
-                                    START
+                                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:33.3%" id="step3bar">
+                                    Step3: VM, TM 생성
                                 </div>
                             </div>
 
@@ -1290,7 +1352,7 @@
 
 
                                             <div class="input-group-append ml-1" style="width: 60%;">
-                                                <input class="form-control ml-1" type="text" id="data0"
+                                                <input class="form-control ml-1" type="number" id="data0"
                                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                                                        style="text-align: right;" placeholder="일일 전체로그량">
                                                 <span class="ml-1"
@@ -1309,7 +1371,7 @@
 
                         </div>
 
-                        <div class="col-xl-4 col-lg-5 " style="margin-left: -20px;">
+                        <div class="col-xl-4 col-lg-5 " style="margin-left: -20px;" id="registerLog2">
                             <div class="card shadow h-100 py-2">
                                 <div class="card-header"><span class="text-dark ml-4"
                                                                style="color: black; font-size: 20px; font-weight: bold; "> 등록된 장비 목록</span>
@@ -1356,7 +1418,7 @@
                         </div>
 
 
-                        <div class="col-xl-4 col-lg-5 " style="margin-left: -20px;" th:if="${session['step']} =='1'">
+                        <div class="col-xl-4 col-lg-5 " style="margin-left: -20px;" id="registerLog3">
                             <div class="card shadow h-100 py-2">
                                 <div class="card-header"><span class="text-dark ml-4"
                                                                style="font-size: 20px; font-weight: bold; "> Azure 예상 금액</span>
@@ -1375,7 +1437,7 @@
                                              style="font-size: 18px; font-weight: normal; " id="diskVal"> </div>
 
                                     </div>
-                                    <div class="card border-left-primary mt-1 shadow py-2" style="height: 50%;">
+                                    <div class="card border-left-primary mt-1 shadow py-2" style="height: 45%;">
 
                                         <div class="text-dark ml-4 "
                                              style="font-size: 20px; font-weight: bold; ">월별 예상 금액 </div>
@@ -1385,7 +1447,9 @@
                                              style="font-size: 15px; font-weight: normal; ">TM License 비용을 제외한 Azure사용에 대한 월별 금액이며, 사용량이나 환율에 따라 변경될 수 있습니다. </div>
                                     </div>
 
-
+                                    <button class="btn btn-primary mt-1" onclick='createvm()'
+                                            th:if="${session['step']} =='1'">배포
+                                    </button>
 
                                 </div>
 

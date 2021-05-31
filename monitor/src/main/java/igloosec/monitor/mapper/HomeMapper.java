@@ -27,7 +27,11 @@ public interface HomeMapper {
     List<UsageVo> selectLogList(UsageVo param);
 
     void completeLog(MemberVo memberVo);
+    void completeLog2(MemberVo memberVo);
 
     UsageVo selectCostTotal(UsageVo param);
+
+    String selectPath();
+
 
 }

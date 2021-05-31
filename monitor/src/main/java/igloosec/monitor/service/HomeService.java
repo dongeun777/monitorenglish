@@ -66,4 +66,13 @@ public class HomeService {
     public UsageVo selectCostTotal(UsageVo param) {
         return mapper.selectCostTotal(param);
     }
+
+    public void completeLog2(MemberVo param) {
+        mapper.completeLog2(param);
+    }
+
+    public String selectPath() {
+        return mapper.selectPath();
+    }
+
 }
