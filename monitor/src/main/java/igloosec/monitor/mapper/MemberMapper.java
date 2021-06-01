@@ -20,6 +20,6 @@ public interface MemberMapper {
     void modifyGrpIpMember(MemberVo memberVo);
     void deleteMember(MemberVo memberVo);
     void deleteEquipList(MemberVo memberVo);
-
+    UsageVo selectDeletePath();
     List<MemberVo> selectMemberList();
 }

@@ -31,7 +31,7 @@ public class UsageVo {
     private String vmseries;
     private String pathStr;
     private String shellcom;
-
+    private String shellDeletecom;
 
 
 
@@ -238,5 +238,13 @@ public class UsageVo {
 
     public void setShellcom(String shellcom) {
         this.shellcom = shellcom;
+    }
+
+    public String getShellDeletecom() {
+        return shellDeletecom;
+    }
+
+    public void setShellDeletecom(String shellDeletecom) {
+        this.shellDeletecom = shellDeletecom;
     }
 }

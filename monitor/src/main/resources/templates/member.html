@@ -119,11 +119,13 @@
                     if ( $(this).hasClass('selected') ) {
                         $(this).removeClass('selected');
                         document.getElementById("emailChk").innerHTML='';
+                        document.getElementById("rscGrpChk").innerHTML='';
                     }
                     else {
                         table.$('tr.selected').removeClass('selected');
                         $(this).addClass('selected');
                         document.getElementById("emailChk").innerHTML=this_row.email;
+                        document.getElementById("rscGrpChk").innerHTML=this_row.rscGrp;
                     }
 
 
@@ -155,7 +157,8 @@
             url: "/deleteUser",
             type: "POST",
             data: {
-                email: document.getElementById('emailChk').innerHTML
+                email: document.getElementById('emailChk').innerHTML,
+                rscGrp: document.getElementById('rscGrpChk').innerHTML
             },
 
             success: function (data) {
@@ -208,6 +211,7 @@
                                 <h6 class="m-0 font-weight-bold text-primary">사용자리스트</h6>
 
                                 <span id="emailChk" hidden="true"></span>
+                                <span id="rscGrpChk" hidden="true"></span>
                                 <li class="nav-item dropdown no-arrow" >
 
 
@@ -219,7 +223,7 @@
 
 
                                 <a type="button" class="btn btn-primary" data-toggle="modal"
-                                        onclick="checkUser()">
+                                   data-target="#deleteModal">
                                     사용자 제거
                                 </a>
 
@@ -459,6 +463,30 @@
 
 </div>
 
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">제거하시겠습니까?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit" onclick="checkUser()">제거</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
 
 </body>
 

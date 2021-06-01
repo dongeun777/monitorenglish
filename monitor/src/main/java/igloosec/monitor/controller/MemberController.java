@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.lang.reflect.Member;
 import java.util.List;
 
 @Controller
@@ -111,8 +113,49 @@ public class MemberController {
 
     @PostMapping("/deleteUser")
     public String deleteMember(MemberVo memberVo) {
+
+
+        UsageVo param2 = new UsageVo();
+        UsageVo result = memberService.setDeletePath();
+
+        try {
+            shellVMdelete(result,memberVo);
+        } catch (IOException e) {
+
+        } catch (InterruptedException e) {
+
+        }
+
         memberService.deleteUser(memberVo);
+
         return "redirect:/member";
+    }
+
+
+
+    private void shellVMdelete(UsageVo result,MemberVo memberVo) throws IOException, InterruptedException {
+
+        boolean isWindows = System.getProperty("os.name")
+                .toLowerCase().startsWith("windows");
+
+        String homeDirectory = System.getProperty("user.home");
+
+
+        Process process;
+        if (isWindows) {
+            process = Runtime.getRuntime()
+                    .exec(String.format("cmd.exe /c dir %s", homeDirectory));
+
+            System.out.println(result.getPathStr()+"/"+result.getShellDeletecom()+" "+ memberVo.getRscGrp());
+            //System.out.println(result.getPathStr());
+        } else {
+            //Runtime.getRuntime().exec().
+            process = Runtime.getRuntime()
+                    .exec(result.getPathStr()+"/"+result.getShellDeletecom()+" "+ memberVo.getRscGrp());
+        }
+
+
+
     }
 
 }
