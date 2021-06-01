@@ -65,6 +65,8 @@ public class HomeController {
     @GetMapping("/main")
     public String main(Model model, HttpServletRequest request) {
         HttpSession session =request.getSession(false);
+        model.addAttribute("grpList", homeService.getGrpList());
+
         if(session==null) return "redirect:/";
         else return "main";
     }
@@ -323,7 +325,7 @@ public class HomeController {
 
         String host = "outlook.office365.com";
         int port = 587;
-        String from = "cloudhelp@igloosec.com";
+        String from = "igloocld@igloosec.com";
 
         Properties props = System.getProperties();
 
@@ -366,7 +368,7 @@ public class HomeController {
 
         String host = "outlook.office365.com";
         int port = 587;
-        String from = "cloudhelp@igloosec.com";
+        String from = "igloocld@igloosec.com";
 
         Properties props = System.getProperties();
 
@@ -409,7 +411,7 @@ public class HomeController {
 
         String host = "outlook.office365.com";
         int port = 587;
-        String from = "cloudhelp@igloosec.com";
+        String from = "igloocld@igloosec.com";
         String emailstr=email;
         emailstr = emailstr.replace("@","");
         emailstr = emailstr.replace(".","");
@@ -457,7 +459,7 @@ public class HomeController {
 
         public MyAuthentication() {
 
-            pa = new PasswordAuthentication("cloudhelp@igloosec.com", "sp!dertm40");
+            pa = new PasswordAuthentication("igloocld@igloosec.com", "d+jndkm#dd9msdf%ds9f8gsFDGKdfg(");
 
         }
 

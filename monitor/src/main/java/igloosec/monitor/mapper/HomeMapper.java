@@ -34,4 +34,5 @@ public interface HomeMapper {
     String selectPath();
 
 
+    List<MemberVo> getGrpList();
 }
