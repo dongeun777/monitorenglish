@@ -45,6 +45,7 @@ public class MemberService implements UserDetailsService {
     public void deleteUser(MemberVo memberVo) {
         mapper.deleteMember(memberVo);
         mapper.deleteEquipList(memberVo);
+        mapper.deleteFedTable(memberVo);
     }
 
     public void modifyUser(MemberVo memberVo) {

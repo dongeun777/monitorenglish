@@ -112,7 +112,7 @@
                     <div class="row mt-1 mb-3">
                         <div>
                             <input class="form-control" type="text" name="company" id="company" placeholder="회사명을 입력해주세요">
-                            <input class="form-control"  type="text" name="email" id="email1" placeholder="이메일을 입력해주세요">
+                            <input class="form-control"  type="text" name="email" id="email1" placeholder="이메일을 입력해주세요" onKeyPress="if (event.keyCode==13){check();}">
 
                             <button class="form-control"   onclick="check()" id="registerBtn">등록</button>
                         </div>

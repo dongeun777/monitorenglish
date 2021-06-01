@@ -18,12 +18,12 @@
             },
             success: function (data) {
                 if(data == "idNull")
-                    window.alert("등록되어 있지 않은 회원입니다.")
+                    window.alert("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.")
 
                 else{
                     if(data == "pwCheck") {
                         document.getElementById('pw2').value = "";
-                        window.alert("비밀번호가 일치하지 않습니다.")
+                        window.alert("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.")
                     }
                     else if(data == "Success")
                         location.href="/main"
