@@ -283,6 +283,17 @@
 
 
 
+    function completeLogCheck(){
+        if ( document.getElementById('logTotal').innerText =="") {
+            window.alert('장비 정보와 로그를 등록해주세요');
+        }
+        else{
+            completeLog();
+        }
+
+    }
+
+
     function completeLog() {
 
         $.ajax({
@@ -1091,7 +1102,7 @@
 
                     <option value="tm5SArsg">선택</option>
 
-                    <option th:each="itemData : ${grpList}" th:value="${itemData.rscGrp}" th:text="${itemData.company}"></option>
+                    <option th:each="itemData : ${grpList}" th:value="${itemData.rscGrp}" th:text="${itemData.email}"></option>
 
                 </select><i></i>
 
@@ -1476,7 +1487,7 @@
                                         </div>
 
                                     </div>
-                                    <button class="btn btn-primary mt-1" onclick='completeLog()'
+                                    <button class="btn btn-primary mt-1" onclick='completeLogCheck()'
                                             th:if="${session['step']} =='0'">완료
                                     </button>
 

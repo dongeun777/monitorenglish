@@ -62,11 +62,21 @@
         delete from USER_EQUIP_LIST where email = #{email};
     </delete>
 
+    <delete id="deleteFedTable" parameterType="MemberVo">
+        drop table is_stats_${rscGrp};
+    </delete>
+
     <select id="selectDeletePath" resultType="UsageVo">
         SELECT  pathStr, shellDeletecom
         FROM azurecost
         LIMIT 1;
     </select>
+
+<!--    <select id="selectPath"  resultType="String">-->
+<!--        SELECT pathStr-->
+<!--        FROM azurecost-->
+<!--                 LIMIT 1-->
+<!--    </select>-->
 
 </mapper>
 

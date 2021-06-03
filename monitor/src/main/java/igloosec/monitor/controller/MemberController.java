@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Member;
 import java.util.List;
@@ -157,5 +159,58 @@ public class MemberController {
 
 
     }
+
+//    @RequestMapping(value = "/readDeleateLog.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+//    public @ResponseBody String readLog(MemberVo memberVo, HttpSession session ) {
+//
+//        String emailStr = memberVo.getEmail();
+//        String emailStr1 = emailStr.replace("@","");
+//        String emailStr2 = emailStr1.replace(".","");
+//
+//        String emailStr3 = emailStr2 + "Rsg";
+//
+//        String result="notyet";
+//
+//        String path = memberService.selectPath();
+//        //System.out.println(path+"/tm5deploy."+emailStr+".log");
+//
+//
+//        boolean isWindows = System.getProperty("os.name")
+//                .toLowerCase().startsWith("windows");
+//
+//
+//        BufferedReader br = null;
+//        StringBuffer sb = new StringBuffer(); // 테스트용 변수
+//        try {
+//
+//            if(isWindows) br = new BufferedReader(new FileReader("C:\\monitor\\monitor\\src\\main\\resources\\static\\tm5deploy.log"));
+//            else  br = new BufferedReader(new FileReader(path+"/tm5remove."+emailStr3+".log"));
+//            String line = null;
+//
+//            while ((line = br.readLine()) != null) {
+//                //System.out.println(line);
+//                if (line.contains("end..")) {
+//                    result ="end";
+//                    break;
+//                }
+//                else {
+//                    return line;
+//                }
+//
+//                //sb.append(line);
+//            }
+//
+//        } catch (IOException ioe) {
+//            System.out.println(ioe.getMessage());
+//        } finally {
+//            try {
+//                if (br != null)
+//                    br.close();
+//            } catch (Exception e) {
+//            }
+//        }
+//
+//        return result;
+//    }
 
 }

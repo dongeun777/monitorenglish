@@ -45,6 +45,7 @@ public class MemberService implements UserDetailsService {
     public void deleteUser(MemberVo memberVo) {
         mapper.deleteMember(memberVo);
         mapper.deleteEquipList(memberVo);
+        mapper.deleteFedTable(memberVo);
     }
 
     public void modifyUser(MemberVo memberVo) {
@@ -89,6 +90,10 @@ public class MemberService implements UserDetailsService {
 
     public List<MemberVo> selectMemberList() {
         return mapper.selectMemberList();
+    }
+
+    public String selectPath() {
+        return mapper.selectPath();
     }
 
 }
