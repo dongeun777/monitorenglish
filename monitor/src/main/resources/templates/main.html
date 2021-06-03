@@ -56,7 +56,7 @@
         sessionRsc = document.getElementById("rscgrp").innerText;
         sessionStep = document.getElementById("step").innerText * 1;
 
-
+        document.getElementById("div_load_image").hidden = true;
 
         if (sessionRsc != "") {
 
@@ -128,6 +128,7 @@
                 document.getElementById("registerLog").hidden = false;
                 getLogList();
             }else{
+                document.getElementById("div_load_image").hidden = false;
                 document.getElementById("logTitle").innerText = "Step3: 배포중입니다, 배포에는 5분정도 소요됩니다.";
                 $('#step3bar').css({"background": "darkblue"});
                 document.getElementById("registerLog").hidden = true;
@@ -146,7 +147,7 @@
 
 
             document.getElementById("dashboard").hidden = true;
-            document.getElementById("div_load_image").hidden = true;
+
 
             document.getElementById("logsource").hidden = false;
         }
@@ -468,6 +469,8 @@
                 var rows = document.getElementById("usageTable").getElementsByTagName("tr");
 
 
+                sumUsage =0;
+                sumMoney =0;
                 for (var r = 1; r < tablelength + 1; r++) {
                     var cells = rows[r].getElementsByTagName("td");
 
