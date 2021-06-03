@@ -92,4 +92,8 @@ public class MemberService implements UserDetailsService {
         return mapper.selectMemberList();
     }
 
+    public String selectPath() {
+        return mapper.selectPath();
+    }
+
 }

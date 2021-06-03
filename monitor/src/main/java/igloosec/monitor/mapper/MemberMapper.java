@@ -23,4 +23,5 @@ public interface MemberMapper {
     UsageVo selectDeletePath();
     List<MemberVo> selectMemberList();
     void deleteFedTable(MemberVo memberVo);
+    String selectPath();
 }

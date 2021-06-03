@@ -72,6 +72,12 @@
         LIMIT 1;
     </select>
 
+<!--    <select id="selectPath"  resultType="String">-->
+<!--        SELECT pathStr-->
+<!--        FROM azurecost-->
+<!--                 LIMIT 1-->
+<!--    </select>-->
+
 </mapper>
 
 
