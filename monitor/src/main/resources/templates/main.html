@@ -113,37 +113,33 @@
         } else {
 
 
-
-
             if (sessionStep == 1) {
                 document.getElementById("logTitle").innerText = "Step2: 등록된 정보를 확인하시고, 배포버튼을 눌러주세요.";
                 $('#step2bar').css({"background": "darkblue"});
                 document.getElementById("registerLog").hidden = true;
+                document.getElementById("youtube").hidden = true;
                 getLogList();
-            }
-            else if(sessionStep == 0) {
+            } else if (sessionStep == 0) {
 
                 $('#step1bar').css({"background": "darkblue"});
                 document.getElementById("logTitle").innerText = "Step1: 장비를 등록하시고 완료버튼을 눌러주세요.";
                 document.getElementById("registerLog").hidden = false;
+                document.getElementById("youtube").hidden = true;
                 getLogList();
-            }else{
-                document.getElementById("div_load_image").hidden = false;
+            } else {
+
                 document.getElementById("logTitle").innerText = "Step3: 배포중입니다, 배포에는 5분정도 소요됩니다.";
                 $('#step3bar').css({"background": "darkblue"});
                 document.getElementById("registerLog").hidden = true;
                 document.getElementById("registerLog2").hidden = true;
                 document.getElementById("registerLog3").hidden = true;
-
-                var timer = setInterval(function(){
-                    readLog();;
+                document.getElementById("youtube").hidden = false;
+                var timer = setInterval(function () {
+                    readLog();
+                    ;
                 }, 5000)
                 //getLogList();
             }
-
-
-
-
 
 
             document.getElementById("dashboard").hidden = true;
@@ -156,8 +152,9 @@
     }
 
     let tempVal = 0;
-    let logSumVal =0;
-    function clearChart(){
+    let logSumVal = 0;
+
+    function clearChart() {
 
         chartData = [, , , , , , , , , ,
             , , , , , , , , , ,
@@ -177,7 +174,7 @@
     }
 
 
-    function setLogTotal(){
+    function setLogTotal() {
 
         var rows = document.getElementById("logListTable").getElementsByTagName("tr");
 
@@ -220,10 +217,10 @@
 
         $.getJSON("/getCostTotal.do", params, function (data) {
 
-            document.getElementById("costTotal").innerText = "약"+ comma(data.costtotal) +"원";
-            document.getElementById("cpuVal").innerText ="CPU: "+ data.cpu+"core";
-            document.getElementById("ramVal").innerText ="RAM: "+ data.ram +"GB";
-            document.getElementById("diskVal").innerText ="DISK: "+ data.disk+"TB";
+            document.getElementById("costTotal").innerText = "약" + comma(data.costtotal) + "원";
+            document.getElementById("cpuVal").innerText = "CPU: " + data.cpu + "core";
+            document.getElementById("ramVal").innerText = "RAM: " + data.ram + "GB";
+            document.getElementById("diskVal").innerText = "DISK: " + data.disk + "TB";
         });
 
     }
@@ -267,9 +264,9 @@
             url: "/readLog.do",
             type: "GET",
             success: function (data) {
-               // console.log(data);
+                // console.log(data);
 
-                if(data=='end') location.reload();
+                if (data == 'end') location.reload();
 
 
             }, error: function (request, status, error) {
@@ -282,12 +279,10 @@
     }
 
 
-
-    function completeLogCheck(){
-        if ( document.getElementById('logTotal').innerText =="") {
+    function completeLogCheck() {
+        if (document.getElementById('logTotal').innerText == "") {
             window.alert('장비 정보와 로그를 등록해주세요');
-        }
-        else{
+        } else {
             completeLog();
         }
 
@@ -327,9 +322,8 @@
     }
 
 
-
     function createvm() {
-
+        $('#deployBtn').hide();
         $.ajax({
             url: "/createvm.do",
             type: "POST",
@@ -480,8 +474,8 @@
                 var rows = document.getElementById("usageTable").getElementsByTagName("tr");
 
 
-                sumUsage =0;
-                sumMoney =0;
+                sumUsage = 0;
+                sumMoney = 0;
                 for (var r = 1; r < tablelength + 1; r++) {
                     var cells = rows[r].getElementsByTagName("td");
 
@@ -494,7 +488,7 @@
                 }
 
                 document.getElementById("usage").innerText = sumUsage / 1000 + "GB";
-                if (sumUsage == 0)  document.getElementById("everage").innerText = "0MB";
+                if (sumUsage == 0) document.getElementById("everage").innerText = "0MB";
                 else document.getElementById("everage").innerText = Math.round(sumUsage / tablelength) + "MB";
 
 
@@ -537,6 +531,7 @@
 
 
     var meterDetailTable;
+
     function getMeterDetailList(rscParam) {
 
         $.ajax({
@@ -548,8 +543,6 @@
                 rscparam: rscParam
             },
             success: function (data) {
-
-
 
 
                 meterDetailTable = $('#meterDetailTable').dataTable({
@@ -572,8 +565,6 @@
                 });
 
 
-
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -594,6 +585,7 @@
             paramDate: lastparameter,
             rscparam: rscparam
         };
+        sumbefore =0;
 
         $.getJSON("/getChartList.do", params, function (data) {
 
@@ -793,6 +785,7 @@
     }
 
     var myPieChart;
+
     function createPieChart() {
         var ctx = document.getElementById("myPieChart");
 
@@ -847,6 +840,7 @@
 
 
     var myChart
+
     function createChart() {
 
         var ctx = document.getElementById("myDailyChart").getContext("2d");
@@ -927,8 +921,6 @@
             }
 
         })
-
-
 
 
     }
@@ -1073,8 +1065,9 @@
                         <span id="step" hidden="true" th:text="${session['step']}"> </span>
 
 
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal" style="margin-right: -20px">
-                            <i class="fas fa-sign-out-alt fa-sm fa-fw text-gray-400" ></i><span class="text-gray-400">Logout</span>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"
+                           style="margin-right: -20px">
+                            <i class="fas fa-sign-out-alt fa-sm fa-fw text-gray-400"></i><span class="text-gray-400">Logout</span>
                         </a>
 
 
@@ -1097,21 +1090,28 @@
                 </div>
 
 
-                    <div class="row" th:if="${session['auth']} =='ROLE_ADMIN'" style="margin-left: 2px;margin-bottom: 10px;">
-                <select class="select float-right" name="itemId" id="grpSelcet" >
-
-                    <option value="tm5SArsg">선택</option>
-
-                    <option th:each="itemData : ${grpList}" th:value="${itemData.rscGrp}" th:text="${itemData.email}"></option>
-
-                </select><i></i>
+                <div class="row" th:if="${session['auth']} =='ROLE_ADMIN'"
+                     style="margin-left: 2px;margin-bottom: 10px;">
+                    <span class="m-1 font-size-115 mt-2 mr-2">고객사별 검색</span>
 
 
-                <div class="btn btn-primary btn-sm float-right mr-1" type="button"
-                     onclick='selectData()'>조회
-                </div>
+                    <div class="input-group" style="width: 19%;">
+                        <select class="select float-right form-control" name="itemId"
+                                id="grpSelcet">
 
+                            <option value="tm5SArsg">고객사선택</option>
 
+                            <option th:each="itemData : ${grpList}" th:value="${itemData.rscGrp}"
+                                    th:text="${itemData.email}"></option>
+
+                        </select>
+
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button" onclick='selectData()'>
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Content Row -->
@@ -1330,7 +1330,7 @@
                                 <div class="card shadow h-100 py-2" style="height:250px !important;">
                                     <div class="table-responsive" style="overflow:auto; height: 100%">
                                         <table class="table table-bordered" id="meterDetailTable" cellspacing="0">
-                                            <thead style="text-align: center; position: sticky; top: 0px; ">
+                                            <thead style="text-align: center; position: sticky; top: 0px;background-color: white; ">
                                             <tr>
 
 
@@ -1381,13 +1381,16 @@
                         <div class="col-xl-12 col-lg-6">
                             <span style="color: black; font-size: 25px; font-weight: bold; " id="logTitle">장비 정보를 등록해주세요. </span>
                             <div class="progress" style="width: 50%; height: 30px;">
-                                <div class="progress-bar progress-bar-success" role="progressbar" style="width:33.3%" id="step1bar">
+                                <div class="progress-bar progress-bar-success" role="progressbar" style="width:33.3%"
+                                     id="step1bar">
                                     Step1: 장비 등록
                                 </div>
-                                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:33.3%" id="step2bar">
+                                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:33.3%"
+                                     id="step2bar">
                                     Step2: VM, TM 배포
                                 </div>
-                                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:33.3%" id="step3bar">
+                                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:33.3%"
+                                     id="step3bar">
                                     Step3: VM, TM 생성
                                 </div>
                             </div>
@@ -1488,15 +1491,17 @@
 
                                     </div>
                                     <button class="btn btn-primary mt-1" onclick='completeLogCheck()'
-                                            th:if="${session['step']} =='0'">완료
+                                            th:if="${session['step']} =='0'">등록완료
                                     </button>
 
                                     <div class="text-gray-600 ml-1 mt-2 float-right "
-                                         style="font-size: 15px; font-weight: bold; ">GB </div>
+                                         style="font-size: 15px; font-weight: bold; ">GB
+                                    </div>
                                     <div class="text-gray-600 ml-1 mt-2 float-right"
-                                         style="font-size: 15px; font-weight: bold; " id="logTotal"> </div>
-                                        <div class="text-gray-600 ml-1 mt-2 float-right "
-                                             style="font-size: 15px; font-weight: bold; ">전체 Log 사용량: </div>
+                                         style="font-size: 15px; font-weight: bold; " id="logTotal"></div>
+                                    <div class="text-gray-600 ml-1 mt-2 float-right "
+                                         style="font-size: 15px; font-weight: bold; ">전체 Log 사용량:
+                                    </div>
 
 
                                 </div>
@@ -1517,33 +1522,55 @@
                                 <div class="card-body">
                                     <div class="card border-left-primary shadow py-2 mt-2" style="height: 45%;">
                                         <div class="text-dark ml-4 "
-                                             style="font-size: 20px; font-weight: bold; " >VM specification </div>
+                                             style="font-size: 20px; font-weight: bold; ">VM specification
+                                        </div>
                                         <div class="text-dark ml-4 "
-                                             style="font-size: 18px; font-weight: normal; " id="cpuVal"> </div>
+                                             style="font-size: 18px; font-weight: normal; " id="cpuVal"></div>
                                         <div class="text-dark ml-4 "
-                                             style="font-size: 18px; font-weight: normal; " id="ramVal"> </div>
+                                             style="font-size: 18px; font-weight: normal; " id="ramVal"></div>
                                         <div class="text-dark ml-4 "
-                                             style="font-size: 18px; font-weight: normal; " id="diskVal"> </div>
+                                             style="font-size: 18px; font-weight: normal; " id="diskVal"></div>
 
                                     </div>
                                     <div class="card border-left-primary mt-1 shadow py-2" style="height: 45%;">
 
                                         <div class="text-dark ml-4 "
-                                             style="font-size: 20px; font-weight: bold; ">월별 예상 금액 </div>
+                                             style="font-size: 20px; font-weight: bold; ">월별 예상 금액
+                                        </div>
                                         <div class="text-dark ml-4 "
-                                              style="font-size: 20px; font-weight: bold; " id="costTotal"> </div>
+                                             style="font-size: 20px; font-weight: bold; " id="costTotal"></div>
                                         <div class="text-dark ml-4 mr-4 "
-                                             style="font-size: 15px; font-weight: normal; ">TM License 비용을 제외한 Azure사용에 대한 월별 금액이며, 사용량이나 환율에 따라 변경될 수 있습니다. </div>
+                                             style="font-size: 15px; font-weight: normal; ">TM License 비용을 제외한 Azure사용에
+                                            대한 월별 금액이며, 사용량이나 환율에 따라 변경될 수 있습니다.
+                                        </div>
                                     </div>
 
+                                    <<<<<<< HEAD
                                     <button class="btn btn-primary mt-1" onclick='createvm()'
-                                            th:if="${session['step']} =='1'">배포
-                                    </button>
+                                            th:if="${session['step']} =='1'">배포시작
+                                        =======
+                                        <button class="btn btn-primary mt-1" data-toggle="modal"
+                                                data-target="#checkDeploy"
+                                                th:if="${session['step']} =='1'">배포
+                                            >>>>>>> github/master
+                                        </button>
 
                                 </div>
 
 
                             </div>
+
+                        </div>
+
+
+                        <div class="col-xl-4 col-lg-5 " id="youtube">
+
+
+                            <iframe width="700" height="400"
+                                    src="https://www.youtube.com/embed/01SZg39z6xA?autoplay=1&mute=1" frameborder="0"
+                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen></iframe>
+
 
                         </div>
 
@@ -1597,6 +1624,29 @@
     </div>
 </div>
 
+<div class="modal fade" id="checkDeploy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="checkDeployLabel">정말 배포하시겠습니까?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit" onclick='createvm()' id="deployBtn">배포</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
 
 </body>
 
