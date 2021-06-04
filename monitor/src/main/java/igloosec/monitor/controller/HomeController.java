@@ -391,8 +391,9 @@ public class HomeController {
         mimeMessage.setRecipient(Message.RecipientType.TO,
                 new InternetAddress(email));
         mimeMessage.setSubject("#igloo security 모니터링시스템");
-        mimeMessage.setText("https://igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid: "+ email+ "\n" + "pw: 1234" );
-
+        mimeMessage.setContent("<h1 style='font-size: 20px;'><a href='https://igloocld.com'>https://igloocld.com/</a> 에 접속하셔서, 로그인하시기 바랍니다.</h1>"+
+                "\n<span style='font-weight: bold;'>ID: </span> <span> "+ email+ "<br></span>\n" + "<span style='font-weight: bold;'>pw: </span> <span> 1234  </span>" , "text/html; charset=UTF-8");
+        //mimeMessage.setText("https://igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid: "+ email+ "\n" + "pw: 1234" );
         Transport transport = session.getTransport();
 
         transport.connect();
@@ -437,7 +438,10 @@ public class HomeController {
         mimeMessage.setRecipient(Message.RecipientType.TO,
                 new InternetAddress(email));
         mimeMessage.setSubject("#SPiDERTM 접속정보");
-        mimeMessage.setText("https://"+emailstr+".igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid:igloosec \n" + "pw:sp!dertm40" );
+
+        mimeMessage.setContent("<h1 style='font-size: 20px;'><a href='https://"+emailstr+".igloocld.com'>https://"+emailstr +".igloocld.com </a>에 접속하셔서, 로그인하시기 바랍니다.</h1>"+
+                "\n<span style='font-weight: bold;'>ID: </span> <span> igloosec<br></span>\n" + "<span style='font-weight: bold;'>pw: </span> <span> sp!dertm40  </span>" , "text/html; charset=UTF-8");
+        //mimeMessage.setText("https://"+emailstr+".igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid : igloosec \n" + "pw : sp!dertm40" );
 
         Transport transport = session.getTransport();
 
