@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/html">
 
 <head th:replace="mainheader.html :: mainHead"></head>
 
@@ -69,7 +70,7 @@
         })
     }
 
-
+    let buttonclicked;
 
     function getMemberList() {
 
@@ -91,14 +92,15 @@
                     searching: false,
 
                     columns: [
+                        { title: "", "defaultContent": "<button onclick='deleteitem();'>Delete</button>" },
+                        {data: "company"},
                         {data: "email"},
                         {data: "auth"},
                         {data: "regDate"},
                         {data: "rscGrp"},
-                        {data: "ipAddr"},
-                        {data: "enableVal"}
+                        {data: "ipAddr"}
+                    ],
 
-                    ]
                 });
 
 
@@ -120,18 +122,29 @@
                         $(this).removeClass('selected');
                         document.getElementById("emailChk").innerHTML='';
                         document.getElementById("rscGrpChk").innerHTML='';
+                        // checkbox.prop('checked');
+                        // $("input:checkbox[name='checkboxs']").prop("checked",false);
                     }
                     else {
                         table.$('tr.selected').removeClass('selected');
                         $(this).addClass('selected');
                         document.getElementById("emailChk").innerHTML=this_row.email;
                         document.getElementById("rscGrpChk").innerHTML=this_row.rscGrp;
+                        // checkbox.prop(!checkbox.is(':checked'));
+                        // $("input:checkbox[name='checkboxs']").prop("checked",true);
+
                     }
+                    // var checkbox = $(this).find('td:first-child :checkbox');
+                    // checkbox.prop('checked', !checkbox.is(':checked'));
 
 
 
                 } );
-
+                // $("#userTable tr").click(function () {
+                //     // 현재 클릭된 Row(<tr>)
+                //     var checkbox = $(this).find('td:first-child :checkbox');
+                //     checkbox.prop('checked', !checkbox.is(':checked'));
+                // });
 
 
 
@@ -143,7 +156,7 @@
     }
 
     function checkUser(){
-        console.log(document.getElementById("emailChk").innerHTML)
+
         if(document.getElementById("emailChk").innerHTML == '')
             window.alert("삭제할 행을 선택해주세요.");
         else
@@ -152,6 +165,7 @@
 
 
     function deleteUser(){
+
 
         $.ajax({
             url: "/deleteUser",
@@ -210,8 +224,8 @@
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="color:white;">
                                 <h6 class="m-0 font-weight-bold text-primary">사용자리스트</h6>
 
-                                <span id="emailChk" hidden="true"></span>
-                                <span id="rscGrpChk" hidden="true"></span>
+                                <span id="emailChk" ></span>
+                                <span id="rscGrpChk" ></span>
                                 <li class="nav-item dropdown no-arrow" >
 
 
@@ -236,13 +250,15 @@
                                         <table class="table table-bordered" id="userTable" cellspacing="0">
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
                                             <tr>
-
+                                                <th></th>
+                                                <th>회사명</th>
                                                 <th>Email 주소</th>
-                                                <th>권한</th>
+                                                <th>사용자 유형</th>
                                                 <th>등록일</th>
                                                 <th>리소스그룹</th>
                                                 <th>TM IP 주소</th>
-                                                <th>사용여부</th>
+
+
                                             </tr>
                                             </thead>
 
@@ -254,8 +270,8 @@
 
                                 </div>
 
-
                             </div>
+
                         </div>
                     </div>
 

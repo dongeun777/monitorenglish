@@ -39,8 +39,9 @@
 
 
     <select id="selectMemberList" resultType="MemberVo">
-        SELECT email,auth,substring(regDate,1,10) AS regDate,rscGrp,ipAddr, CASE WHEN enabled =1 THEN 'ENABLED' ELSE 'DISABLED' END AS enableVal
-        FROM USER_LIST
+        SELECT company, email,substring(auth,6,10) AS auth,substring(regDate,1,10) AS regDate,rscGrp,ipAddr
+        FROM USER_LIST where enabled = 1
+
 
     </select>
 

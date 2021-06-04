@@ -160,7 +160,7 @@ public class MemberController {
 
     }
 
-//    @RequestMapping(value = "/readDeleateLog.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
+//    @RequestMapping(value = "/readDeleteLog.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")
 //    public @ResponseBody String readLog(MemberVo memberVo, HttpSession session ) {
 //
 //        String emailStr = memberVo.getEmail();
@@ -183,12 +183,12 @@ public class MemberController {
 //        StringBuffer sb = new StringBuffer(); // 테스트용 변수
 //        try {
 //
-//            if(isWindows) br = new BufferedReader(new FileReader("C:\\monitor\\monitor\\src\\main\\resources\\static\\tm5deploy.log"));
+//            if(isWindows) br = new BufferedReader(new FileReader("C:\\monitor\\monitor\\src\\main\\resources\\static\\tm5remove.log"));
 //            else  br = new BufferedReader(new FileReader(path+"/tm5remove."+emailStr3+".log"));
 //            String line = null;
 //
 //            while ((line = br.readLine()) != null) {
-//                //System.out.println(line);
+//                System.out.println(line);
 //                if (line.contains("end..")) {
 //                    result ="end";
 //                    break;
@@ -197,7 +197,7 @@ public class MemberController {
 //                    return line;
 //                }
 //
-//                //sb.append(line);
+////                sb.append(line);
 //            }
 //
 //        } catch (IOException ioe) {

@@ -21,6 +21,8 @@ public class MemberVo implements UserDetails {
     private String enableVal;
     private String company;
     private String step;
+    private String deleteVal;
+
 
     //shell parameter
     private String totalParam;
@@ -170,5 +172,13 @@ public class MemberVo implements UserDetails {
 
     public void setTotalParam(String totalParam) {
         this.totalParam = totalParam;
+    }
+
+    public String getDeleteVal() {
+        return deleteVal;
+    }
+
+    public void setDeleteVal(String deleteVal) {
+        this.deleteVal = deleteVal;
     }
 }
