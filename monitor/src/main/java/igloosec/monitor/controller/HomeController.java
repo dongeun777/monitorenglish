@@ -440,7 +440,7 @@ public class HomeController {
         mimeMessage.setSubject("#SPiDERTM 접속정보");
 
         mimeMessage.setContent("<h1 style='font-size: 20px;'><a href='https://"+emailstr+".igloocld.com'>https://"+emailstr +".igloocld.com </a>에 접속하셔서, 로그인하시기 바랍니다.</h1>"+
-                "\n<span style='font-weight: bold;'>ID: </span> <span> igloosec<br></span>\n" + "<span style='font-weight: bold;'>pw: </span> <span> sp!dertm40  </span>" , "text/html; charset=UTF-8");
+                "\n<span style='font-weight: bold;'>ID: </span> <span>  tmadmin<br></span>\n" + "<span style='font-weight: bold;'>pw: </span> <span> 0!password  </span>" , "text/html; charset=UTF-8");
         //mimeMessage.setText("https://"+emailstr+".igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid : igloosec \n" + "pw : sp!dertm40" );
 
         Transport transport = session.getTransport();
