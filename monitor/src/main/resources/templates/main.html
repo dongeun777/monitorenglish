@@ -978,7 +978,7 @@
     <!--<div th:insert="sidemenu.html :: side_menu"></div>-->
 
     <div id="div_load_image"
-         style="position: absolute; top:50%; left: 50%; width:0px ; height: 0px; z-index: 9999; background: #f0f0f0; margin:auto; ">
+         style="position: absolute; top:50%; left: 50%; width:0px ; height: 0px; z-index: 9999; background: #f0f0f0; margin:auto;  " hidden="true">
         <img src="/image/loading.gif" style="width:100px; height: 100px; ">
     </div>
 
@@ -1545,14 +1545,13 @@
                                         </div>
                                     </div>
 
-                                    <<<<<<< HEAD
-                                    <button class="btn btn-primary mt-1" onclick='createvm()'
-                                            th:if="${session['step']} =='1'">배포시작
-                                        =======
+
+
+
                                         <button class="btn btn-primary mt-1" data-toggle="modal"
                                                 data-target="#checkDeploy"
-                                                th:if="${session['step']} =='1'">배포
-                                            >>>>>>> github/master
+                                                th:if="${session['step']} =='1'">배포시작
+
                                         </button>
 
                                 </div>

@@ -25,8 +25,53 @@
                         document.getElementById('pw2').value = "";
                         window.alert("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.")
                     }
-                    else if(data == "Success")
-                        location.href="/main"
+                    else if(data == "Success"){
+
+                        document.getElementById("login").hidden = true;
+                        document.getElementById("mfa").hidden = false;
+                        //location.href="/main"
+
+
+
+
+                    }
+
+                }
+
+            }
+        });
+    }
+
+
+    function getImage() {
+        $.ajax({
+            url: "/getImage.do",
+            type: "GET",
+            data: {
+                username: document.getElementById('email2').value,
+                email: document.getElementById('email2').value,
+                passwd: document.getElementById('pw2').value
+            },
+            success: function (data) {
+                if(data == "idNull")
+                    window.alert("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.")
+
+                else{
+                    if(data == "pwCheck") {
+                        document.getElementById('pw2').value = "";
+                        window.alert("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.")
+                    }
+                    else if(data == "Success"){
+
+                        document.getElementById("login").hidden = true;
+                        document.getElementById("mfa").hidden = false;
+                        //location.href="/main"
+
+
+
+
+                    }
+
                 }
 
             }
@@ -54,12 +99,12 @@
     <!-- Outer Row -->
     <div class="row justify-content-center">
 
-        <div class="col-xl-10 col-lg-12 col-md-9">
+        <div class="col-xl-10 col-lg-12 col-md-9" id="login">
 
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-0">
                     <!-- Nested Row within Card Body -->
-                    <div class="row">
+                    <div class="row" >
                         <div class="col-lg-6 d-none d-lg-block"
                              style="background: url(image/IGLOO.jpg); background-position: center; background-size: contain;"></div>
                         <div class="col-lg-6">
@@ -87,11 +132,65 @@
                                     <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}">
 
 
-<!--                                </div>-->
+                                
+
 
 
                             </div>
                         </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <div class="col-xl-5 col-lg-12 col-md-9" id="mfa" hidden="true">
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-3">
+                    <!-- Nested Row within Card Body -->
+
+
+                    <div class="row"  >
+
+
+                        <div class="col-lg-12">
+                            <div >
+
+                                <div class="mt-1">
+                                    <h1 class="h4 text-gray-900 mb-2 font-weight-bold"  >Google OTP Code</h1>
+                                </div>
+
+                                <input  class="form-control form-control-user"
+                                       id="mfaId"
+                                       placeholder="Enter 6 codes...">
+
+                                <button class="btn btn-primary btn-user btn-block" id="button2" onclick="loginCheck()">
+                                    Verify
+                                </button>
+
+                                <div class="mt-4">
+
+                                    <h5 class="text-gray-900 mb-2"><i class="fas fa-qrcode"></i>OTP 설정방법</h5>
+                                </div>
+
+                                <span>1.Android: Google OTP 앱을 다운로드합니다.<br></span>
+                                <span> &nbsp;&nbsp;  iPhone: Google Authenticator 앱을 다운로드합니다.<br></span>
+                                <span>2.앱에서 계정설정을 선택합니다. <br></span>
+                                <span>3.바코드 스캔을 선택합니다. <br></span>
+
+
+                                <div class="text-center">
+                                <img id="imgID" src="https://www.google.com/chart?chs=100x100&chld=M|0&cht=qr&chl=otpauth://totp/IGLOOSECURITY?secret=TRAAK43PKVDK2Y5IO7HLABG2J244RFTQ&issuer=IGLOOSECURITY">
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

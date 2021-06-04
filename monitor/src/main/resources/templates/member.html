@@ -92,13 +92,22 @@
                     searching: false,
 
                     columns: [
-                        { title: "", "defaultContent": "<button onclick='deleteitem();'>Delete</button>" },
+                      /*  { title: "", "defaultContent": "<button onclick='deleteitem();'>Delete</button>" },*/
                         {data: "company"},
                         {data: "email"},
                         {data: "auth"},
                         {data: "regDate"},
                         {data: "rscGrp"},
-                        {data: "ipAddr"}
+                        {data: "ipAddr"},
+                        {data: "email",
+                            "render": function(data, type, row){
+                                if(type=='display'){
+                                    data = '<button class="mb-2 mr-2 btn btn-info btn-sm">Edit</button>';
+                                    data += '<button class="mb-2 mr-2 btn btn-danger btn-sm">Del</button>';
+                                }
+                                return data;
+                            }
+                        }
                     ],
 
                 });
@@ -106,14 +115,26 @@
 
                 var table = $('#userTable').DataTable();
 
-                $('#userTable tbody').on('dblclick', 'tr', function () {
-                    var temp = table.row( this ).data();
 
-                    $(".modal-body #email").val( temp.email)
+                $('#userTable tbody').on('click', 'tr .btn', function () {
+                    var tr = $(this).closest('tr');
+                    var dt = table.row( tr ).data();
 
-                    $('#membermodify').modal("show");
+                    if($(this).text() == "Edit"){
 
-                } );
+                        $(".modal-body #email").val( dt.email)
+
+                        $('#membermodify').modal("show");
+
+                    } else if($(this).text() == "Del"){
+                        console.log("del:"+dt.rscGrp) ;
+                        document.getElementById("emailChk").innerHTML=dt.email;
+                        document.getElementById("rscGrpChk").innerHTML=dt.rscGrp;
+                        $('#deleteModal').modal("show");
+                        //deleteUser();
+
+                    }
+                });
 
                 $('#userTable tbody').on( 'click', 'tr', function () {
                     let this_row = table.row(this).data();
@@ -122,29 +143,18 @@
                         $(this).removeClass('selected');
                         document.getElementById("emailChk").innerHTML='';
                         document.getElementById("rscGrpChk").innerHTML='';
-                        // checkbox.prop('checked');
-                        // $("input:checkbox[name='checkboxs']").prop("checked",false);
+
                     }
                     else {
                         table.$('tr.selected').removeClass('selected');
                         $(this).addClass('selected');
                         document.getElementById("emailChk").innerHTML=this_row.email;
                         document.getElementById("rscGrpChk").innerHTML=this_row.rscGrp;
-                        // checkbox.prop(!checkbox.is(':checked'));
-                        // $("input:checkbox[name='checkboxs']").prop("checked",true);
 
                     }
-                    // var checkbox = $(this).find('td:first-child :checkbox');
-                    // checkbox.prop('checked', !checkbox.is(':checked'));
-
-
 
                 } );
-                // $("#userTable tr").click(function () {
-                //     // 현재 클릭된 Row(<tr>)
-                //     var checkbox = $(this).find('td:first-child :checkbox');
-                //     checkbox.prop('checked', !checkbox.is(':checked'));
-                // });
+
 
 
 
@@ -155,13 +165,6 @@
 
     }
 
-    function checkUser(){
-
-        if(document.getElementById("emailChk").innerHTML == '')
-            window.alert("삭제할 행을 선택해주세요.");
-        else
-            deleteUser();
-    }
 
 
     function deleteUser(){
@@ -222,10 +225,10 @@
 
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="color:white;">
-                                <h6 class="m-0 font-weight-bold text-primary">사용자리스트</h6>
+                                <h6 class="m-0 font-weight-bold text-primary">사용자리스트  </h6>
 
-                                <span id="emailChk" ></span>
-                                <span id="rscGrpChk" ></span>
+                                <span id="emailChk"  hidden="true"></span>
+                                <span id="rscGrpChk"  hidden="true"></span>
                                 <li class="nav-item dropdown no-arrow" >
 
 
@@ -250,14 +253,14 @@
                                         <table class="table table-bordered" id="userTable" cellspacing="0">
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
                                             <tr>
-                                                <th></th>
+
                                                 <th>회사명</th>
                                                 <th>Email 주소</th>
                                                 <th>사용자 유형</th>
                                                 <th>등록일</th>
                                                 <th>리소스그룹</th>
                                                 <th>TM IP 주소</th>
-
+                                                <th></th>
 
                                             </tr>
                                             </thead>
@@ -479,13 +482,12 @@
 
 </div>
 
-
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">제거하시겠습니까?</h5>
+                <h5 class="modal-title" id="deleteModalLabel">삭제하시겠습니까?</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -493,7 +495,7 @@
             <div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit" onclick="checkUser()">제거</button>
+                    <button class="btn btn-primary" type="submit" onclick="deleteUser()">삭제</button>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
 
                 </div>
@@ -503,6 +505,8 @@
     </div>
 
 </div>
+
+
 
 </body>
 
