@@ -328,7 +328,7 @@
 
 
     function createvm() {
-
+        $('#deployBtn').hide();
         $.ajax({
             url: "/createvm.do",
             type: "POST",
@@ -1533,7 +1533,8 @@
                                              style="font-size: 15px; font-weight: normal; ">TM License 비용을 제외한 Azure사용에 대한 월별 금액이며, 사용량이나 환율에 따라 변경될 수 있습니다. </div>
                                     </div>
 
-                                    <button class="btn btn-primary mt-1" onclick='createvm()'
+                                    <button class="btn btn-primary mt-1" data-toggle="modal"
+                                            data-target="#checkDeploy"
                                             th:if="${session['step']} =='1'">배포
                                     </button>
 
@@ -1594,6 +1595,29 @@
     </div>
 </div>
 
+<div class="modal fade" id="checkDeploy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="checkDeployLabel">정말 배포하시겠습니까?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit" onclick='createvm()' id="deployBtn">배포</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
 
 </body>
 
