@@ -38,6 +38,8 @@ public class TOTP {
         return System.currentTimeMillis() / 30000;
     }
 
+
+
     private static String getOTP(final long step, final String key) {
         String steps = Long.toHexString(step).toUpperCase();
         while (steps.length() < 16) {
@@ -59,6 +61,8 @@ public class TOTP {
         while (result.length() < 6) {
             result = "0" + result;
         }
+
+
         return result;
     }
 

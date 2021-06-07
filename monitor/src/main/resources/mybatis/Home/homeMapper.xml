@@ -39,8 +39,8 @@
     </select>
 
     <select id="joinMember" parameterType="MemberVo">
-        insert into USER_LIST (email, passwd,regDate,company)
-        values (#{email}, #{passwd},NOW(),#{company});
+        insert into USER_LIST (email, passwd,regDate,company,qrcord,secretkey)
+        values (#{email}, #{passwd},NOW(),#{company},#{qrcord},#{secretkey});
     </select>
 
     <select id="checkMember" parameterType="MemberVo" resultType="MemberVo">
@@ -80,12 +80,12 @@
 
     </select>
 
-    <select id="selectSecretKey"  resultType="String">
+    <select id="selectSecretKey"  parameterType="MemberVo" resultType="String">
         SELECT secretkey
         FROM USER_LIST where email = #{email};
     </select>
 
-    <select id="selectQrCord"  resultType="String">
+    <select id="selectQrCord"  parameterType="MemberVo" resultType="String">
         SELECT qrcord
         FROM USER_LIST where email = #{email};
     </select>

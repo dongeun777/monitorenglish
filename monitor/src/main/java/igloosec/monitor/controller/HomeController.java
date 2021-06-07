@@ -141,9 +141,11 @@ public class HomeController {
     @RequestMapping(value = "/googleVerify.do")
     public String equalCode(MemberVo memberVo) {
 
-        String userSecretKey = homeService.selectSecretKey();
+        String userSecretKey = homeService.selectSecretKey(memberVo);
         String inputCode =  memberVo.getMfacode();
-        if (TOTPTokenValidation.validate(inputCode,userSecretKey) == true) {
+        //TOTPTokenValidation.
+
+        if (TOTPTokenValidation.validate(inputCode,userSecretKey)) {
             return "success";
         }
         else {
@@ -153,8 +155,8 @@ public class HomeController {
 
     @ResponseBody
     @RequestMapping(value = "/getImage.do")
-    public String googleUrl() {
-        String userQrCord = homeService.selectQrCord();
+    public String googleUrl(MemberVo memberVo) {
+        String userQrCord = homeService.selectQrCord(memberVo);
         return userQrCord;
     }
 
@@ -272,7 +274,7 @@ public class HomeController {
         String emailStr2 = (String) session.getAttribute("email");
 
         UsageVo param2 = new UsageVo();
-        System.out.println(param.getTotalParam());
+
         param2.setUsageparam(param.getTotalParam());
         UsageVo result = homeService.selectCostTotal(param2);
         param.setEmail(emailStr);
@@ -424,7 +426,7 @@ public class HomeController {
                 new InternetAddress(email));
         mimeMessage.setSubject("#igloo security 모니터링시스템");
         mimeMessage.setContent("<h1 style='font-size: 20px;'><a href='https://igloocld.com'>https://igloocld.com/</a> 에 접속하셔서, 로그인하시기 바랍니다.</h1>"+
-                "\n<span style='font-weight: bold;'>ID: </span> <span> "+ email +"<br></span>\n<span style='font-weight: bold;'>pw: </span> <span> "+ firstPasswd +"  </span>","text/html; charset=UTF-8");
+                "\n<span style='font-weight: bold;'>ID: </span> <span> "+ email +"<br></span>\n<span style='font-weight: bold;'>pw: </span> <span> "+ firstPasswd +"</span>","text/html; charset=UTF-8");
         //mimeMessage.setText("https://igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid: "+ email+ "\n" + "pw: 1234" );
         Transport transport = session.getTransport();
 

@@ -54,12 +54,12 @@ public class HomeService {
 
     }
 
-    public String selectSecretKey() {
-        return mapper.selectSecretKey();
+    public String selectSecretKey(MemberVo memberVo) {
+        return mapper.selectSecretKey(memberVo);
     }
 
-    public String selectQrCord() {
-        return mapper.selectQrCord();
+    public String selectQrCord(MemberVo memberVo) {
+        return mapper.selectQrCord(memberVo);
     }
 
 

@@ -27,10 +27,12 @@
                     }
                     else if(data == "Success"){
 
-                        document.getElementById("login").hidden = true;
-                        document.getElementById("mfa").hidden = false;
-                        //location.href="/main"
+                        getImage()
 
+                        // $("#imgID").attr("src", data);
+                        //
+                        // document.getElementById("login").hidden = true;
+                        // document.getElementById("mfa").hidden = false;
 
 
 
@@ -44,35 +46,40 @@
 
 
     function getImage() {
+        //console.log(document.getElementById('email2').value);
+
         $.ajax({
             url: "/getImage.do",
             type: "GET",
             data: {
-                username: document.getElementById('email2').value,
-                email: document.getElementById('email2').value,
-                passwd: document.getElementById('pw2').value
+                email: document.getElementById('email2').value
+                //passwd: document.getElementById('pw2').value
             },
             success: function (data) {
-                if(data == "idNull")
-                    window.alert("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.")
+                $("#imgID").attr("src", data);
+                //console.log(data);
+                document.getElementById("login").hidden = true;
+                document.getElementById("mfa").hidden = false;
 
-                else{
-                    if(data == "pwCheck") {
-                        document.getElementById('pw2').value = "";
-                        window.alert("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.")
-                    }
-                    else if(data == "Success"){
-
-                        document.getElementById("login").hidden = true;
-                        document.getElementById("mfa").hidden = false;
-                        //location.href="/main"
+            }
+        });
 
 
+    }
 
-
-                    }
-
-                }
+    function googleVerify() {
+        console.log(document.getElementById('email2').value);
+        console.log(document.getElementById('mfaId').value);
+        $.ajax({
+            url: "/googleVerify.do",
+            type: "GET",
+            data: {
+                email: document.getElementById('email2').value,
+                mfacode: document.getElementById('mfaId').value
+            },
+            success: function (data) {
+                console.log(data);
+                if(data=='success' ) location.href="/main";
 
             }
         });
@@ -169,7 +176,7 @@
                                        id="mfaId"
                                        placeholder="Enter 6 codes...">
 
-                                <button class="btn btn-primary btn-user btn-block" id="button2" onclick="loginCheck()">
+                                <button class="btn btn-primary btn-user btn-block" id="button2" onclick="googleVerify()">
                                     Verify
                                 </button>
 
