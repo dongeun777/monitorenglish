@@ -2,10 +2,12 @@ package igloosec.monitor.controller;
 
 import com.google.gson.Gson;
 import com.sun.mail.smtp.SMTPSaslAuthenticator;
+import igloosec.monitor.TOTPTokenValidation;
 import igloosec.monitor.service.HomeService;
 import igloosec.monitor.service.MemberService;
 import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
+import org.apache.commons.codec.binary.Base32;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,9 +23,11 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -104,16 +108,22 @@ public class HomeController {
     @ResponseBody
     @RequestMapping(value = "/userRegister")
     public String joinMember(MemberVo memberVo) throws MessagingException {
-        memberVo.setPasswd("1234");
-        //memberVo.setAuth("ROLE_USER");
-
 
         List<MemberVo> list =homeService.checkMember(memberVo);
 
         if(list.size() == 0) {
+            String firstPasswd = firstPassword();
+            memberVo.setPasswd(firstPasswd);
+
+            String secretKey = generateSecretKey();
+            memberVo.setSecretkey(secretKey);
+
+            String email = "IGLOOSECURITY";
+            String barcodeUrl = getGoogleAuthenticatorBarCode(secretKey, email);
+            memberVo.setQrcord(barcodeUrl);
 
             try {
-                sendregistermail(memberVo.getEmail());
+                sendregistermail(memberVo.getEmail(),firstPasswd);
             } catch (MessagingException e) {
                 e.printStackTrace();
             }
@@ -126,6 +136,28 @@ public class HomeController {
         }
 
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/googleVerify.do")
+    public String equalCode(MemberVo memberVo) {
+
+        String userSecretKey = homeService.selectSecretKey();
+        String inputCode =  memberVo.getMfacode();
+        if (TOTPTokenValidation.validate(inputCode,userSecretKey) == true) {
+            return "success";
+        }
+        else {
+            return "fail";
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getImage.do")
+    public String googleUrl() {
+        String userQrCord = homeService.selectQrCord();
+        return userQrCord;
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/getLogList.do")
@@ -362,7 +394,7 @@ public class HomeController {
     }
 
 
-    public void sendregistermail(String email)  throws MessagingException {
+    public void sendregistermail(String email,String firstPasswd)  throws MessagingException {
 
 
 
@@ -392,7 +424,7 @@ public class HomeController {
                 new InternetAddress(email));
         mimeMessage.setSubject("#igloo security 모니터링시스템");
         mimeMessage.setContent("<h1 style='font-size: 20px;'><a href='https://igloocld.com'>https://igloocld.com/</a> 에 접속하셔서, 로그인하시기 바랍니다.</h1>"+
-                "\n<span style='font-weight: bold;'>ID: </span> <span> "+ email+ "<br></span>\n" + "<span style='font-weight: bold;'>pw: </span> <span> 1234  </span>" , "text/html; charset=UTF-8");
+                "\n<span style='font-weight: bold;'>ID: </span> <span> "+ email +"<br></span>\n<span style='font-weight: bold;'>pw: </span> <span> "+ firstPasswd +"  </span>","text/html; charset=UTF-8");
         //mimeMessage.setText("https://igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid: "+ email+ "\n" + "pw: 1234" );
         Transport transport = session.getTransport();
 
@@ -590,8 +622,36 @@ public class HomeController {
 
         }
     }
+    private static String GOOGLE_URL = "https://www.google.com/chart?chs=100x100&chld=M|0&cht=qr&chl=";
 
+    // Security Key 생성
+    public static String generateSecretKey() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[20];
+        random.nextBytes(bytes);
+        Base32 base32 = new Base32();
+        return base32.encodeToString(bytes);
+    }
 
+    public static String firstPassword() {
+        SecureRandom random = new SecureRandom();
+        byte[] bytes = new byte[10];
+        random.nextBytes(bytes);
+        Base32 base32 = new Base32();
+        return base32.encodeToString(bytes);
+    }
+
+    // barcode 생성
+    public static String getGoogleAuthenticatorBarCode(String secretKey, String issuer) {
+        try {//igloosec          //igloosec
+            return GOOGLE_URL+"otpauth://totp/"
+                    + URLEncoder.encode(issuer , "UTF-8").replace("+", "%20")
+                    + "?secret=" + URLEncoder.encode(secretKey, "UTF-8").replace("+", "%20")
+                    + "&issuer=" + URLEncoder.encode(issuer, "UTF-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
 
 }

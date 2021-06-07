@@ -28,7 +28,8 @@ public interface HomeMapper {
 
     void completeLog(MemberVo memberVo);
     void completeLog2(MemberVo memberVo);
-
+    String selectSecretKey();
+    String selectQrCord();
     UsageVo selectCostTotal(UsageVo param);
 
     String selectPath();

@@ -54,6 +54,14 @@ public class HomeService {
 
     }
 
+    public String selectSecretKey() {
+        return mapper.selectSecretKey();
+    }
+
+    public String selectQrCord() {
+        return mapper.selectQrCord();
+    }
+
 
     public List<UsageVo> selectLogList(UsageVo param) {
         return mapper.selectLogList(param);

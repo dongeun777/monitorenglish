@@ -27,7 +27,10 @@ public class MemberVo implements UserDetails {
     //shell parameter
     private String totalParam;
 
+    private String qrcord;
+    private String secretkey;
 
+    private String mfacode;
 
     public String getEmail() {
         return email;
@@ -180,5 +183,30 @@ public class MemberVo implements UserDetails {
 
     public void setDeleteVal(String deleteVal) {
         this.deleteVal = deleteVal;
+    }
+
+    public String getQrcord() {
+        return qrcord;
+    }
+
+    public void setQrcord(String qrcord) {
+        this.qrcord = qrcord;
+    }
+
+    public String getSecretkey() {
+        return secretkey;
+    }
+
+    public void setSecretkey(String secretkey) {
+        this.secretkey = secretkey;
+    }
+
+
+    public String getMfacode() {
+        return mfacode;
+    }
+
+    public void setMfacode(String mfacode) {
+        this.mfacode = mfacode;
     }
 }

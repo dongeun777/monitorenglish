@@ -80,6 +80,16 @@
 
     </select>
 
+    <select id="selectSecretKey"  resultType="String">
+        SELECT secretkey
+        FROM USER_LIST where email = #{email};
+    </select>
+
+    <select id="selectQrCord"  resultType="String">
+        SELECT qrcord
+        FROM USER_LIST where email = #{email};
+    </select>
+
 
 
 </mapper>
