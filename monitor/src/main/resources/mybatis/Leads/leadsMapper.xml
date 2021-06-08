@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="igloosec.monitor.mapper.LeadsMapper">
+    <insert id="insertLeadsInfo" parameterType="LeadsInfoVo">
+        INSERT INTO leads_info(
+                               partition_key
+                              ,row_key
+                              ,timestamp
+                              ,product_id
+                              ,customer_first_name
+                              ,customer_last_name
+                              ,customer_email
+                              ,customer_phone
+                              ,customer_country
+                              ,customer_company
+                              ,customer_title
+                              ,lead_source
+                              ,action_code
+                              ,publisher_display_name
+                              ,offer_display_name
+                              ,created_time
+                              ,description
+                              ,crt_dtm
+        )
+        VALUES
+        (
+            #{partitionKey}
+        ,#{rowKey}
+        ,#{timestamp}
+        ,#{productId}
+        ,#{FirstName}
+        ,#{LastName}
+        ,#{Email}
+        ,#{Phone}
+        ,#{Country}
+        ,#{Company}
+        ,#{Title}
+        ,#{leadSource}
+        ,#{actionCode}
+        ,#{publisherDisplayName}
+        ,#{offerDisplayName}
+        ,#{createdTime}
+        ,#{description}
+        ,(SELECT DATE_FORMAT(now(),'%Y%m%d%H%i%S'))
+        )
+
+    </insert>
+</mapper>
+
+
