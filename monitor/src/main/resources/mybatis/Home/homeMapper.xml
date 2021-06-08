@@ -16,12 +16,27 @@
 
 
     <select id="selectMeterDetail" parameterType="UsageVo" resultType="UsageVo">
-        SELECT meterCategory,meterSubCategory,ROUND(quantity,2) AS quantity, unitOfMeasure FROM(
+        SELECT meterCategory,'Storage' as meterSubCategory,ROUND(quantity,2) AS quantity, unitOfMeasure FROM(
 
              SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
              WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
              GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
-        )a where quantity <![CDATA[>=]]> 0.01
+        )a where quantity <![CDATA[>=]]> 0.01 and meterSubCategory LIKE '%Managed Disks' and unitOfMeasure ='10K'
+        UNION
+        SELECT meterCategory,'Virtual Machines' as meterSubCategory,ROUND(quantity,2) AS quantity, unitOfMeasure FROM(
+
+            SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
+            WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
+            GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
+        )b where quantity <![CDATA[>=]]> 0.01 and meterSubCategory LIKE 'Virtual Machines%'
+        UNION
+        SELECT meterCategory, meterSubCategory,ROUND(quantity,2) AS quantity, unitOfMeasure FROM(
+
+         SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
+         WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}' and meterSubCategory NOT LIKE 'Virtual Machines%'
+         GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
+     )c where quantity <![CDATA[>=]]> 0.01 and meterSubCategory NOT LIKE '%Managed Disks'
+
     </select>
 
 
@@ -34,8 +49,8 @@
 
 
     <select id="registerLog" parameterType="UsageVo">
-        insert into ERD.USER_EQUIP_LIST (email, equip,usages)
-        values (#{emailparam}, #{equipparam},${usageparam});
+        insert into ERD.USER_EQUIP_LIST (email, equip,usages,logid)
+        values (#{emailparam}, #{equipparam},${usageparam},#{logid});
     </select>
 
     <select id="joinMember" parameterType="MemberVo">
@@ -48,8 +63,13 @@
     </select>
 
     <select id="selectLogList" parameterType="UsageVo" resultType="UsageVo">
-        select equip,usages from ERD.USER_EQUIP_LIST where email ='${emailparam}'
+        select equip,usages,logid from ERD.USER_EQUIP_LIST where email ='${emailparam}'
     </select>
+
+    <delete id="deleteLog" parameterType="String">
+        delete from USER_EQUIP_LIST where logid = #{logid};
+    </delete>
+
 
     <update id="completeLog" parameterType="MemberVo">
         update USER_LIST SET step = 1 where email = #{email};
@@ -88,6 +108,11 @@
     <select id="selectQrCord"  parameterType="MemberVo" resultType="String">
         SELECT qrcord
         FROM USER_LIST where email = #{email};
+    </select>
+
+    <select id="selectMember" resultType="MemberVo" parameterType="String">
+        SELECT * FROM USER_LIST
+        where email = #{email}
     </select>
 
 

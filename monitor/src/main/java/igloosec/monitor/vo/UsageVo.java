@@ -33,6 +33,9 @@ public class UsageVo {
     private String shellcom;
     private String shellDeletecom;
 
+    private String logid;
+
+
 
 
     public String getUsage_data() {
@@ -246,5 +249,13 @@ public class UsageVo {
 
     public void setShellDeletecom(String shellDeletecom) {
         this.shellDeletecom = shellDeletecom;
+    }
+
+    public String getLogid() {
+        return logid;
+    }
+
+    public void setLogid(String logid) {
+        this.logid = logid;
     }
 }

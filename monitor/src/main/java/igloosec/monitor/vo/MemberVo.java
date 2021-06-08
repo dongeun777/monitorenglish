@@ -31,6 +31,8 @@ public class MemberVo implements UserDetails {
     private String secretkey;
 
     private String mfacode;
+    private String logid;
+
 
     public String getEmail() {
         return email;
@@ -208,5 +210,13 @@ public class MemberVo implements UserDetails {
 
     public void setMfacode(String mfacode) {
         this.mfacode = mfacode;
+    }
+
+    public String getLogid() {
+        return logid;
+    }
+
+    public void setLogid(String logid) {
+        this.logid = logid;
     }
 }

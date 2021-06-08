@@ -47,14 +47,12 @@ public class MemberController {
             }else{
 
 
-                session.setAttribute("loginCheck",true);
-                session.setAttribute("email",memberVo.getEmail());
+               session.setAttribute("loginCheck",true);
+ /*                session.setAttribute("email",memberVo.getEmail());
                 session.setAttribute("auth",user.getAuth());
                 session.setAttribute("rscgrp",user.getRscGrp());
-                session.setAttribute("step",user.getStep());
-                //session.setAttribute();
-                System.out.println(user.getAuth());
-              //  session.setAttribute("auth",memberVo.getAuthorities());
+                session.setAttribute("step",user.getStep());*/
+
                 return "Success";
             }
 

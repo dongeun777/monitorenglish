@@ -32,14 +32,18 @@
             },
 
             success: function (data) {
-                if(data == "Success")
+                if(data == "Success"){
                     window.alert("등록되었습니다.\n메일을 확인해주세요.")
-                else
+                    location.href="/"
+                }
+                else{
                     window.alert("이미 등록된 회원입니다.")
+                    document.getElementById('company').value="";
+                    document.getElementById('email1').value="";
+                    $('#registerBtn').show();
 
-                document.getElementById('company').value="";
-                document.getElementById('email1').value="";
-                $('#registerBtn').show();
+                }
+
 
             }
         })
@@ -144,12 +148,12 @@
                                 <!-- Form Group (email address)-->
                                 <div class="mb-3">
                                     <label class="small mb-1" for="email1">Email address</label>
-                                    <input class="form-control" id="email1" type="email" placeholder="Enter your email address" value="name@example.com">
+                                    <input class="form-control" id="email1" type="email" placeholder="name@example.com" >
                                 </div>
                                 <!-- Form Group (username)-->
                                 <div class="mb-3">
                                     <label class="small mb-1" for="company">Companyname</label>
-                                    <input class="form-control" id="company" type="text" placeholder="Enter your Companyname" value="username">
+                                    <input class="form-control" id="company" type="text" placeholder="Enter your Companyname" >
                                 </div>
                                 <!-- Form Row-->
 

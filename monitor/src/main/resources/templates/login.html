@@ -58,8 +58,12 @@
             success: function (data) {
                 $("#imgID").attr("src", data);
                 //console.log(data);
+
                 document.getElementById("login").hidden = true;
                 document.getElementById("mfa").hidden = false;
+
+                document.getElementById("mfaId").focus();
+
 
             }
         });
@@ -67,9 +71,10 @@
 
     }
 
+
+
     function googleVerify() {
-        console.log(document.getElementById('email2').value);
-        console.log(document.getElementById('mfaId').value);
+
         $.ajax({
             url: "/googleVerify.do",
             type: "GET",
@@ -78,8 +83,8 @@
                 mfacode: document.getElementById('mfaId').value
             },
             success: function (data) {
-                console.log(data);
                 if(data=='success' ) location.href="/main";
+                else window.alert("코드가 일치하지 않습니다.")
 
             }
         });
@@ -90,12 +95,7 @@
 
 </script>
 
-<!--<script type="text/javascript">
 
-    if (document.location.protocol == 'http:') {
-        document.location.href = document.location.href.replace('http:', 'https:');
-    }
-</script>-->
 
 
 <body class="bg-gradient-primary">
@@ -113,7 +113,7 @@
                     <!-- Nested Row within Card Body -->
                     <div class="row" >
                         <div class="col-lg-6 d-none d-lg-block"
-                             style="background: url(image/IGLOO.jpg); background-position: center; background-size: contain;"></div>
+                             style="background: url(image/IGLOO.jpg) no-repeat; background-position: center; background-size: contain;"></div>
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
@@ -138,7 +138,10 @@
 
                                     <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}">
 
-
+                                <a href="/register" class="float-right mr-1" >Join</a>
+                                <div class="form-group" >
+                                    <img src="/image/azure.png" style="height: 70px;">
+                                </div>
                                 
 
 
@@ -174,7 +177,7 @@
 
                                 <input  class="form-control form-control-user"
                                        id="mfaId"
-                                       placeholder="Enter 6 codes...">
+                                       placeholder="Enter 6 codes..."  onKeyPress="if (event.keyCode==13){googleVerify();}">
 
                                 <button class="btn btn-primary btn-user btn-block" id="button2" onclick="googleVerify()">
                                     Verify
@@ -192,7 +195,7 @@
 
 
                                 <div class="text-center">
-                                <img id="imgID" src="https://www.google.com/chart?chs=100x100&chld=M|0&cht=qr&chl=otpauth://totp/IGLOOSECURITY?secret=TRAAK43PKVDK2Y5IO7HLABG2J244RFTQ&issuer=IGLOOSECURITY">
+                                    <img  id="imgID" src="https://www.google.com/chart?chs=100x100&chld=M|0&cht=qr&chl=otpauth://totp/IGLOOSECURITY?secret=TRAAK43PKVDK2Y5IO7HLABG2J244RFTQ&issuer=IGLOOSECURITY">
                                 </div>
 
                             </div>
@@ -221,6 +224,6 @@
 </body>
 
 
-<footer th:replace="mainfooter.html :: footer"></footer>
+<footer th:replace="mainfooter.html :: footer" ></footer>
 
 </html>

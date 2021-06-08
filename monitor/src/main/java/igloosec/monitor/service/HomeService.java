@@ -38,6 +38,10 @@ public class HomeService {
         mapper.registerLog(param);
     }
 
+    public void deleteLog(String logid) {
+        mapper.deleteLog(logid);
+    }
+
     public void joinUser(MemberVo memberVo) {
         // 비밀번호 암호화
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -54,6 +58,9 @@ public class HomeService {
 
     }
 
+    public MemberVo selectMember(String email) {
+        return mapper.selectMember(email);
+    }
     public String selectSecretKey(MemberVo memberVo) {
         return mapper.selectSecretKey(memberVo);
     }

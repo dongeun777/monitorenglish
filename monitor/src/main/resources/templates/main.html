@@ -310,6 +310,24 @@
 
     }
 
+    function deleteLog(logid){
+
+
+        $.ajax({
+            url: "/deleteLog.do",
+            type: "POST",
+            data: {
+                logid: logid
+            },
+
+            success: function (data) {
+
+                location.reload();
+
+            }
+        })
+    }
+
 
     function selectData() {
         //console.log($("#grpSelcet option:selected").val());
@@ -403,7 +421,7 @@
         }
 
     }
-
+    var logtable;
     function getLogList() {
 
         //$('#logListTable').dataTable().ajax.reload();
@@ -411,9 +429,9 @@
             url: "/getLogList.do",
             type: "GET",
             success: function (data) {
-                var table = $('#logListTable').dataTable({
+                logtable = $('#logListTable').dataTable({
                     aaData: data,
-                    //destroy: true,
+                    destroy: true,
                     bPaginate: false,
                     bLengthChange: false,
                     bInfo: false,
@@ -423,9 +441,41 @@
                     serverSide: false,
                     searching: false,
                     columns: [
+                        {data:"logid"},
                         {data: "equip"},
-                        {data: "usages"}
-                    ]
+                        {data: "usages"},
+                        {data: "logid",
+                            "render": function(data, type, row){
+                                if(type=='display'){
+                                    data = '<button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>';
+
+                                }
+                                return data;
+                            }
+                        }
+                    ],
+                    columnDefs:[{
+                        targets:[0],
+                        visible:false
+                    }]
+                });
+
+
+                var table = $('#logListTable').DataTable();
+
+                $('#logListTable tbody').on('click', 'tr .btn', function () {
+                    var tr = $(this).closest('tr');
+                    var dt = table.row( tr ).data();
+
+
+                    console.log("del:"+dt.logid) ;
+                    deleteLog(dt.logid);
+                    //document.getElementById("emailChk").innerHTML=dt.email;
+
+
+                    //deleteUser();
+
+
                 });
 
 
@@ -558,8 +608,9 @@
                     searching: false,
                     columns: [
                         {data: "meterSubCategory"},
-                        {data: "unitOfMeasure"},
-                        {data: "quantity"}
+
+                        {data: "quantity"},
+                        {data: "unitOfMeasure"}
 
                     ]
                 });
@@ -1090,7 +1141,7 @@
                 </div>
 
 
-                <div class="row" th:if="${session['auth']} =='ROLE_ADMIN'"
+                <div class="row" th:if="${session['auth']} !='ROLE_USER'"
                      style="margin-left: 2px;margin-bottom: 10px;">
                     <span class="m-1 font-size-115 mt-2 mr-2">고객사별 검색</span>
 
@@ -1291,7 +1342,7 @@
                                 <div class="card shadow h-100 py-2">
                                     <div class="table-responsive" style="overflow:auto; height: 100%">
                                         <table class="table table-bordered" id="usageTable" cellspacing="0">
-                                            <thead style="text-align: center; position: sticky; top: 0px; ">
+                                            <thead style="text-align: center; position: sticky; top: 0px; background-color: white;">
                                             <tr>
 
                                                 <th>날짜</th>
@@ -1335,9 +1386,9 @@
 
 
                                                 <th>리소스 분류</th>
-                                                <th>단위</th>
-                                                <th>사용량</th>
 
+                                                <th>사용량</th>
+                                                <th>단위</th>
 
                                             </tr>
                                             </thead>
@@ -1474,11 +1525,12 @@
                                     <div class="card shadow py-2" style="height: 80%;">
                                         <div class="table-responsive h-100" style="overflow:auto;">
                                             <table class="table table-bordered" id="logListTable" cellspacing="0">
-                                                <thead style="text-align: center; position: sticky; top: 0px; ">
+                                                <thead style="text-align: center; position: sticky; top: 0px; background: white;">
                                                 <tr>
-
+                                                    <th>id</th>
                                                     <th>장비종류</th>
                                                     <th>일일 로그량(GB)</th>
+                                                    <th></th>
 
                                                 </tr>
                                                 </thead>

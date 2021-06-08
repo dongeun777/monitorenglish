@@ -31,9 +31,9 @@ public interface HomeMapper {
     String selectSecretKey(MemberVo memberVo);
     String selectQrCord(MemberVo memberVo);
     UsageVo selectCostTotal(UsageVo param);
-
+    MemberVo selectMember(String email);
     String selectPath();
-
+    void deleteLog(String logid);
 
     List<MemberVo> getGrpList();
 }
