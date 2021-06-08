@@ -7,6 +7,7 @@
     window.onload = function () {
 
         getMemberList();
+        getManagerList();
 
 
 
@@ -136,25 +137,63 @@
                     }
                 });
 
-                $('#userTable tbody').on( 'click', 'tr', function () {
-                    let this_row = table.row(this).data();
 
-                    if ( $(this).hasClass('selected') ) {
-                        $(this).removeClass('selected');
-                        document.getElementById("emailChk").innerHTML='';
-                        document.getElementById("rscGrpChk").innerHTML='';
+
+
+            }, error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+    }
+
+    function getManagerList() {
+
+        $.ajax({
+            url: "/getMemberList.do",
+            type: "GET",
+            success: function (data) {
+                tablelength = data.length;
+                var table = $('#manageTable').dataTable({
+                    aaData: data,
+
+                    bPaginate: false,
+                    bLengthChange: true,
+                    bInfo: false,
+                    bAutoWidth: false,
+                    processing: true,
+                    ordering: true,
+                    serverSide: false,
+                    searching: false,
+
+                    columns: [
+                        /*  { title: "", "defaultContent": "<button onclick='deleteitem();'>Delete</button>" },*/
+                        {data: "company"},
+                        {data: "email"},
+                        {data: "auth"},
+                        {data: "regDate"},
+                        {data: "rscGrp"},
+                        {data: "ipAddr"}
+                    ],
+
+                });
+
+
+                var table = $('#manageTable').DataTable();
+
+
+                $('#manageTable tbody').on('click', 'tr .btn', function () {
+                    var tr = $(this).closest('tr');
+                    var dt = table.row( tr ).data();
+
+                    if($(this).text() == "Edit"){
+
+                        $(".modal-body #email").val( dt.email)
+
+                        $('#membermodify').modal("show");
 
                     }
-                    else {
-                        table.$('tr.selected').removeClass('selected');
-                        $(this).addClass('selected');
-                        document.getElementById("emailChk").innerHTML=this_row.email;
-                        document.getElementById("rscGrpChk").innerHTML=this_row.rscGrp;
-
-                    }
-
-                } );
-
+                });
 
 
 
@@ -262,6 +301,78 @@
                                                 <th>TM IP 주소</th>
                                                 <th></th>
 
+                                            </tr>
+                                            </thead>
+
+                                            <tbody style="text-align: center">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="container-fluid"  th:if="${session['auth']} =='ROLE_MANAGER'">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">사용자관리</h1>
+
+                </div>
+
+                <div class="row">
+
+                    <!-- Area Chart -->
+                    <div class="col-xl-12 col-lg-10">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+
+                            <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="color:white;">
+                                <h6 class="m-0 font-weight-bold text-primary">사용자리스트  </h6>
+
+                                <span id="emailChk"  hidden="true"></span>
+                                <span id="rscGrpChk"  hidden="true"></span>
+                                <li class="nav-item dropdown no-arrow" >
+
+
+
+                                    <a type="button"  class="btn btn-primary" data-toggle="modal"
+                                       data-target="#memberModal" hidden="true">
+                                        사용자 추가
+                                    </a>
+
+
+                                    <a type="button" class="btn btn-primary" data-toggle="modal"
+                                       data-target="#deleteModal"  hidden="true">
+                                        사용자 제거
+                                    </a>
+
+                                </li>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="card shadow h-100 py-2">
+                                    <div class="table-responsive" style="overflow:auto; height: 100%">
+                                        <table class="table table-bordered" id="manageTable" cellspacing="0">
+                                            <thead style="text-align: center; position: sticky; top: 0px; ">
+                                            <tr>
+
+                                                <th>회사명</th>
+                                                <th>Email 주소</th>
+                                                <th>사용자 유형</th>
+                                                <th>등록일</th>
+                                                <th>리소스그룹</th>
+                                                <th>TM IP 주소</th>
                                             </tr>
                                             </thead>
 
