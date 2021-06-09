@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="igloosec.monitor.mapper.CustomerMapper">
+
+    <select id="selectMemberList" parameterType="UsageVo" resultType="MemberVo">
+        SELECT cloud_vendor,company, email,substring(auth,6,10) AS auth,substring(A.regDate,1,10) AS regDate,rscGrp,ipAddr,round(SUM(costInBillingCurrency),0) as costInBillingCurrency,
+        (SELECT sum(round(event_volume/1024/1024)) FROM ERD.tm_stats WHERE event_date LIKE  CONCAT('${paraYear}','-','${paraMonth}%') AND rscgrp =A.rscGrp group by rscgrp) as usage_data
+        FROM USER_LIST A, USED_AMOUNT B where A.rscGrp=B.resourceGroupName and substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' GROUP BY B.resourceGroupName;
+
+    </select>
+
+
+
+</mapper>
+
+

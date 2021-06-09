@@ -104,6 +104,14 @@ public class HomeController {
         else return "member";
     }
 
+    @GetMapping("/customer")
+    public String customer(Model model, HttpServletRequest request) {
+        HttpSession session =request.getSession(false);
+        if(session==null) return "redirect:/";
+        else return "customer";
+    }
+
+
 
     @ResponseBody
     @RequestMapping(value = "/userRegister")

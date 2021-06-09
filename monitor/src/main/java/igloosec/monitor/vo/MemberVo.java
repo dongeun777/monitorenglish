@@ -33,6 +33,12 @@ public class MemberVo implements UserDetails {
     private String mfacode;
     private String logid;
 
+    private String costInBillingCurrency;
+
+    private String usage_data;
+
+    private String cloud_vendor;
+
 
     public String getEmail() {
         return email;
@@ -218,5 +224,29 @@ public class MemberVo implements UserDetails {
 
     public void setLogid(String logid) {
         this.logid = logid;
+    }
+
+    public String getCostInBillingCurrency() {
+        return costInBillingCurrency;
+    }
+
+    public void setCostInBillingCurrency(String costInBillingCurrency) {
+        this.costInBillingCurrency = costInBillingCurrency;
+    }
+
+    public String getUsage_data() {
+        return usage_data;
+    }
+
+    public void setUsage_data(String usage_data) {
+        this.usage_data = usage_data;
+    }
+
+    public String getCloud_vendor() {
+        return cloud_vendor;
+    }
+
+    public void setCloud_vendor(String cloud_vendor) {
+        this.cloud_vendor = cloud_vendor;
     }
 }

@@ -47,7 +47,11 @@
         </li>
 
 
-
+        <li class="nav-item active" th:if="${session['auth']} !='ROLE_USER'">
+            <a class="nav-link" href="/customer">
+                <i class="fas fa-fw fa-search"></i>
+                <span>고객현황</span></a>
+        </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider">

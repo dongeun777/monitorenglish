@@ -1,0 +1,168 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/html">
+
+<head th:replace="mainheader.html :: mainHead"></head>
+
+<script type="text/javascript">
+    let year;
+    let month;
+    window.onload = function () {
+        let today = new Date();
+        year = today.getFullYear();  // 월
+        month = today.getMonth() + 1;  // 월
+
+        if(month <10) month= '0'+month;
+
+        console.log(month);
+        getCustomerList();
+
+
+    }
+
+
+    function getCustomerList() {
+
+        $.ajax({
+            url: "/getCustomerList.do",
+            type: "GET",
+            data: {
+                paraYear: year,
+                paraMonth: month
+            },
+            success: function (data) {
+
+                var table = $('#userTable').dataTable({
+                    aaData: data,
+
+                    bPaginate: false,
+                    bLengthChange: true,
+                    bInfo: false,
+                    bAutoWidth: false,
+                    processing: true,
+                    ordering: true,
+                    serverSide: false,
+                    searching: false,
+
+                    columns: [
+                        {data: "cloud_vendor"},
+                        {data: "company"},
+                        {data: "email"},
+                        {data: "regDate"},
+                        {data: "rscGrp"},
+                        {data: "costInBillingCurrency"},
+                        {data: "usage_data"}
+
+                    ],
+                    columnDefs:[{
+                        targets: [5,6] , render: $.fn.dataTable.render.number( ',' )
+                    }]
+
+
+                });
+
+
+            }, error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+    }
+
+
+</script>
+
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <div th:insert="sidemenu.html :: side_menu"></div>
+
+
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+
+            <div th:insert="topmenu.html :: top_menu"></div>
+
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid" th:if="${session['auth']} =='ROLE_ADMIN'">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">고객현황</h1>
+
+                </div>
+
+                <div class="row">
+
+                    <!-- Area Chart -->
+                    <div class="col-xl-12 col-lg-10">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+
+                            <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+                                    style="color:white;">
+                                <h6 class="m-0 font-weight-bold text-primary">고객리스트 </h6>
+
+
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="card shadow h-100 py-2">
+                                    <div class="table-responsive" style="overflow:auto; height: 100%">
+                                        <table class="table table-bordered" id="userTable" cellspacing="0">
+                                            <thead style="text-align: center; position: sticky; top: 0px; ">
+                                            <tr>
+                                                <th>Cloud Vendor</th>
+                                                <th>회사명</th>
+                                                <th>Email 주소</th>
+                                                <th>등록일</th>
+                                                <th>리소스그룹</th>
+                                                <th>Cloud 사용금액(원)</th>
+                                                <th>TM LOG 처리량(MB)</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody style="text-align: center">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <footer th:replace="mainfooter.html :: footer"></footer>
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+</body>
+
+
+</html>
