@@ -93,7 +93,7 @@
                     searching: false,
 
                     columns: [
-                      /*  { title: "", "defaultContent": "<button onclick='deleteitem();'>Delete</button>" },*/
+                        /*  { title: "", "defaultContent": "<button onclick='deleteitem();'>Delete</button>" },*/
                         {data: "company"},
                         {data: "email"},
                         {data: "auth"},
@@ -252,16 +252,16 @@
 
 
 
-                                <a type="button"  class="btn btn-primary" data-toggle="modal"
-                                        data-target="#memberModal" hidden="true">
-                                    사용자 추가
-                                </a>
+                                    <a type="button"  class="btn btn-primary" data-toggle="modal"
+                                       data-target="#memberModal" hidden="true">
+                                        사용자 추가
+                                    </a>
 
 
-                                <a type="button" class="btn btn-primary" data-toggle="modal"
-                                   data-target="#deleteModal"  hidden="true">
-                                    사용자 제거
-                                </a>
+                                    <a type="button" class="btn btn-primary" data-toggle="modal"
+                                       data-target="#deleteModal"  hidden="true">
+                                        사용자 제거
+                                    </a>
 
                                 </li>
                             </div>
@@ -389,29 +389,29 @@
                             <div class="card-body">
                                 <div class="card shadow h-100 py-2">
                                     <!--<form method="post"  name ="modify" onsubmit="goData()">-->
-                                        <div class="modal-body">
+                                    <div class="modal-body">
 
-                                            <div class="row mb-3">
-                                                <div class="col-xl-2 col-lg-6">
-                                                    <span class="text-dark"> 새 비밀번호 </span>
-                                                </div>
-                                                <input type="password" name="passwd" id="pw" onchange="check_pw()" placeholder="새 비밀번호">
+                                        <div class="row mb-3">
+                                            <div class="col-xl-2 col-lg-6">
+                                                <span class="text-dark"> 새 비밀번호 </span>
                                             </div>
-
-                                            <div class="row mb-3">
-                                                <div class="col-xl-2 col-lg-6">
-                                                    <span class="text-dark"> 새 비밀번호 확인 </span>
-                                                </div>
-                                                <input type="password" name="passwdconfirm"  id="pw2" onchange="check_pw()"placeholder="새 비밀번호 확인">&nbsp;<span id="check"></span>
-                                            </div>
-
-
-                                        </div>
-                                        <div class="modal-footer" style="text-align: left">
-                                            <button class="btn btn-primary"  id = "btn" onclick="goData()" >변경</button>
+                                            <input type="password" name="passwd" id="pw" onchange="check_pw()" placeholder="새 비밀번호">
                                         </div>
 
-                                  <!--  </form>-->
+                                        <div class="row mb-3">
+                                            <div class="col-xl-2 col-lg-6">
+                                                <span class="text-dark"> 새 비밀번호 확인 </span>
+                                            </div>
+                                            <input type="password" name="passwdconfirm"  id="pw2" onchange="check_pw()"placeholder="새 비밀번호 확인">&nbsp;<span id="check"></span>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="modal-footer" style="text-align: left">
+                                        <button class="btn btn-primary"  id = "btn" onclick="goData()" >변경</button>
+                                    </div>
+
+                                    <!--  </form>-->
 
                                 </div>
 
