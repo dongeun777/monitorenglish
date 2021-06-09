@@ -796,7 +796,7 @@ public class HomeController {
         Message mimeMessage = new MimeMessage(session);
         mimeMessage.setFrom(new InternetAddress(MAIL_FROM));
         mimeMessage.setRecipient(Message.RecipientType.TO,
-                new InternetAddress("yougwoon.lee@igloosec.com"));
+                new InternetAddress("cloud@igloosec.com"));
         mimeMessage.setSubject("#고객 유입 알림#");
         mimeMessage.setText(email + " 계정이 고객정보를 등록하였습니다.");
 
