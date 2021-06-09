@@ -52,7 +52,9 @@ public class HomeController {
     HomeService homeService;
     MemberService memberService;
 
-
+    private static final String MAIL_HOST = "outlook.office365.com";
+    private static final int MAIL_PORT = 587;
+    private static final String MAIL_FROM = "igloocld@igloosec.com";
     @GetMapping("/")
     public String home(Model model) {
 
@@ -118,7 +120,10 @@ public class HomeController {
     public String joinMember(MemberVo memberVo) throws MessagingException {
 
         List<MemberVo> list =homeService.checkMember(memberVo);
+        System.out.println("acount size : " + list.size());
+        String retVal = null;
 
+        // 신규 고객일 경우
         if(list.size() == 0) {
             String firstPasswd = firstPassword();
             memberVo.setPasswd(firstPasswd);
@@ -136,13 +141,29 @@ public class HomeController {
                 e.printStackTrace();
             }
             homeService.joinUser(memberVo);
-            return "Success";
+            retVal = "Success";
+            //return "Success";
         }
-
+        // 기존에 요청했던 고객일 경우
         else{
-            return "fail";
+            // 계정이 이미 있으므로 신청 내역이 있다는 내용 메일 전송해 주기
+            try {
+                sendMailRepeatRequest(memberVo.getEmail());
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            retVal = "fail";
+            //return "fail";
         }
 
+        // 고객 유입 메일 전송
+        try {
+            sendMailCustomerInflux(memberVo.getEmail());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        
+        return retVal;
     }
 
     @ResponseBody
@@ -751,5 +772,57 @@ public class HomeController {
         }
     }
 
+    // 기존에 요청했던 고객이 재요청 한 경우
+    public void sendMailRepeatRequest(String email) throws MessagingException {
+        Session session = setMail();
+        Message mimeMessage = new MimeMessage(session);
+        mimeMessage.setFrom(new InternetAddress(MAIL_FROM));
+        mimeMessage.setRecipient(Message.RecipientType.TO,
+                new InternetAddress(email));
+        mimeMessage.setSubject("#igloo security 모니터링시스템");
+        mimeMessage.setContent("<h1 style='font-size: 20px;'>이미 등록된 회원입니다.</h1>" +
+                "\n<h1 style='font-size: 20px;'><a href='https://igloocld.com'>https://igloocld.com/</a> 에 접속하셔서, 로그인하시기 바랍니다.</h1>", "text/html; charset=UTF-8");
+        Transport transport = session.getTransport();
+
+        transport.connect();
+
+        transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+        transport.close();
+    }
+
+
+    public void sendMailCustomerInflux(String email) throws MessagingException{
+        Session session = setMail();
+        Message mimeMessage = new MimeMessage(session);
+        mimeMessage.setFrom(new InternetAddress(MAIL_FROM));
+        mimeMessage.setRecipient(Message.RecipientType.TO,
+                new InternetAddress("yougwoon.lee@igloosec.com"));
+        mimeMessage.setSubject("#고객 유입 알림#");
+        mimeMessage.setText(email + " 계정이 고객정보를 등록하였습니다.");
+
+        Transport transport = session.getTransport();
+
+        transport.connect();
+
+        transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+        transport.close();
+    }
+
+    private Session setMail() {
+        Properties props = System.getProperties();
+
+        props.put("mail.smtp.host", MAIL_HOST);
+        props.put("mail.smtp.port", MAIL_PORT);
+        props.put("mail.smtp.from", MAIL_FROM);
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", true);
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.trust", MAIL_HOST);
+
+        Session session = Session.getInstance(props, new MyAuthentication());
+        session.setDebug(false); //for debug
+
+        return session;
+    }
 
 }

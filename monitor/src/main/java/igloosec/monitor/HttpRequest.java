@@ -3,19 +3,23 @@ package igloosec.monitor;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
 
 public class HttpRequest {
-    public boolean doGet(String email, String company) {
+    public boolean doGetHttps(String email, String company) {
         String urlString = "https://igloocld.com/userRegister?" +
                 "email=" + email;
-        if(company != null || company.equals("") == false) {
+        if (company != null || company.equals("") == false) {
             try {
                 company = URLEncoder.encode(company, "UTF-8");
-            } catch(UnsupportedEncodingException ue) {
+            } catch (UnsupportedEncodingException ue) {
                 ue.printStackTrace();
                 return false;
             }
@@ -36,6 +40,7 @@ public class HttpRequest {
                     return true;
                 }
             });
+
             // Input setting
             httpsConn.setDoInput(true);
             // Output setting
@@ -72,12 +77,53 @@ public class HttpRequest {
                 if (httpsConn != null) {
                     httpsConn.disconnect();
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return false;
             }
         }
 
+    }
+
+    public boolean doGetHttp(String email, String company) {
+        String urlString = "http://localhost:8080/userRegister?" +
+                "email=" + email;
+        if (company != null || company.equals("") == false) {
+            try {
+                company = URLEncoder.encode(company, "UTF-8");
+            } catch (UnsupportedEncodingException ue) {
+                ue.printStackTrace();
+                return false;
+            }
+            urlString += "&company=" + company;
+        }
+
+        BufferedReader in = null;
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET"); // optional default is GET
+
+            int responseCode = con.getResponseCode();
+            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            return true;
+        } catch(Exception e) {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch(IOException ie) {
+                ie.printStackTrace();
+            }
+        }
+
+        return true;
     }
 }
 
