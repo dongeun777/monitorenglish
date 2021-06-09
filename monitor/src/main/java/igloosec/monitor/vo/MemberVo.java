@@ -39,6 +39,8 @@ public class MemberVo implements UserDetails {
 
     private String cloud_vendor;
 
+    private String name;
+
 
     public String getEmail() {
         return email;
@@ -248,5 +250,13 @@ public class MemberVo implements UserDetails {
 
     public void setCloud_vendor(String cloud_vendor) {
         this.cloud_vendor = cloud_vendor;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

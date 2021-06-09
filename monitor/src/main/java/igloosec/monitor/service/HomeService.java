@@ -51,9 +51,24 @@ public class HomeService {
 
     }
 
+    public void resetPass(MemberVo memberVo) {
+        // 비밀번호 암호화
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        memberVo.setPasswd(passwordEncoder.encode(memberVo.getPasswd()));
+        mapper.resetPass(memberVo);
+
+    }
+
     public List<MemberVo> checkMember(MemberVo memberVo) {
         // 비밀번호 암호화
         return mapper.checkMember(memberVo);
+
+
+    }
+
+    public List<MemberVo> checkResetMember(MemberVo memberVo) {
+        // 비밀번호 암호화
+        return mapper.checkResetMember(memberVo);
 
 
     }

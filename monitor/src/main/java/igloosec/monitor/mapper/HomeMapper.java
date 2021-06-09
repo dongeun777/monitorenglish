@@ -21,8 +21,10 @@ public interface HomeMapper {
     void registerLog(UsageVo param);
 
     void joinMember(MemberVo memberVo);
+    void resetPass(MemberVo memberVo);
 
     List<MemberVo> checkMember(MemberVo memberVo);
+    List<MemberVo> checkResetMember(MemberVo memberVo);
 
     List<UsageVo> selectLogList(UsageVo param);
 

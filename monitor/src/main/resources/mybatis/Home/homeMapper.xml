@@ -62,6 +62,11 @@
        select * from USER_LIST where email ='${email}'
     </select>
 
+
+    <select id="checkResetMember" parameterType="MemberVo" resultType="MemberVo">
+        select DISTINCT email  from USER_LIST A, leads_info B where customer_email =email and email='${email}' and CONCAT(customer_last_name,customer_first_name) ='${name}';
+    </select>
+
     <select id="selectLogList" parameterType="UsageVo" resultType="UsageVo">
         select equip,usages,logid from ERD.USER_EQUIP_LIST where email ='${emailparam}'
     </select>
@@ -78,6 +83,11 @@
 
     <update id="completeLog2" parameterType="MemberVo">
         update USER_LIST SET step = 2 where email = #{email};
+
+    </update>
+
+    <update id="resetPass" parameterType="MemberVo">
+        update USER_LIST SET passwd = #{passwd} where email = #{email};
 
     </update>
 

@@ -377,6 +377,37 @@ public class HomeController {
 
 
 
+    @ResponseBody
+    @RequestMapping(value = "/pwReset.do")
+    public String pwReset(MemberVo memberVo) throws MessagingException {
+
+        List<MemberVo> list =homeService.checkResetMember(memberVo);
+
+        if(list.size() == 0) {
+            return "fail";
+        }
+        else{
+
+            String firstPasswd = firstPassword();
+            memberVo.setPasswd(firstPasswd);
+
+            String secretKey = generateSecretKey();
+            memberVo.setSecretkey(secretKey);
+
+            try {
+                sendResetMail(memberVo.getEmail(),firstPasswd);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            homeService.resetPass(memberVo);
+            return "success";
+
+        }
+
+    }
+
+
+
     public void sendmail(String email)  throws MessagingException {
 
 
@@ -419,7 +450,48 @@ public class HomeController {
 
     }
 
+    public void sendResetMail(String email,String firstPasswd)  throws MessagingException {
 
+
+
+        String host = "outlook.office365.com";
+        int port = 587;
+        String from = "igloocld@igloosec.com";
+
+        Properties props = System.getProperties();
+
+
+        props.put("mail.smtp.host", host);
+        props.put("mail.smtp.port", port);
+        props.put("mail.smtp.from", from);
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", true);
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.trust", host);
+
+
+
+        Session session = Session.getInstance(props, new MyAuthentication());
+        session.setDebug(true); //for debug
+
+        Message mimeMessage = new MimeMessage(session);
+        mimeMessage.setFrom(new InternetAddress(from));
+        mimeMessage.setRecipient(Message.RecipientType.TO,
+                new InternetAddress(email));
+        mimeMessage.setSubject("#igloo security 모니터링시스템");
+        mimeMessage.setContent("<h1 style='font-size: 20px;'>비밀번호가 변경되었습니다.</h1>"+
+                "\n<span style='font-weight: bold;'>ID: </span> <span> "+ email +"<br></span>\n<span style='font-weight: bold;'>pw: </span> <span> "+ firstPasswd +"</span>","text/html; charset=UTF-8");
+        //mimeMessage.setText("https://igloocld.com/ 에 접속하셔서, 로그인하시기 바랍니다. \nid: "+ email+ "\n" + "pw: 1234" );
+        Transport transport = session.getTransport();
+
+        transport.connect();
+
+        transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+        transport.close();
+
+
+
+    }
     public void sendregistermail(String email,String firstPasswd)  throws MessagingException {
 
 
