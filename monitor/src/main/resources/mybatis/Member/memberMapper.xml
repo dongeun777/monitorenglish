@@ -52,7 +52,7 @@
     </update>
 
     <update id="modifyGrpIpMember" parameterType="MemberVo">
-        update USER_LIST SET rscGrp= #{rscGrp}, ipAddr= #{ipAddr} where email = #{email};
+        update USER_LIST SET company= #{company}, auth= #{auth} where email = #{email};
     </update>
 
     <delete id="deleteMember" parameterType="MemberVo">
