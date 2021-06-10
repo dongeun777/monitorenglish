@@ -91,35 +91,7 @@
     }
 
 
-    function showReset(){
 
-        document.getElementById("login").hidden = true;
-        document.getElementById("mfa").hidden = true;
-        document.getElementById("reset").hidden = false;
-
-    }
-    function pwReset() {
-
-        $.ajax({
-            url: "/pwReset.do",
-            type: "GET",
-            data: {
-                email: document.getElementById('emailID').value,
-                name: document.getElementById('nameID').value
-            },
-            success: function (data) {
-                if(data=='success' ) {
-                    window.alert("메일을 확인해주시기 바랍니다.")
-                    document.getElementById("login").hidden = false;
-                    document.getElementById("mfa").hidden = true;
-                    document.getElementById("reset").hidden = true;
-
-                }
-                else window.alert("일치하는 정보가 없습니다.")
-
-            }
-        });
-    }
 
 
 
@@ -168,7 +140,7 @@
 
                                     <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}">
 
-                                <a class="float-right mr-1" onclick="showReset()" >Forgot password?</a>
+                                <a class="float-right mr-1" href="/reset" style="cursor: pointer" >Forgot password?</a>
                                 <div class="form-group" >
                                     <img src="/image/azure.png" style="height: 70px;">
                                 </div>
@@ -260,6 +232,8 @@
                                 <input  class="form-control form-control-user mb-3"
                                         id="emailID"
                                         placeholder="Email Address"  onKeyPress="if (event.keyCode==13){pwReset();}">
+
+
 
                                 <button class="btn btn-primary btn-user btn-block" id="button3" onclick="pwReset()">
                                     Password Reset

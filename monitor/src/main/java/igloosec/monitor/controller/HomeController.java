@@ -83,6 +83,12 @@ public class HomeController {
         return "policy";
     }
 
+    @GetMapping("/reset")
+    public String reset(Model model) {
+
+        return "reset";
+    }
+
 
     @GetMapping("/resource")
     public String resource(Model model, HttpServletRequest request) {

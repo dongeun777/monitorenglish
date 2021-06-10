@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<head th:replace="mainheader.html :: mainHead"></head>
+
+<script type="text/javascript">
+
+
+
+    function pwReset() {
+
+        $.ajax({
+            url: "/pwReset.do",
+            type: "GET",
+            data: {
+                email: document.getElementById('emailID').value,
+                name: document.getElementById('nameID').value
+            },
+            success: function (data) {
+                if(data=='success' ) {
+                    window.alert("메일을 확인해주시기 바랍니다.");
+                    location.href="/";
+                }
+                else window.alert("일치하는 정보가 없습니다.");
+
+            }
+        });
+    }
+
+
+
+</script>
+
+
+
+
+<body class="bg-gradient-primary">
+
+
+<div class="container">
+
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+
+        <div class="col-xl-5 col-lg-12 col-md-9" id="reset" >
+
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-3">
+                    <!-- Nested Row within Card Body -->
+
+
+                    <div class="row"  >
+
+
+                        <div class="col-lg-12">
+                            <div >
+
+                                <div class="mt-1">
+                                    <h1 class="h4 text-gray-900 mb-2 font-weight-bold"  >Forgot password?</h1>
+                                </div>
+
+                                <input  class="form-control form-control-user mb-1"
+                                        id="nameID"
+                                        placeholder="Name">
+                                <input  class="form-control form-control-user mb-3"
+                                        id="emailID"
+                                        placeholder="Email Address"  onKeyPress="if (event.keyCode==13){pwReset();}">
+
+
+
+                                <button class="btn btn-primary btn-user btn-block" id="button3" onclick="pwReset()">
+                                    Password Reset
+                                </button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="js/sb-admin-2.min.js"></script>
+
+</body>
+
+
+<footer th:replace="mainfooter.html :: footer" ></footer>
+
+</html>
