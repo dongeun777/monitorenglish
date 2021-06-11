@@ -81,7 +81,8 @@
 
             let monthVal = month * 1;
 
-            document.getElementById("thisMon1").innerText = monthVal + '월처리량'
+            //document.getElementById("thisMon1").innerText = monthVal + '월처리량'
+            //document.getElementById("thisMon1").innerText = monthVal + document.getElementById("thisMon1").innerText;
             document.getElementById("thisMon2").innerText = monthVal + '월 일평균처리량'
             document.getElementById("thisMon3").innerText = monthVal + '월 LOG 사용금액'
             document.getElementById("thisMon4").innerText = monthVal + '월 LOG 처리량'
@@ -609,8 +610,7 @@
                     columns: [
                         {data: "meterSubCategory"},
 
-                        {data: "quantity"},
-                        {data: "unitOfMeasure"}
+                        {data: "quantity"}
 
                     ]
                 });
@@ -643,7 +643,7 @@
 
             $.each(data, function (inx, obj) {
 
-                chartLabels.push(obj.idate + "일");
+                chartLabels.push(obj.idate);
                 chartData[(obj.idate * 1) - 1] = obj.usage_data;
 
 
@@ -654,7 +654,7 @@
 
                 $.each(data2, function (inx, obj) {
 
-                    chartLabels2.push(obj.idate + "일");
+                    chartLabels2.push(obj.idate );
                     chartData2[(obj.idate * 1) - 1] = obj.usage_data;
                     sumbefore += obj.usage_data * 1;
 
@@ -666,9 +666,9 @@
 
                     labels:
 
-                        ['1일', '2일', '3일', '4일', '5일', '6일', '7일', '8일', '9일', '10일',
-                            '11일', '12일', '13일', '14일', '15일', '16일', '17일', '18일', '19일', '20일',
-                            '21일', '22일', '23일', '24일', '25일', '26일', '27일', '28일', '29일', '30일', '31일'
+                        ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+                            '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+                            '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'
 
                         ],
                     //chartLabels2,
@@ -874,7 +874,7 @@
                             });
                             var currentValue = dataset.data[tooltipItem.index];
                             var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
-                            return "비율: " + percentage + "%, 금액:" + currentValue + "원";
+                            return  percentage + "%," + currentValue + "원";
                         }
                     }
 
@@ -1023,19 +1023,8 @@
 </script>
 <body id="page-top">
 
-<!--<h2 data-th-text="#{label.welcome}"></h2>-->
-<!--<p data-th-text="#{label.content}"></p>-->
-<!--<p data-th-text="#{label.changeLang}"></p>-->
-<!--<p data-th-text="${msg}"></p>-->
-<!--<ul>-->
-<!--    <li>-->
-<!--        <a href="/main?lang=ko-kr" data-th-text="#{label.lang.ko}"></a>-->
-<!--    </li>-->
-<!--    <li>-->
-<!--        <a href="/main?lang=en-us" data-th-text="#{label.lang.us}"></a>-->
-<!--    </li>-->
-<!--</ul>-->
-<!-- Page Wrapper -->
+
+
 <div id="wrapper">
 
     <!--<div th:insert="sidemenu.html :: side_menu"></div>-->
@@ -1069,14 +1058,14 @@
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/cost">
                 <i class="fas fa-fw fa-money-check"></i>
-                <span>비용관리</span></a>
+                <span th:text="#{label.costmanagement}"></span></a>
         </li>
 
 
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/resource">
                 <i class="fas fa-fw fa-chart-pie"></i>
-                <span>자원관리</span></a>
+                <span  th:text="#{label.resourcemanagement}"></span></a>
         </li>
 
 
@@ -1084,13 +1073,13 @@
         <li class="nav-item active">
             <a class="nav-link" href="/member">
                 <i class="fas fa-fw fa-user"></i>
-                <span>사용자관리</span></a>
+                <span th:text="#{label.usermanagement}"></span></a>
         </li>
 
         <li class="nav-item active" th:if="${session['auth']} !='ROLE_USER'">
             <a class="nav-link" href="/customer">
                 <i class="fas fa-fw fa-search"></i>
-                <span>고객현황</span></a>
+                <span th:text="#{label.customerinfo}"></span></a>
         </li>
 
 
@@ -1126,13 +1115,23 @@
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
                     <!-- Nav Item - User Information -->
-
+                    <li class="nav-item" style="margin-top: 3px;">
+                        <a href="/main?lang=ko-kr"  class="text-gray-400"  data-th-text="#{label.lang.ko}" ></a>
+                    </li>
+                    <div class="topbar-divider d-none d-sm-block" style="height: calc(4.375rem - 3rem);"></div>
+                    <li class="nav-item" style="margin-top: 3px;">
+                        <a href="/main?lang=en-us"   class="text-gray-400" data-th-text="#{label.lang.us}" ></a>
+                    </li>
 
                     <li class="nav-item dropdown no-arrow">
 
                         <span id="email" th:text="${session['email']}" hidden="true"> </span>
                         <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                         <span id="step" hidden="true" th:text="${session['step']}"> </span>
+
+
+
+
 
 
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"
@@ -1162,14 +1161,14 @@
 
                 <div class="row" th:if="${session['auth']} !='ROLE_USER'"
                      style="margin-left: 2px;margin-bottom: 10px;">
-                    <span class="m-1 font-size-115 mt-2 mr-2">고객사별 검색</span>
+                    <span class="m-1 font-size-115 mt-2 mr-2"  th:text="#{label.customersearch}"></span>
 
 
                     <div class="input-group" style="width: 19%;">
                         <select class="select float-right form-control" name="itemId"
                                 id="grpSelcet">
 
-                            <option value="tm5SArsg">고객사선택</option>
+                            <option value="tm5SArsg" th:text="#{label.customerchoice}"></option>
 
                             <option th:each="itemData : ${grpList}" th:value="${itemData.rscGrp}"
                                     th:text="${itemData.email}"></option>
@@ -1190,12 +1189,12 @@
 
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card border-left-primary shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
                                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"
-                                             style="font-size: 20px;" id="thisMon1">
+                                             style="font-size: 20px;" id="thisMon1" th:text="#{label.thisMonFirst}">
 
                                         </div>
                                         <div class="h5 mb-0 font-weight-bold text-gray-800" id="usage"></div>
@@ -1244,7 +1243,7 @@
 
                     <!-- Earnings (Monthly) Card Example -->
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card border-left-success shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -1274,7 +1273,7 @@
 
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">일별 LOG 처리량 그래프</h6>
+                                <h6 class="m-0 font-weight-bold text-primary"  th:text="#{label.dailygraph}" ></h6>
 
                             </div>
                             <!-- Card Body -->
@@ -1332,7 +1331,7 @@
                             <!-- Card Header - Dropdown -->
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">월별 금액 비교</h6>
+                                <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.barchart}" ></h6>
 
                             </div>
                             <!-- Card Body -->
@@ -1353,7 +1352,7 @@
 
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">일별 LOG 처리량</h6>
+                                <h6 class="m-0 font-weight-bold text-primary"  th:text="#{label.dailylog}"></h6>
 
                             </div>
                             <!-- Card Body -->
@@ -1364,8 +1363,8 @@
                                             <thead style="text-align: center; position: sticky; top: 0px; background-color: white;">
                                             <tr>
 
-                                                <th>날짜</th>
-                                                <th>LOG처리량(MB)</th>
+                                                <th th:text="#{label.date}"></th>
+                                                <th th:text="#{label.log}"></th>
 
                                             </tr>
                                             </thead>
@@ -1391,7 +1390,7 @@
                             <!-- Card Header - Dropdown -->
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">Azure 리소스별 사용량</h6>
+                                <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.azureresource}">Azure 리소스별 사용량</h6>
 
                             </div>
                             <!-- Card Body -->
@@ -1404,10 +1403,10 @@
                                             <tr>
 
 
-                                                <th>리소스 분류</th>
+                                                <th th:text="#{label.type}"></th>
 
-                                                <th>사용량</th>
-                                                <th>단위</th>
+                                                <th th:text="#{label.usage}"></th>
+
 
                                             </tr>
                                             </thead>

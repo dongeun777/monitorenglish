@@ -94,7 +94,7 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">고객현황</h1>
+                    <h1 class="h3 mb-0 text-gray-800"  th:text="#{label.customerinfo}"></h1>
 
                 </div>
 
@@ -108,7 +108,7 @@
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
                                     style="color:white;">
-                                <h6 class="m-0 font-weight-bold text-primary">고객리스트 </h6>
+                                <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.customerchoice}"> </h6>
 
 
                             </div>
@@ -120,12 +120,12 @@
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
                                             <tr>
                                                 <th>Cloud Vendor</th>
-                                                <th>회사명</th>
-                                                <th>Email 주소</th>
-                                                <th>등록일</th>
-                                                <th>리소스그룹</th>
-                                                <th>Cloud 사용금액(원)</th>
-                                                <th>TM LOG 처리량(MB)</th>
+                                                <th th:text="#{label.company}"></th>
+                                                <th>Email</th>
+                                                <th th:text="#{label.regdate}"></th>
+                                                <th th:text="#{label.rscgrp}"></th>
+                                                <th th:text="#{label.cloudcost}"></th>
+                                                <th th:text="#{label.tmlog}"</th>
                                             </tr>
                                             </thead>
 

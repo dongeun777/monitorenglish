@@ -90,7 +90,7 @@
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">자원관리</h1>
+                    <h1 class="h3 mb-0 text-gray-800" th:text="#{label.resourcemanagement}"></h1>
                     <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                 </div>
 
@@ -109,11 +109,11 @@
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
                                             <tr>
 
-                                                <th>날짜</th>
-                                                <th>리소스분류</th>
-                                                <th>단위</th>
-                                                <th>사용량</th>
-                                                <th>사용금액(원)</th>
+                                                <th  th:text="#{label.date}"></th>
+                                                <th  th:text="#{label.type}"></th>
+                                                <th  th:text="#{label.unit}"></th>
+                                                <th  th:text="#{label.usage}"></th>
+                                                <th  th:text="#{label.amount}"></th>
                                             </tr>
                                             </thead>
                                             <tbody style="text-align: center">

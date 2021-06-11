@@ -27,7 +27,7 @@
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/cost">
                 <i class="fas fa-fw fa-money-check"></i>
-                <span>비용관리</span></a>
+                <span th:text="#{label.costmanagement}"> </span></a>
         </li>
 
 
@@ -35,7 +35,7 @@
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/resource">
                 <i class="fas fa-fw fa-chart-pie"></i>
-                <span>자원관리</span></a>
+                <span  th:text="#{label.resourcemanagement}"></span></a>
         </li>
 
 
@@ -43,14 +43,14 @@
         <li class="nav-item active">
             <a class="nav-link" href="/member">
                 <i class="fas fa-fw fa-user"></i>
-                <span>사용자관리</span></a>
+                <span th:text="#{label.usermanagement}"></span></a>
         </li>
 
 
         <li class="nav-item active" th:if="${session['auth']} !='ROLE_USER'">
             <a class="nav-link" href="/customer">
                 <i class="fas fa-fw fa-search"></i>
-                <span>고객현황</span></a>
+                <span th:text="#{label.customerinfo}"></span></a>
         </li>
 
         <!-- Divider -->
