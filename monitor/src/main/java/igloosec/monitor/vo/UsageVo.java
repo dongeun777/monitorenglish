@@ -24,6 +24,8 @@ public class UsageVo {
     private String usages;
 
     private String costtotal;
+    private String oneyearCostTotal;
+    private String threeyearCostTotal;
 
     private String cpu;
     private String ram;
@@ -257,5 +259,21 @@ public class UsageVo {
 
     public void setLogid(String logid) {
         this.logid = logid;
+    }
+
+    public String getOneyearCostTotal() {
+        return oneyearCostTotal;
+    }
+
+    public void setOneyearCostTotal(String oneyearCostTotal) {
+        this.oneyearCostTotal = oneyearCostTotal;
+    }
+
+    public String getThreeyearCostTotal() {
+        return threeyearCostTotal;
+    }
+
+    public void setThreeyearCostTotal(String threeyearCostTotal) {
+        this.threeyearCostTotal = threeyearCostTotal;
     }
 }

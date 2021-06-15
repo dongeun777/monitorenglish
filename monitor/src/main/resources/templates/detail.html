@@ -1,0 +1,245 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head th:replace="mainheader.html :: mainHead">
+
+
+</head>
+
+
+
+<script type="text/javascript">
+    window.onload = function () {
+        commentList();
+    }
+
+    function registerComment(){
+        var insertData = $('[name=commentInsertForm]').serialize(); //commentInsertForm의 내용을 가져옴
+        commentInsert(insertData); //Insert 함수호출(아래)
+    }
+
+    // $('[name=commentInsertBtn]').click(function(){ //댓글 등록 버튼 클릭시
+    //     var bno = document.getElementById('bno1').value();
+    //     var insertData = $('[name=commentInsertForm]').serialize(); //commentInsertForm의 내용을 가져옴
+    //     commentInsert(insertData); //Insert 함수호출(아래)
+    // });
+
+
+    //댓글 목록
+    function commentList(){
+        var bno = document.getElementById("bno1").value;
+        $.ajax({
+            url : '/comment/list',
+            type : 'get',
+            data : {bno: bno},
+            success : function(data){
+                var a ='';
+                $.each(data, function(key, value){
+                    a += '<div class="commentArea" style="border-bottom:1px solid darkgray; margin-bottom: 15px;">';
+                    a += '<div class="commentInfo'+value.cno+'">'+'댓글번호 : '+value.cno+' / 작성자 : '+value.writer;
+                    a += '<a onclick="commentUpdate('+value.cno+',\''+value.content+'\');"> 수정 </a>';
+                    a += '<a onclick="commentDelete('+value.cno+');"> 삭제 </a> </div>';
+                    a += '<div class="commentContent'+value.cno+'"> <p> 내용 : '+value.content +'</p>';
+                    a += '</div></div>';
+                });
+
+                $(".commentList").html(a);
+            }
+        });
+    }
+
+    //댓글 등록
+    function commentInsert(insertData){
+        $.ajax({
+            url : '/comment/insert',
+            type : 'post',
+            data : insertData,
+            success : function(data){
+                if(data == 1) {
+                    commentList(); //댓글 작성 후 댓글 목록 reload
+                    $('[name=content]').val('');
+                }
+            }
+        });
+    }
+
+    //댓글 수정 - 댓글 내용 출력을 input 폼으로 변경
+    function commentUpdate(cno, content){
+        var a ='';
+
+        a += '<div class="input-group">';
+        a += '<input type="text" class="form-control" name="content_'+cno+'" value="'+content+'"/>';
+        a += '<span class="input-group-btn"><button class="btn btn-default" type="button" onclick="commentUpdateProc('+cno+');">수정</button> </span>';
+        a += '</div>';
+
+        $('.commentContent'+cno).html(a);
+
+    }
+
+    //댓글 수정
+    function commentUpdateProc(cno){
+        var updateContent = $('[name=content_'+cno+']').val();
+
+        $.ajax({
+            url : '/comment/update',
+            type : 'post',
+            data : {'content' : updateContent, 'cno' : cno},
+            success : function(data){
+                if(data == 1) commentList(bno); //댓글 수정후 목록 출력
+            }
+        });
+    }
+
+    //댓글 삭제
+    function commentDelete(cno){
+        $.ajax({
+            url : '/comment/delete/'+cno,
+            type : 'post',
+            success : function(data){
+                if(data == 1) commentList(bno); //댓글 삭제후 목록 출력
+            }
+        });
+    }
+
+
+
+</script>
+
+
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <div th:insert="sidemenu.html :: side_menu"></div>
+
+
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+
+            <div th:insert="topmenu.html :: top_menu"></div>
+
+
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">상세 내용</h1>
+
+                </div>
+                <div class="row">
+
+                    <!-- Area Chart -->
+                    <div class="col-xl-12 col-lg-10">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="card shadow h-100 py-2" >
+                                    <div class="table-responsive" style="overflow:auto; ">
+
+                                        <div class="form-group ml-3">
+                                            <label for="subject">제목</label>
+                                            <p type="text" class="form-control" id="subject" th:text="${DETAIL.subject}"></p>
+                                        </div>
+                                        <div class="form-group ml-3">
+                                            <label for="writer">작성자</label>
+                                            <p type="text" class="form-control" id="writer" th:text="${DETAIL.writer}"></p>
+                                        </div>
+                                        <div class="form-group ml-3">
+                                            <label for="regDate">작성날짜</label>
+                                            <p type="text" class="form-control" id="regDate" th:text="${DETAIL.regDate}"></p>
+                                        </div>
+                                        <div class="form-group ml-3">
+                                            <label for="content1">내용</label>
+                                            <textarea class="form-control" id="content1" th:text="${DETAIL.content}" rows="10" readonly style="background-color: white"></textarea>
+                                        </div>
+                                        <div th:if="${files != null}">
+                                            <div class="form-group ml-3">
+                                                <label>첨부파일</label>
+                                                <p><a th:href="@{'/fileDown/' + ${files.bno}}" th:text="${files.fileOriName}"></a></p>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+
+                                </div>
+                                <button type="button" class="btn btn-primary mt-2 ml-3 mb-1" onclick="location.href='/list'">목록</button>
+                                <button type="button" class="btn btn-primary mt-2 mr-3 mb-1 float-right" th:onclick="'location.href = \'' + @{/update?bno={bno}(bno=${DETAIL.bno})} + '\''">수정</button>
+                                <button type="button" class="btn btn-primary mt-2 mr-3 mb-1 float-right" data-toggle="modal" data-target="#deleteCheck">삭제</button>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <label for="content">comment</label>
+                        <form name="commentInsertForm">
+                            <div class="input-group">
+                                <input type="hidden" name="bno" th:value="${DETAIL.bno}"/>
+                                <input type="text" class="form-control" id="content" name="content" placeholder="내용을 입력하세요.">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" name="commentInsertBtn" onclick="registerComment()">등록</button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="container">
+                        <div class="commentList"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer th:replace="mainfooter.html :: footer"></footer>
+    </div>
+
+
+</div>
+
+
+<div class="modal fade" id="deleteCheck" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="checkDeployLabel">정말 삭제하시겠습니까?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary mr-3 mb-1 float-right" th:onclick="'location.href = \'' + @{/delete?bno={bno}(bno=${DETAIL.bno})} + '\''">삭제</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+
+
+
+
+
+
+</html>

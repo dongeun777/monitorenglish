@@ -66,7 +66,23 @@ public class HomeController {
         return "register";
     }
 
+    @GetMapping("/insert")
+    public String insert(Model model, HttpServletRequest request) {
+        HttpSession session =request.getSession(false);
+        model.addAttribute("grpList", homeService.getGrpList());
 
+        if(session==null) return "redirect:/";
+        else return "insert";
+    }
+
+    @GetMapping("/list")
+    public String list(Model model, HttpServletRequest request) {
+        HttpSession session =request.getSession(false);
+        model.addAttribute("grpList", homeService.getGrpList());
+
+        if(session==null) return "redirect:/";
+        else return "list";
+    }
 
     @GetMapping("/main")
     public String main(Model model, HttpServletRequest request) {

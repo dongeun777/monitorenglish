@@ -93,7 +93,10 @@
 
 
     <select id="selectCostTotal" parameterType="UsageVo" resultType="UsageVo">
-        SELECT round(costtotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS costtotal, cpu, ram, disk, vmseries, pathStr, shellcom
+        SELECT round(costtotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS costtotal,
+               round(oneyearCostTotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS oneyearCostTotal,
+               round(threeyearCostTotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS threeyearCostTotal,
+               cpu, ram, disk, vmseries, pathStr, shellcom
         FROM azurecost WHERE beforeSize<![CDATA[<]]> #{usageparam} AND #{usageparam}<![CDATA[<=]]>logSize;
     </select>
 

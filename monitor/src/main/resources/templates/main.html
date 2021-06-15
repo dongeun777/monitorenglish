@@ -113,6 +113,29 @@
             setTimeout(getChatdata(sessionRsc), 1500);
         } else {
 
+            $("#reserveCost").change( function() {
+                if(this.value == "noRe"){
+                    document.getElementById("costTotalBox").hidden = false;
+                    document.getElementById("costTotal1Box").hidden = true;
+                    document.getElementById("costTotal3Box").hidden = true;
+
+                }
+
+                else if(this.value == "Re1"){
+                    document.getElementById("costTotalBox").hidden = true;
+                    document.getElementById("costTotal1Box").hidden = false;
+                    document.getElementById("costTotal3Box").hidden = true;
+                }
+
+                else if(this.value == "Re3"){
+                    document.getElementById("costTotalBox").hidden = true;
+                    document.getElementById("costTotal1Box").hidden = true;
+                    document.getElementById("costTotal3Box").hidden = false;
+                }
+            });
+
+
+
 
             if (sessionStep == 1) {
                 document.getElementById("logTitle").innerText = "Step2: 등록된 정보를 확인하시고, 배포버튼을 눌러주세요.";
@@ -218,7 +241,12 @@
 
         $.getJSON("/getCostTotal.do", params, function (data) {
 
+            document.getElementById("costTotalBox").hidden = false;
+
             document.getElementById("costTotal").innerText = "약" + comma(data.costtotal) + "원";
+            document.getElementById("cost1Total").innerText = "약" + comma(data.oneyearCostTotal) + "원";
+            document.getElementById("cost3Total").innerText = "약" + comma(data.threeyearCostTotal) + "원";
+
             document.getElementById("cpuVal").innerText = "CPU: " + data.cpu + "core";
             document.getElementById("ramVal").innerText = "RAM: " + data.ram + "GB";
             document.getElementById("diskVal").innerText = "DISK: " + data.disk + "TB";
@@ -1083,6 +1111,13 @@
         </li>
 
 
+        <li class="nav-item active">
+            <a class="nav-link" href="/list">
+                <i class="fas fa-fw fa-search"></i>
+                <span>Q&A</span></a>
+        </li>
+
+
 
         <!-- Divider -->
         <hr class="sidebar-divider">
@@ -1589,6 +1624,12 @@
 
                                 </div>
 
+                                <select class="form-control mt-2 ml-4" style="width: 26%;" name="reServe1" id="reserveCost">
+                                    <option value="noRe">종량제</option>
+                                    <option value="Re1">1년 예약</option>
+                                    <option value="Re3">3년 예약</option>
+                                </select>
+
                                 <div class="card-body">
                                     <div class="card border-left-primary shadow py-2 mt-2" style="height: 45%;">
                                         <div class="text-dark ml-4 "
@@ -1604,11 +1645,30 @@
                                     </div>
                                     <div class="card border-left-primary mt-1 shadow py-2" style="height: 45%;">
 
-                                        <div class="text-dark ml-4 "
-                                             style="font-size: 20px; font-weight: bold; ">월별 예상 금액
+                                        <div id="costTotalBox" hidden="true">
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                            </div>
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 19px; font-weight: bold; " id="costTotal" ></div>
                                         </div>
-                                        <div class="text-dark ml-4 "
-                                             style="font-size: 20px; font-weight: bold; " id="costTotal"></div>
+
+                                        <div id="costTotal1Box" hidden="true">
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                            </div>
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 19px; font-weight: bold; " id="cost1Total"></div>
+                                        </div>
+
+                                        <div id="costTotal3Box" hidden="true">
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                            </div>
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 19px; font-weight: bold; " id="cost3Total"></div>
+                                        </div>
+
                                         <div class="text-dark ml-4 mr-4 "
                                              style="font-size: 15px; font-weight: normal; ">TM License 비용을 제외한 Azure사용에
                                             대한 월별 금액이며, 사용량이나 환율에 따라 변경될 수 있습니다.
@@ -1619,7 +1679,7 @@
 
 
                                         <button class="btn btn-primary mt-1" data-toggle="modal"
-                                                data-target="#checkDeploy"
+                                                data-target="#checkDeploy" style="height: 30px; line-height: 20px;"
                                                 th:if="${session['step']} =='1'">배포시작
 
                                         </button>

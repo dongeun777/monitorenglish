@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="igloosec.monitor.mapper.CommentMapper">
+
+
+    <select id="commentCount" resultType="int">
+        SELECT COUNT(*) FROM comment
+    </select>
+
+    <select id="commentList" resultType="CommentVO">
+        SELECT * FROM comment where BNO = #{bno}
+    </select>
+
+
+    <insert id="commentInsert" parameterType="CommentVO">
+        INSERT INTO comment (cno, bno, content, writer, regDate) VALUES(#{cno},#{bno},#{content},#{writer},now())
+    </insert>
+
+    <update id="commentUpdate" parameterType="CommentVO">
+        UPDATE comment SET content = #{content} WHERE CNO = #{cno}
+    </update>
+
+    <delete id="commentDelete" parameterType="int">
+        DELETE FROM comment WHERE cno = #{cno}
+    </delete>
+
+</mapper>
