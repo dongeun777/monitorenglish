@@ -55,6 +55,11 @@ public class BoardService {
         boardmapper.fileDelete(bno);
     }
 
+    public void commentDeleteService(int bno) throws Exception{
+
+        boardmapper.commentDelete(bno);
+    }
+
 
     public void fileInsertService(FileVO fileVO) throws Exception{
         boardmapper.FileInsert(fileVO);

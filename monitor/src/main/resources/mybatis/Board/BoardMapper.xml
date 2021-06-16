@@ -49,9 +49,18 @@
         DELETE FROM files WHERE bno = #{bno}
     </delete>
 
+    <delete id="commentDelete" parameterType="int">
+        DELETE FROM comment WHERE bno = #{bno}
+    </delete>
 
     <select id="selectBoardList" resultType="BoardVO" parameterType="BoardVO">
         SELECT bno,subject,substring(content,1,3) as content,writer,substring(regDate,1,16) as regDate FROM board
+        <choose>
+            <when test="rscparam!='ROLE_ADMIN'">
+                where writer = #{recparam}
+            </when>
+            <otherwise>  </otherwise>
+        </choose>
     </select>
 
     <insert id="FileInsert" parameterType="FileVO">

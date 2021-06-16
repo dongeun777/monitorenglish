@@ -29,34 +29,6 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-
-//    @RequestMapping("/list") //게시판 리스트 화면 호출
-//    private String boardList(Model model) throws Exception{
-//
-//        model.addAttribute("list", boardService.boardListService());
-//
-//        return "list";
-//    }
-
-//    @GetMapping("/insert")
-//    public String insert(Model model, HttpServletRequest request) {
-//        HttpSession session =request.getSession(false);
-//        model.addAttribute("grpList", homeService.getGrpList());
-//
-//        if(session==null) return "redirect:/";
-//        else return "insert";
-//    }
-//
-//    @GetMapping("/list")
-//    public String list(Model model, HttpServletRequest request) {
-//        HttpSession session =request.getSession(false);
-//        model.addAttribute("grpList", homeService.getGrpList());
-//
-//        if(session==null) return "redirect:/";
-//        else return "list";
-//    }
-
-
     @RequestMapping("/insert") //게시글 작성폼 호출
     private String boardInsertForm(){
 
@@ -96,7 +68,7 @@ public class BoardController {
             String destinationFileName;
             System.out.println(fileName);
             System.out.println(fileNameExtension);
-            String fileUrl = "C:\\Users\\user\\Desktop\\igloosecmonitor\\monitor\\src\\main\\java\\igloosec\\monitor\\uploadFiles\\";
+            String fileUrl = "C:\\Users\\user\\Desktop\\zzzzzzzzmonitoring\\monitor\\src\\main\\java\\igloosec\\monitor\\uploadFiles\\";
 
             do {
                 destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + fileNameExtension;
@@ -165,6 +137,7 @@ public class BoardController {
 
         boardService.boardDeleteService(bno);
         boardService.fileDeleteService(bno);
+        boardService.commentDeleteService(bno);
 
         return "redirect:/list";
     }

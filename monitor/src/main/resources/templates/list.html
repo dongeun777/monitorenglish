@@ -7,7 +7,13 @@
 </head>
 
 <script type="text/javascript">
+    let sessionRsc =  "";
+    let sessionRec =  "";
+
     window.onload = function () {
+        sessionRsc = document.getElementById("auth1").innerText;
+        sessionRec = document.getElementById("email").innerText;
+
         getResourceList();
 
     }
@@ -16,6 +22,9 @@
         $.ajax({
             url: "/getBoardList.do",
             type: "GET",
+            data: { rscparam: sessionRsc,
+                recparam: sessionRec
+            },
             success: function (data) {
                 tablelength = data.length;
                 var table = $('#boardTable').dataTable({
@@ -116,6 +125,8 @@
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="card shadow h-100 py-2" >
+                                    <span id="auth1" th:text="${session['auth']}" hidden="true"> </span>
+                                    <span id="email" th:text="${session['email']}" hidden="true"> </span>
                                     <div class="table-responsive" style="overflow:auto; ">
                                         <button class="btn btn-primary mr-3 mb-1 float-right" onclick="location.href='/insert'"><i class="fa fa-pen mr-1"></i>글쓰기</button>
                                         <table class="table table-bordered" id="boardTable" cellspacing="0">

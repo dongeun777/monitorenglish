@@ -9,6 +9,8 @@ public class BoardVO {
     private String writer;
     private String regDate;
     private int idx;
+    private String rscparam;
+    private String recparam;
 
     public String getSubject() {
         return subject;
@@ -58,5 +60,21 @@ public class BoardVO {
 
     public void setIdx(int idx) {
         this.idx = idx;
+    }
+
+    public String getRscparam() {
+        return rscparam;
+    }
+
+    public void setRscparam(String rscparam) {
+        this.rscparam = rscparam;
+    }
+
+    public String getRecparam() {
+        return recparam;
+    }
+
+    public void setRecparam(String recparam) {
+        this.recparam = recparam;
     }
 }

@@ -30,6 +30,8 @@ public interface BoardMapper {
 
     void fileDelete(int bno) throws Exception;
 
+    void commentDelete(int bno) throws Exception;
+
     List<BoardVO> selectBoardList(BoardVO param);
 
     public void FileInsert(FileVO fileVO) throws Exception;

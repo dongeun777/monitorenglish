@@ -5,7 +5,12 @@
 
 <script type="text/javascript">
 
-
+    function checkSize(input) {
+        if (input.files && input.files[0].size > (100 * 1024 * 1024)) {
+            window.alert("100MB이하의 파일만 가능합니다.");
+            input.value = null;
+        }
+    }
 </script>
 
 
@@ -54,16 +59,16 @@
                                             </div>
                                             <div class="form-group ml-3">
                                                 <label for="writer">작성자</label>
-                                                <input type="text" class="form-control" id="writer" name="writer" placeholder="내용을 입력하세요.">
+                                                <input type="text" class="form-control" id="writer" name="writer" th:value="${session['email']}" readonly style="background-color: white">
                                             </div>
                                             <div class="form-group ml-3">
                                                 <label for="content">내용</label>
-                                                <textarea class="form-control" id="content" name="content" rows="5"></textarea>
+                                                <textarea class="form-control" id="content" name="content" rows="5" placeholder="내용을 입력하세요."></textarea>
                                             </div>
 
-                                            <div class="form-group">
-                                                <label for="files"></label>
-                                                <input type="file" id="files" name="files">
+                                            <div class="form-group ml-3">
+                                                <input type="file" id="files" name="files" value="file1" onchange="checkSize(this)">
+                                                <p style="font-size: 14px">100MB이하의 파일만 가능합니다.<br></p>
                                             </div>
 
                                             <button type="button" class="btn btn-primary ml-3 mb-1" onclick="location.href='/list'">목록</button>
