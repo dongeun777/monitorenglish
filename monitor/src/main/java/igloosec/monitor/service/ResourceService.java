@@ -19,7 +19,11 @@ public class ResourceService {
         return mapper.selectResourceList(param);
     }
 
+    public List<ResourceVo> selectDiskUsageList(ResourceVo param) {
+        return mapper.selectDiskUsageList(param);
+    }
 
-
-
+    public ResourceVo selectResourceUsage(ResourceVo param) {
+        return mapper.selectResourceUsage(param);
+    }
 }

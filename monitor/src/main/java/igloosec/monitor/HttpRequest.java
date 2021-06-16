@@ -3,10 +3,7 @@ package igloosec.monitor;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -124,6 +121,43 @@ public class HttpRequest {
         }
 
         return true;
+    }
+
+
+    // HTTP POST request
+    public String doPostHttp(String ip) throws Exception {
+
+        URL url = new URL("http://" + ip + ":8983/solr/indexer.json");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+        con.setRequestMethod("POST"); // HTTP POST 메소드 설정
+        con.setDoOutput(true); // POST 파라미터 전달을 위한 설정
+        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+        String param    = "wt=json&type=TARGET&action=DISK&partition=true";
+
+        OutputStream out_stream = con.getOutputStream();
+
+        out_stream.write( param.getBytes("UTF-8") );
+        out_stream.flush();
+        out_stream.close();
+
+        InputStream is      = null;
+        BufferedReader in   = null;
+        String data         = "";
+
+        is  = con.getInputStream();
+        in  = new BufferedReader(new InputStreamReader(is), 8 * 1024);
+
+        String line = null;
+        StringBuffer buff   = new StringBuffer();
+
+        while ( ( line = in.readLine() ) != null ) {
+            buff.append(line + "\n");
+        }
+        data    = buff.toString().trim();
+
+        return data;
     }
 }
 

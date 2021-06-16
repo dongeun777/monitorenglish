@@ -101,7 +101,7 @@
 
             //console.log(lastparameter);
 
-            document.getElementById("lastMon1").innerText = monthValLast + '월처리량'
+            //document.getElementById("lastMon1").innerText = monthValLast + '월처리량'
             document.getElementById("lastMon2").innerText = monthValLast + '월 LOG 처리량'
 
             lastLabel = monthValLast + '월';
@@ -111,6 +111,7 @@
             getMeterDetailList(sessionRsc);
             getUsageList(sessionRsc);
             setTimeout(getChatdata(sessionRsc), 1500);
+            getResourceUsage(sessionRsc);
         } else {
 
             $("#reserveCost").change( function() {
@@ -381,7 +382,7 @@
         getMeterSum($("#grpSelcet option:selected").val());
         getMeterDetailList($("#grpSelcet option:selected").val());
         getUsageList($("#grpSelcet option:selected").val());
-
+        getResourceUsage($("#grpSelcet option:selected").val());
     }
 
 
@@ -765,7 +766,7 @@
 
                 createChart();
 
-                document.getElementById("beforedata").innerText = sumbefore / 1000 + "GB";
+                //document.getElementById("beforedata").innerText = sumbefore / 1000 + "GB";
                 barData.push(Math.round(sumbefore * 3.497));
                 barData.push(Math.round(sumMoney));
 
@@ -1063,7 +1064,25 @@
         return s.join(dec);
     }
 
+    function getResourceUsage(rscparam) {
+        $.ajax({
+            url: "/getResourceUsage.do",
+            type: "GET",
+            data: { rscparam: rscparam
+            },
+            success: function (data) {
+                var diskPer = "0%";
+                if(data.usageDiskPer) {
+                    diskPer = data.usageDiskPer;
+                }
+                $("#diskValue").text(diskPer);
+                $("#diskProgress").css({"width": diskPer});
+            }, error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
 
+    }
 </script>
 <body id="page-top">
 
@@ -1292,19 +1311,31 @@
                         </div>
                     </div>
 
-                    <!-- Earnings (Monthly) Card Example -->
+                    <!-- disk usage Card Example -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-success shadow h-100 py-2">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
-
-
                                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1"
-                                             style="font-size: 20px;" id="lastMon1">
-
+                                             style="font-size: 20px;" th:text="#{label.disk}"></div>
+                                        <div class="row no-gutters align-items-center">
+                                            <div class="col-auto">
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="diskValue"></div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="progress progress-sm mr-2">
+                                                    <div class="progress-bar bg-info" role="progressbar" id="diskProgress"></div>
+                                                    <!--
+                                                    <div class="progress-bar bg-info" role="progressbar"
+                                                         style="width: 0%" id="diskProgress"></div>
+                                                         -->
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="beforedata"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a class="nav-link" href="/resource"><i class="fas fa-plus fa-2x text-gray-300"></i></a>
                                     </div>
                                 </div>
                             </div>

@@ -13,7 +13,43 @@
 
     </select>
 
+    <select id="selectDiskUsageList" resultType="ResourceVo"  parameterType="ResourceVo">
+        SELECT
+            rsg_grp AS rscparam
+             ,name AS diskName
+             ,priority AS priority
+             ,limits AS limits
+             ,FORMAT(total,0) AS total
+             ,FORMAT(free,0) AS free
+             ,current AS current
+             ,data AS data
+             ,FORMAT(total - free,0) AS usages
+             ,CONCAT(round(((total - free) / total) * 100,2),'%') AS usageDiskPer
+             ,(SELECT DATE_FORMAT(STR_TO_DATE(MAX(crt_dtm),'%Y%m%d%H%i%S'),'%Y.%m.%d %H') as updateTm FROM USER_DISK_USAGE
+            WHERE rsg_grp = '${rscparam}'
+            AND current != 'N/A') AS updateTm
+        FROM USER_DISK_USAGE
+        WHERE rsg_grp = '${rscparam}'
+        AND current != 'N/A'
+    </select>
 
+    <select id="selectResourceUsage" resultType="ResourceVo"  parameterType="ResourceVo">
+        SELECT rsg_grp AS rscparam
+             ,FORMAT(total / 1024,0) as total
+             ,CONCAT(round(((total - free) / total) * 100,2),'%') AS usageDiskPer
+             ,b.cpu
+             ,b.ram as memory
+        FROM
+            (
+                SELECT rsg_grp,sum(total) AS total, sum(free) AS free
+                FROM USER_DISK_USAGE
+                WHERE rsg_grp = '${rscparam}'
+                  AND current != 'N/A'
+            ) a,
+            (
+                SELECT * FROM azurecost WHERE vmseries = 'Standard_D8ds_v4'
+            ) b
+    </select>
 </mapper>
 
 

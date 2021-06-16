@@ -12,5 +12,7 @@ public interface ResourceMapper {
 
     List<ResourceVo> selectResourceList(ResourceVo param);
 
+    List<ResourceVo> selectDiskUsageList(ResourceVo param);
 
+    ResourceVo selectResourceUsage(ResourceVo param);
 }

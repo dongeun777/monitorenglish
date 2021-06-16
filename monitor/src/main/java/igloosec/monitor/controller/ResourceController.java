@@ -32,4 +32,28 @@ public class ResourceController {
 
         return list;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/getDiskUsageList.do")
+    public List<ResourceVo> getDiskUsageList(Model model,ResourceVo param) {
+
+
+        List<ResourceVo>  list = resourceService.selectDiskUsageList(param);
+
+        model.addAttribute("list",list);
+
+        return list;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getResourceUsage.do")
+    public ResourceVo getResourceUsage(Model model,ResourceVo param) {
+
+
+        ResourceVo vo = resourceService.selectResourceUsage(param);
+
+        model.addAttribute("list",vo);
+
+        return vo;
+    }
 }

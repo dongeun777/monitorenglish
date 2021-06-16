@@ -1,29 +1,38 @@
 package igloosec.monitor.service;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.table.*;
 import igloosec.monitor.HttpRequest;
-import igloosec.monitor.mapper.LeadsMapper;
+import igloosec.monitor.mapper.MemberMapper;
+import igloosec.monitor.mapper.ScheduleMapper;
 import igloosec.monitor.vo.CustomerEntity;
 import igloosec.monitor.vo.LeadsInfoVo;
+import igloosec.monitor.vo.MemberVo;
+import igloosec.monitor.vo.ResourceVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class LeadsService {
+public class ScheduleService {
 
-    private static final Logger logger = LoggerFactory.getLogger(LeadsService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
-    public final LeadsMapper mapper;
+    public final ScheduleMapper mapper;
+    public final MemberMapper memberMapper;
 
-    public LeadsService(LeadsMapper mapper) {
+    public ScheduleService(ScheduleMapper mapper, MemberMapper memberMapper) {
         this.mapper = mapper;
+        this.memberMapper = memberMapper;
     }
 
     @Value("${azure.marketplace.account.name}")
@@ -35,11 +44,12 @@ public class LeadsService {
     @Value("${azure.marketplace.table.name}")
     private String tableName;
 
-    //@Scheduled(fixedDelay = 3600000)  // 1시간 간격
-    //@Scheduled(cron = "0/10 * * * * *")  // 10초마다
+    /**
+     * leads data
+     */
     @Scheduled(cron = "0 0/1 * * * *")  // 1분마다
     public void getLeadsInfo() {
-        logger.info("[LEADS PULLING] Start getting leads information");
+        //logger.info("[LEADS PULLING] Start getting leads information");
 
         // Configure your storage connection string
         String storageConnectionString =
@@ -97,49 +107,73 @@ public class LeadsService {
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {
-            logger.info("[LEADS PULLING] End of getting leads information");
+            //logger.info("[LEADS PULLING] End of getting leads information");
         }
+    }
 
-        // local test
-        /*
-        for(int i = 0; i < 1000; i++) {
-            LeadsInfoVo vo = new LeadsInfoVo();
-            vo.setPartitionKey("1");
-            vo.setRowKey(Integer.toString(i));
-            vo.setTimestamp("3");
-            vo.setProductId("4");
-            vo.setLeadSource("5");
-            vo.setActionCode("6");
-            vo.setPublisherDisplayName("7");
-            vo.setOfferDisplayName("8");
-            vo.setCreatedTime("9");
-            vo.setDescription("10");
-            vo.setFirstName("11");
-            vo.setLastName("12");
-            vo.setEmail("yougwoon.lee@igloosec.com");
-            vo.setPhone("14");
-            vo.setCountry("15");
-            vo.setCompany("16");
-            vo.setTitle("17");
+    /**
+     * resource data
+     */
+    @Scheduled(cron = "0 0/5 * * * *")  // 5분마다
+    public void getResourceInfo() {
+        logger.info("[DISK PULLING] Start getting disk information");
+        // 전체 유저 리소스그룹 조회
+        List<MemberVo> list = memberMapper.selectMemberList();
 
-            // db에 leads 정보가 정상적으로 저장되면, 계정 생성 요청 및 해당 entity table에서 삭제
-            if (mapper.insertLeadsInfo(vo)) {
-                System.out.println("Database insert success - " + vo.getEmail());
-                // 계정 생성 요청
-                HttpRequest request = new HttpRequest();
-                if (request.doGetHttp(vo.getEmail(), vo.getCompany())) {    // 계정 생성 성공 시
-                    System.out.println("Account creation successful - " + vo.getEmail());
-                    // entity tablel에서 해당 값 삭제
-                    System.out.println("Successful deletion of leads information - " + vo.getEmail());
+        HttpRequest request = new HttpRequest();
+
+        // db에 insert할 list
+        List<ResourceVo> insertList = new ArrayList<ResourceVo>();
+
+        for(int i = 0; i < list.size(); i++) {
+            MemberVo vo = list.get(i);
+
+            if(vo.getIpAddr() != null && vo.getIpAddr().equals("") == false) {
+//                System.out.println(vo.getRscGrp() + "/" + vo.getIpAddr());
+                try {
+                    String data = request.doPostHttp(vo.getIpAddr().trim());
+                    if(data != null) {
+                        // parsing
+                        List<ResourceVo> retList = this.resourceFileParse(vo.getRscGrp(), data);
+
+                        if(retList.size() != 0) {
+                            insertList.addAll(retList);
+                        }
+                    }
+                    //System.out.println(request.doPostHttp(vo.getIpAddr().trim()));
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
                 }
             }
+        }
 
-            try {
-                Thread.sleep(60000);
-            } catch(Exception e) {
-                e.printStackTrace();
+        // db update
+        mapper.insertResourceInfo(insertList);
+    }
+
+
+    private List<ResourceVo> resourceFileParse(String rsgGrp, String data) {
+
+        List<ResourceVo> list = new ArrayList<ResourceVo>();
+        JsonObject obj = new JsonParser().parse(data).getAsJsonObject();
+
+        JsonArray arr = (JsonArray)obj.get("list");
+
+        for(int i = 0; i < arr.size(); i++) {
+            if(arr.get(i).isJsonPrimitive() == false) {
+                ResourceVo vo = new ResourceVo();
+                vo.setRscparam(rsgGrp);
+                vo.setDiskName(arr.get(i).getAsJsonObject().getAsJsonPrimitive("name").getAsString());
+                vo.setPriority(arr.get(i).getAsJsonObject().getAsJsonPrimitive("priority").getAsInt());
+                vo.setLimits(arr.get(i).getAsJsonObject().getAsJsonPrimitive("limit").getAsInt());
+                vo.setTotal(arr.get(i).getAsJsonObject().getAsJsonPrimitive("total").getAsString());
+                vo.setFree(arr.get(i).getAsJsonObject().getAsJsonPrimitive("free").getAsString());
+                vo.setCurrent(arr.get(i).getAsJsonObject().getAsJsonPrimitive("current").getAsString());
+                vo.setData(arr.get(i).getAsJsonObject().getAsJsonPrimitive("data").getAsString());
+                list.add(vo);
             }
         }
-        */
+
+        return list;
     }
 }
