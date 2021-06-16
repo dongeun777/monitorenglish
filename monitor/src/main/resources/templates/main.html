@@ -307,6 +307,22 @@
 
     }
 
+    function goBack() {
+
+        $.ajax({
+            url: "/goBack.do",
+            type: "POST",
+            success: function (data) {
+                location.reload();
+            }, error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+
+    }
+
+
 
     function completeLogCheck() {
         if (document.getElementById('logTotal').innerText == "") {
@@ -1609,6 +1625,12 @@
                                     </div>
 
 
+
+                                    <button class="btn btn-primary mt-1"
+                                            th:if="${session['step']} =='1'" onclick='goBack()'><i class="fa fa-arrow-alt-circle-left mr-1"></i>Step 1
+
+                                    </button>
+
                                 </div>
 
 
@@ -1747,7 +1769,7 @@
             <!--<div class="modal-body">LOGOUT 하시겠습니까?</div>-->
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="/">Logout</a>
+                <a class="btn btn-primary" href="/logout">Logout</a>
             </div>
         </div>
     </div>

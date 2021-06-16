@@ -92,6 +92,9 @@ public class HomeService {
     public void completeLog(MemberVo memberVo) {
         mapper.completeLog(memberVo);
     }
+    public void goBack(String email) {
+        mapper.goBack(email);
+    }
 
     public UsageVo selectCostTotal(UsageVo param) {
         return mapper.selectCostTotal(param);

@@ -68,7 +68,17 @@ public class BoardController {
             String destinationFileName;
             System.out.println(fileName);
             System.out.println(fileNameExtension);
-            String fileUrl = "C:\\Users\\user\\Desktop\\zzzzzzzzmonitoring\\monitor\\src\\main\\java\\igloosec\\monitor\\uploadFiles\\";
+
+
+            String fileUrl ="";
+            boolean isWindows = System.getProperty("os.name")
+                    .toLowerCase().startsWith("windows");
+            if (isWindows) {
+                fileUrl = "C:\\monitor\\monitor\\src\\main\\java\\igloosec\\monitor\\uploadFiles\\";
+            }else {
+                fileUrl = "/home/azureuser/monitoring/uploadFiles/";
+            }
+
 
             do {
                 destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + fileNameExtension;

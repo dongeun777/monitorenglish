@@ -16,21 +16,21 @@
 
 
     <select id="selectMeterDetail" parameterType="UsageVo" resultType="UsageVo">
-        SELECT meterCategory,'Storage' as meterSubCategory,ROUND(quantity,2) AS quantity, unitOfMeasure FROM(
+        SELECT meterCategory,'Storage' as meterSubCategory,CONCAT(ROUND(quantity,2)*10,'K' ) AS quantity, unitOfMeasure FROM(
 
              SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
              WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
              GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
         )a where quantity <![CDATA[>=]]> 0.01 and meterSubCategory LIKE '%Managed Disks' and unitOfMeasure ='10K'
         UNION
-        SELECT meterCategory,'Virtual Machines' as meterSubCategory,ROUND(quantity,2) AS quantity, unitOfMeasure FROM(
+        SELECT meterCategory,'Virtual Machines' as meterSubCategory,CONCAT(ROUND(quantity,2)*10 , CASE WHEN unitOfMeasure Like '10%' THEN substring(unitOfMeasure,3,5) WHEN unitOfMeasure LIKE '1 %' THEN substring(unitOfMeasure,3,10) ELSE substring(unitOfMeasure,2,10) END ) AS quantity, unitOfMeasure FROM(
 
             SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
             WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
             GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
         )b where quantity <![CDATA[>=]]> 0.01 and meterSubCategory LIKE 'Virtual Machines%'
         UNION
-        SELECT meterCategory, meterSubCategory,ROUND(quantity,2) AS quantity, unitOfMeasure FROM(
+        SELECT meterCategory, meterSubCategory,CONCAT(ROUND(quantity,2)*10 , CASE WHEN unitOfMeasure Like '10%' THEN substring(unitOfMeasure,3,5) WHEN unitOfMeasure LIKE '1 %' THEN substring(unitOfMeasure,3,10) ELSE substring(unitOfMeasure,2,10) END ) AS quantity, unitOfMeasure FROM(
 
          SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
          WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}' and meterSubCategory NOT LIKE 'Virtual Machines%'
@@ -83,6 +83,11 @@
 
     <update id="completeLog2" parameterType="MemberVo">
         update USER_LIST SET step = 2 where email = #{email};
+
+    </update>
+
+    <update id="goBack" parameterType="String">
+        update USER_LIST SET step = 0 where email = #{email};
 
     </update>
 

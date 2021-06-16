@@ -249,6 +249,12 @@ public class HomeController {
     public List<UsageVo> getMeterDetailList(Model model, UsageVo param) {
 
         List<UsageVo>  list = homeService.selectMeterDetail(param);
+        if (list != null){
+            for(int i = 0; i < list.size(); i++ ){
+                list.get(i).setQuantity(list.get(i).getQuantity().replace(".00",""));
+            }
+        }
+
         model.addAttribute("list",list);
 
         return list;
@@ -333,6 +339,16 @@ public class HomeController {
         session.setAttribute("step","1");
         return "redirect:/main";
     }
+
+    @PostMapping("/goBack.do")
+    public String goBack(HttpSession session) throws MessagingException, IOException {
+        String emailStr = (String) session.getAttribute("email");
+
+        homeService.goBack(emailStr);
+        session.setAttribute("step","0");
+        return "redirect:/main";
+    }
+
 
 
     @PostMapping("/createvm.do")
