@@ -47,7 +47,7 @@
                   AND current != 'N/A'
             ) a,
             (
-                SELECT * FROM azurecost WHERE vmseries = 'Standard_D8ds_v4'
+                SELECT distinct cpu, ram FROM azurecost WHERE vmseries = 'Standard_D8ds_v4'
             ) b
     </select>
 </mapper>
