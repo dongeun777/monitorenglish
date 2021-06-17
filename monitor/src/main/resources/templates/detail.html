@@ -34,7 +34,7 @@
                         a += '<a class="btn btn-primary ml-2 mt-1" onclick="commentUpdate('+value.cno+',\''+value.content+'\');"> 수정 </a>';
                         a += '<a class="btn btn-primary ml-2 mt-1" onclick="commentDelete('+value.cno+'); location.reload();"> 삭제 </a> </div>';
                     }
-                    a += '<div class="commentContent'+value.cno+'"> <p> 내용 : '+value.content +'</p>';
+                    a += '<div class="commentContent'+value.cno+'"> <textarea class="form-control" type="text" style="background-color: white; border: none;" readonly>'+value.content +'</textarea>';
                     a += '<div class="commentArea" style="border-bottom:1px solid darkgray; margin-bottom: 15px;">';
                     a += '</div></div>';
                 });
@@ -63,7 +63,7 @@
     function commentUpdate(cno, content){
         var a ='';
         a += '<div class="input-group">';
-        a += '<textarea type="text" class="form-control mt-2" name="content_'+cno+'" value="'+content+'" text="'+content+'"></textarea>';
+        a += '<textarea type="text" class="form-control mt-2" name="content_'+cno+'" value="'+content+'" text="'+content+'">'+content+'</textarea>';
         a += '<span class="input-group-btn"><button class="btn btn-primary ml-2" type="button" onclick="commentUpdateProc('+cno+'); location.reload();">수정</button> </span>';
         a += '</div>';
 
