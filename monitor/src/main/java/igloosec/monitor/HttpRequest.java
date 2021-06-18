@@ -125,7 +125,7 @@ public class HttpRequest {
 
 
     // HTTP POST request
-    public String doPostHttp(String ip) throws Exception {
+    public String doPostHttp(String ip, String partitionName) throws Exception {
 
         URL url = new URL("http://" + ip + ":8983/solr/indexer.json");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -135,6 +135,13 @@ public class HttpRequest {
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
         String param    = "wt=json&type=TARGET&action=DISK&partition=true";
+
+        if(partitionName != null) {
+            param += "&partition_add=true";
+            param += "&partition_pri=1";
+            param += "&partition_limit=512";
+            param += "&partition_name=" + partitionName;
+        }
 
         OutputStream out_stream = con.getOutputStream();
 

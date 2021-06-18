@@ -15,4 +15,8 @@ public interface ResourceMapper {
     List<ResourceVo> selectDiskUsageList(ResourceVo param);
 
     ResourceVo selectResourceUsage(ResourceVo param);
+
+    List<ResourceVo> selectDiskPrice();
+
+    String selectUserVmIp(String rscGrp);
 }

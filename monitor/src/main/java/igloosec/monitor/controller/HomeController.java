@@ -369,6 +369,12 @@ public class HomeController {
 
         result.setEmailparam(emailStr);
 
+        // country, product, vendor 조회
+        UsageVo shellParam = homeService.selectShellParam(emailStr2);
+
+        result.setCountry(shellParam.getCountry());
+        result.setProduct(shellParam.getProduct());
+        result.setVendor(shellParam.getVendor());
 
         try {
             shellVMcreate(result,emailStr2);
@@ -1209,12 +1215,14 @@ public class HomeController {
             process = Runtime.getRuntime()
                     .exec(String.format("cmd.exe /c dir %s", homeDirectory));
 
-            System.out.println(result.getPathStr()+"/"+result.getShellcom()+" "+result.getEmailparam()+" "+result.getVmseries()+" "+emailStr);
+            System.out.println(result.getPathStr()+"/"+result.getShellcom()+" "+result.getEmailparam()+" "+result.getVmseries()+" "+emailStr + " "
+                    + result.getCountry() + " " + result.getProduct() + " " + result.getVendor());
             //System.out.println(result.getPathStr());
         } else {
             //Runtime.getRuntime().exec().
             process = Runtime.getRuntime()
-                    .exec(result.getPathStr()+"/"+result.getShellcom()+" "+result.getEmailparam()+" "+result.getVmseries()+" "+emailStr);
+                    .exec(result.getPathStr()+"/"+result.getShellcom()+" "+result.getEmailparam()+" "+result.getVmseries()+" "+emailStr + " "
+                            + result.getCountry() + " " + result.getProduct() + " " + result.getVendor());
         }
 
 

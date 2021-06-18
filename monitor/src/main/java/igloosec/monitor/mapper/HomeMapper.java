@@ -1,5 +1,6 @@
 package igloosec.monitor.mapper;
 
+import igloosec.monitor.vo.ConfigVo;
 import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -39,4 +40,9 @@ public interface HomeMapper {
     void deleteLog(String logid);
 
     List<MemberVo> getGrpList();
+
+    // shell param
+    UsageVo selectShellParam(String email);
+
+    List<ConfigVo> selectConfig();
 }

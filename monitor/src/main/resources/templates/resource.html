@@ -10,16 +10,32 @@
 
 
 <script type="text/javascript">
+    const map = {};
+
     let sessionRsc =  "";
 
     window.onload = function () {
+
         sessionRsc = document.getElementById("rscgrp").innerText;
+
+        document.getElementById("div_load").hidden = true;
+        document.getElementById("div_load_image").hidden = true;
+
         getResourceList();
 
         // resource usage
         getResourceUsage();
         // disk usage
         getDiskUsage();
+
+        $("#diskCapacity").change( function() {
+            var text = "디스크 확장 시 추가 요금이 발생 됩니다.\n" +
+                this.options[this.selectedIndex].text + " 기준 추가 예상 금액 약 " + comma(map[this.value])+ "원 입니다.";
+            $("#estimatedAmount").text(text);
+        });
+
+        // azure disk price
+        getDiskPrice();
     }
 
 
@@ -74,22 +90,13 @@
             },
             success: function (data) {
                 tablelength = data.length;
-                /*
-                if(data[0]) {
-                    alert(1);
-                    $('#updateTm').text(" (" + data[0].updateTm);
-                } else {
-                    alert(2);
-                    document.getElementById("tt").style.cssFloat = "top";
-                    //$('#tt').css('float','top');
-                }
-                */
 
-                /*
-                if(data[0].updateTm) {
-                    $("#diskUpdateTm").css({"display": "none"});
+                var displayDiskUpdateTm = $('#disk').text();
+                if(data[0]) {
+                    displayDiskUpdateTm += " (" + data[0].updateTm + $("#diskUpdateTm").text();
                 }
-                */
+
+                $('#diskUsage').text(displayDiskUpdateTm);
                 $('#diskTable').dataTable({
                     aaData: data,
                     bPaginate: false,
@@ -135,33 +142,70 @@
         });
     }
 
-    /*
-    function diskExpansion() {
+    function getDiskPrice() {
         $.ajax({
-            url: "/getResourceUsage.do",
+            url: "/getDiskPrice.do",
             type: "GET",
-            data: { rscparam: sessionRsc
-            },
             success: function (data) {
-                $('#cpuVal').text(data.cpu + " core");
-                $('#memVal').text(data.memory + "GB");
-                $('#diskVal').text(data.total + "GB / " + data.usageDiskPer);
-
+                for(var i in data){
+                    map[data[i].diskSize] = data[i].diskPrice;
+                    console.log(data[i].diskSize + "/" + data[i].diskPrice);
+                }
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
     }
-    */
 
+    function diskExpansion() {
+        var diskSize = $("#diskCapacity option:selected").val();
+
+        if(diskSize == 'none') {
+            window.alert('디스크 용량을 선택해 주세요.');
+            return;
+        }
+        $('#checkExpansion').modal("hide");
+        document.getElementById("div_load").hidden = false;
+        document.getElementById("div_load_image").hidden = false;
+
+        $.ajax({
+            url: "/setDiskExpansion.do",
+            type: "POST",
+            data: {
+                rscparam: sessionRsc
+                , diskSize: diskSize
+            },
+            success: function (data) {
+                location.reload();
+            }, error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+    }
+
+    function comma(num) {
+        var len, point, str;
+
+        num = num + "";
+        point = num.length % 3;
+        len = num.length;
+
+        str = num.substring(0, point);
+        while (point < len) {
+            if (str != "") str += ",";
+            str += num.substring(point, point + 3);
+            point += 3;
+        }
+
+        return str;
+
+    }
 </script>
 
 
 <body id="page-top">
-
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:insert="sidemenu.html :: side_menu"></div>
 
 
@@ -182,6 +226,8 @@
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800" th:text="#{label.resourcemanagement}"></h1>
                     <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
+                    <span id="disk" hidden="true" th:text="#{label.disk}"/>
+                    <span id="diskUpdateTm" hidden="true" th:text="#{label.diskUpdateTm}"/>
                 </div>
 
                 <div class="row">
@@ -207,9 +253,7 @@
                                     </tr>
                                     </thead>
                                 </table>
-                                <h6 class="m-0 font-weight-bold text-gray-800" style="float:top" th:text="#{label.disk}"></h6>
-                                <!--<h6 class="m-0 font-weight-bold text-gray-800" style="float:top" id="updateTm"></h6>
-                                <h6 class="m-0 font-weight-bold text-gray-800" style="float:top; visibilit:hidden" th:text="#{label.diskUpdateTm}" id = "diskUpdateTm"></h6>-->
+                                <h6 class="m-0 font-weight-bold text-gray-800" style="float:top" id="diskUsage">디스크 사용률</h6>
                                 <div class="card shadow h-100 py-2 mb-4" >
                                     <div class="table-responsive" style="overflow:auto;">
                                         <table class="table table-bordered" id="diskTable" cellspacing="0">
@@ -229,11 +273,9 @@
                                     </div>
 
                                 </div>
-                                <!--
                                 <button class="btn btn-primary mt-1" data-toggle="modal"
                                         data-target="#checkExpansion">디스크 확장
                                 </button>
-                                -->
                             </div>
                         </div>
                     </div>
@@ -303,9 +345,14 @@
 
 </div>
 
+<div id="div_load" style="position: absolute;top:0;left:0;width:100%;height:100%;background-color:gray;opacity:0.3;z-index: 1;"></div>
+<div id="div_load_image"
+     style="position: absolute; top:40%; left: 50%; width:0px ; height: 0px; z-index: 2; background: #f0f0f0; margin:auto;">
+    <img src="/image/loading.gif" style="width:151px; height: 151px; ">
+</div>
 
 <div class="modal fade" id="checkExpansion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+     aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -315,8 +362,10 @@
                 </button>
             </div>
             <div class="modal-content">
-                <div style="width:40%;float: left;">
-                    <select class="form-control" name="fire" id="capacitySelection">
+                <ul>
+                    <li style="color: white;">
+                <div style="width:40%;float: left;height: 100%">
+                    <select class="form-control mt-3" name="fire" id="diskCapacity">
                         <option value="none">디스크 용량 선택</option>
                         <option value="1024">1,024 GiB</option>
                         <option value="2048">2,048 GiB</option>
@@ -326,12 +375,15 @@
                         <option value="32767">32,767 GiB</option>
                     </select>
                 </div>
+                    </li>
+                    <li style="color: white;">
                 <div style="width:60%;float: right;">
                     <div class="text-dark ml-4 mr-4 "
-                         style="font-size: 15px; font-weight: normal; ">디스크 확장 시 추가 요금이 발생 됩니다.
-                        2,048GiB 기준 추가 예상 금액 약 500,000원 입니다.
+                         style="font-size: 15px; font-weight: normal; " id="estimatedAmount">
                     </div>
                 </div>
+                    </li>
+                </ul>
             </div>
             <div>
                 <div class="modal-footer">

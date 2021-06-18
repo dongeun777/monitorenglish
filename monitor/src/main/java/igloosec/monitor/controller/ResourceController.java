@@ -5,10 +5,9 @@ import igloosec.monitor.vo.ResourceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -56,4 +55,29 @@ public class ResourceController {
 
         return vo;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/getDiskPrice.do")
+    public List<ResourceVo> getDiskPrice(Model model) {
+
+
+        List<ResourceVo>  list = resourceService.selectDiskPrice();
+
+        model.addAttribute("list",list);
+
+        return list;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/setDiskExpansion.do")
+    public void setDiskExpansion(HttpSession session, ResourceVo param) {
+        // disk expansion
+        resourceService.addMultiVolume(param.getRscparam(), param.getDiskSize());
+        /*
+
+        model.addAttribute("list",list);
+        */
+        return;
+    }
+
 }

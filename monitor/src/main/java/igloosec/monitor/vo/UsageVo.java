@@ -37,8 +37,10 @@ public class UsageVo {
 
     private String logid;
 
-
-
+    // shell parameter
+    private String country;
+    private String product;
+    private String vendor;
 
     public String getUsage_data() {
         return usage_data;
@@ -275,5 +277,29 @@ public class UsageVo {
 
     public void setThreeyearCostTotal(String threeyearCostTotal) {
         this.threeyearCostTotal = threeyearCostTotal;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
+    }
+
+    public String getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
     }
 }

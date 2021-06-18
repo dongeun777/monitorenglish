@@ -26,10 +26,10 @@
              ,FORMAT(total - free,0) AS usages
              ,CONCAT(round(((total - free) / total) * 100,2),'%') AS usageDiskPer
              ,(SELECT DATE_FORMAT(STR_TO_DATE(MAX(crt_dtm),'%Y%m%d%H%i%S'),'%Y.%m.%d %H') as updateTm FROM USER_DISK_USAGE
-            WHERE rsg_grp = '${rscparam}'
+            WHERE rsg_grp = #{rscparam}
             AND current != 'N/A') AS updateTm
         FROM USER_DISK_USAGE
-        WHERE rsg_grp = '${rscparam}'
+        WHERE rsg_grp = #{rscparam}
         AND current != 'N/A'
     </select>
 
@@ -43,12 +43,23 @@
             (
                 SELECT rsg_grp,sum(total) AS total, sum(free) AS free
                 FROM USER_DISK_USAGE
-                WHERE rsg_grp = '${rscparam}'
+                WHERE rsg_grp = #{rscparam}
                   AND current != 'N/A'
             ) a,
             (
                 SELECT distinct cpu, ram FROM azurecost WHERE vmseries = 'Standard_D8ds_v4'
             ) b
+    </select>
+
+    <select id="selectDiskPrice" resultType="ResourceVo" >
+        SELECT disk_size AS diskSize
+             , round(cost* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS diskPrice
+        FROM azurecost_disk
+    </select>
+
+    <select id="selectUserVmIp" resultType="String" parameterType="String">
+        SELECT ipAddr FROM USER_LIST
+        WHERE rscGrp = #{rscGrp}
     </select>
 </mapper>
 

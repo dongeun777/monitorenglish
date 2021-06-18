@@ -111,4 +111,8 @@ public class HomeService {
     public List<MemberVo> getGrpList() {
         return  mapper.getGrpList();
     }
+
+
+    // shell parameter
+    public UsageVo selectShellParam(String email) {return mapper.selectShellParam(email); };
 }

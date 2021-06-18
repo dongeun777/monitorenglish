@@ -26,6 +26,9 @@ public class ResourceVo {
     private String usages;
     private String updateTm;
 
+    private int diskSize;
+    private double diskPrice;
+
     public String getId() {
         return id;
     }
@@ -192,5 +195,21 @@ public class ResourceVo {
 
     public void setUpdateTm(String updateTm) {
         this.updateTm = updateTm;
+    }
+
+    public int getDiskSize() {
+        return diskSize;
+    }
+
+    public void setDiskSize(int diskSize) {
+        this.diskSize = diskSize;
+    }
+
+    public double getDiskPrice() {
+        return diskPrice;
+    }
+
+    public void setDiskPrice(double diskPrice) {
+        this.diskPrice = diskPrice;
     }
 }

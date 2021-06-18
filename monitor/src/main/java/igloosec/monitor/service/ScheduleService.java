@@ -6,19 +6,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.table.*;
+import igloosec.monitor.ConfigUtils;
 import igloosec.monitor.HttpRequest;
+import igloosec.monitor.mapper.HomeMapper;
 import igloosec.monitor.mapper.MemberMapper;
 import igloosec.monitor.mapper.ScheduleMapper;
-import igloosec.monitor.vo.CustomerEntity;
-import igloosec.monitor.vo.LeadsInfoVo;
-import igloosec.monitor.vo.MemberVo;
-import igloosec.monitor.vo.ResourceVo;
+import igloosec.monitor.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +29,12 @@ public class ScheduleService {
 
     public final ScheduleMapper mapper;
     public final MemberMapper memberMapper;
+    public final HomeMapper homeMapper;
 
-    public ScheduleService(ScheduleMapper mapper, MemberMapper memberMapper) {
+    public ScheduleService(ScheduleMapper mapper, MemberMapper memberMapper, HomeMapper homeMapper) {
         this.mapper = mapper;
         this.memberMapper = memberMapper;
+        this.homeMapper = homeMapper;
     }
 
     @Value("${azure.marketplace.account.name}")
@@ -47,7 +49,7 @@ public class ScheduleService {
     /**
      * leads data
      */
-    @Scheduled(cron = "0 0/1 * * * *")  // 1분마다
+    @Scheduled(cron = "0/10 * * * * *")  // 10초마다
     public void getLeadsInfo() {
         //logger.info("[LEADS PULLING] Start getting leads information");
 
@@ -122,7 +124,7 @@ public class ScheduleService {
 
         HttpRequest request = new HttpRequest();
 
-        // db에 insert할 list
+        // db insert list
         List<ResourceVo> insertList = new ArrayList<ResourceVo>();
 
         for(int i = 0; i < list.size(); i++) {
@@ -131,8 +133,10 @@ public class ScheduleService {
             if(vo.getIpAddr() != null && vo.getIpAddr().equals("") == false) {
 //                System.out.println(vo.getRscGrp() + "/" + vo.getIpAddr());
                 try {
-                    String data = request.doPostHttp(vo.getIpAddr().trim());
+                    // get data
+                    String data = request.doPostHttp(vo.getIpAddr().trim(), null);
                     if(data != null) {
+                        logger.info("[DISK PULLING] [{}] data pulling success", vo.getRscGrp());
                         // parsing
                         List<ResourceVo> retList = this.resourceFileParse(vo.getRscGrp(), data);
 
@@ -149,6 +153,24 @@ public class ScheduleService {
 
         // db update
         mapper.insertResourceInfo(insertList);
+
+        logger.info("[DISK PULLING] db update success");
+        logger.info("[DISK PULLING] End getting disk information");
+    }
+
+    /**
+     * config set
+     */
+    @PostConstruct
+    @Scheduled(cron = "0 0/5 * * * *")  // 5분마다
+    public void getConfig() {
+        // config 조회
+        List<ConfigVo> list = homeMapper.selectConfig();
+
+        // config setting
+        ConfigUtils.setConfig(list);
+
+        logger.info("[SET CONFIG] config settings");
     }
 
 
@@ -173,6 +195,8 @@ public class ScheduleService {
                 list.add(vo);
             }
         }
+
+        logger.info("[DISK PULLING] [{}] parse success", rsgGrp);
 
         return list;
     }

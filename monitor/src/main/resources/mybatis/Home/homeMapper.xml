@@ -54,8 +54,8 @@
     </select>
 
     <select id="joinMember" parameterType="MemberVo">
-        insert into USER_LIST (email, passwd,regDate,company,qrcord,secretkey)
-        values (#{email}, #{passwd},NOW(),#{company},#{qrcord},#{secretkey});
+        insert into USER_LIST (email, passwd,regDate,company,qrcord,secretkey,cloud_vendor)
+        values (#{email}, #{passwd},NOW(),#{company},#{qrcord},#{secretkey}, 'AZURE');
     </select>
 
     <select id="checkMember" parameterType="MemberVo" resultType="MemberVo">
@@ -133,8 +133,16 @@
         where email = #{email}
     </select>
 
+    <select id="selectShellParam" resultType="UsageVo" parameterType="String">
+        SELECT DISTINCT customer_country AS country,replace(offer_display_name, ' ', '_') AS product, cloud_vendor AS vendor
+        FROM leads_info a,USER_LIST b
+        WHERE a.customer_email = b.email
+        AND customer_email = #{email}
+    </select>
 
-
+    <select id="selectConfig" resultType="ConfigVo">
+        SELECT cfg_key AS cfgKey, cfg_value AS cfgVal FROM config
+    </select>
 </mapper>
 
 
