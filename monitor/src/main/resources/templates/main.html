@@ -114,26 +114,26 @@
             getResourceUsage(sessionRsc);
         } else {
 
-            $("#reserveCost").change( function() {
-                if(this.value == "noRe"){
+            $('input[name="costTotal"]').change(function(){
+                if($(this).val() == "noRe") {
                     document.getElementById("costTotalBox").hidden = false;
                     document.getElementById("costTotal1Box").hidden = true;
                     document.getElementById("costTotal3Box").hidden = true;
-
                 }
-
-                else if(this.value == "Re1"){
+                else if($(this).val() == "Re1"){
                     document.getElementById("costTotalBox").hidden = true;
                     document.getElementById("costTotal1Box").hidden = false;
                     document.getElementById("costTotal3Box").hidden = true;
                 }
-
-                else if(this.value == "Re3"){
+                else if($(this).val() == "Re3"){
                     document.getElementById("costTotalBox").hidden = true;
                     document.getElementById("costTotal1Box").hidden = true;
                     document.getElementById("costTotal3Box").hidden = false;
                 }
+
             });
+
+
 
 
 
@@ -243,6 +243,7 @@
         $.getJSON("/getCostTotal.do", params, function (data) {
 
             document.getElementById("costTotalBox").hidden = false;
+
 
             document.getElementById("costTotal").innerText = "약" + comma(data.costtotal) + "원";
             document.getElementById("cost1Total").innerText = "약" + comma(data.oneyearCostTotal) + "원";
@@ -1148,7 +1149,7 @@
 
         <li class="nav-item active">
             <a class="nav-link" href="/list">
-                <i class="fas fa-fw fa-search"></i>
+                <i class="fas fa-fw fa-question"></i>
                 <span>Q&A</span></a>
         </li>
 
@@ -1677,11 +1678,17 @@
 
                                 </div>
 
-                                <select class="form-control mt-2 ml-4" style="width: 26%;" name="reServe1" id="reserveCost">
-                                    <option value="noRe">종량제</option>
-                                    <option value="Re1">1년 예약</option>
-                                    <option value="Re3">3년 예약</option>
-                                </select>
+                                <div class="row ml-2 mt-1">
+                                    <label class="radio-inline mr-1">
+                                        <input type="radio" name="costTotal" id="inlineRadio11" value="noRe" checked="checked"> 종량제
+                                    </label>
+                                    <label class="radio-inline  mr-1">
+                                        <input type="radio" name="costTotal" id="inlineRadio22" value="Re1"> 1년 예약
+                                    </label>
+                                    <label class="radio-inline  mr-1">
+                                        <input type="radio" name="costTotal" id="inlineRadio33" value="Re3"> 3년 예약
+                                    </label>
+                                <div>
 
                                 <div class="card-body">
                                     <div class="card border-left-primary shadow py-2 mt-2" style="height: 45%;">
