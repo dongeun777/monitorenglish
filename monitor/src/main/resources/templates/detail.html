@@ -31,7 +31,7 @@
                 $.each(data, function(key, value){
                     a += '<div class="commentInfo'+value.cno+'">'+'댓글번호 : '+value.cno+' / 작성자 : '+value.writer;
                     if (emailCheck==value.writer){
-                        a += '<a class="btn btn-primary ml-2 mt-1" onclick="commentUpdate('+value.cno+',\''+value.content+'\');"> 수정 </a>';
+                        a += '<a class="btn btn-primary ml-2 mt-1" hidden="true" onclick="commentUpdate('+value.cno+',\''+value.content+'\');"> 수정 </a>';
                         a += '<a class="btn btn-primary ml-2 mt-1" onclick="commentDelete('+value.cno+'); location.reload();"> 삭제 </a> </div>';
                     }
                     a += '<div class="commentContent'+value.cno+'"> <textarea class="form-control" type="text" style="background-color: white; border: none;" readonly>'+value.content +'</textarea>';
