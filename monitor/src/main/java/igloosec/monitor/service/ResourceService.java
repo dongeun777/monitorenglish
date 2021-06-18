@@ -142,7 +142,7 @@ public class ResourceService {
                 if (isWindows) {
                     br = new BufferedReader(new FileReader("D:\\tm5disk." + userParam + ".log"));
                 } else {
-                    br = new BufferedReader(new FileReader(tmPath + "/tm5deploy/tm5disk." + userParam + ".log"));
+                    br = new BufferedReader(new FileReader(tmPath + "/tm5disk." + userParam + ".log"));
                 }
                 String line = null;
                 while ((line = br.readLine()) != null) {
