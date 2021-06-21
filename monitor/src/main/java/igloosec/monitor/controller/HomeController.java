@@ -385,6 +385,7 @@ public class HomeController {
         } catch (InterruptedException e) {
 
         }
+
         homeService.completeLog2(param);
         session.setAttribute("step","2");
         return "redirect:/main";
@@ -1157,7 +1158,7 @@ public class HomeController {
         mimeMessage.setFrom(new InternetAddress(from));
         mimeMessage.setRecipient(Message.RecipientType.TO,
                 new InternetAddress(email));
-        mimeMessage.setSubject("SPiDERTM Login Information");
+        mimeMessage.setSubject("SPiDER TM Login Information");
 
 //        mimeMessage.setContent("<h1 style='font-size: 20px;'><a href='https://"+emailstr+".igloocld.com'>https://"+emailstr +".igloocld.com </a>에 접속하셔서, 로그인하시기 바랍니다.</h1>"+
 //                "\n<span style='font-weight: bold;'>ID: </span> <span>  tmadmin<br></span>\n" + "<span style='font-weight: bold;'>pw: </span> <span> 0!password  </span>" , "text/html; charset=UTF-8");
@@ -1390,7 +1391,7 @@ public class HomeController {
                 "\t\t\t\t\n" +
                 "               <!-- Header // END --> \n" +
                 "\t\t\t\t<tr>\n" +
-                "                        <td dir=\"ltr\" valign=\"top\" style=\"font-family: sans-serif; font-size: 16px; mso-height-rule: exactly;  color: #474444; padding: 20px;0px 0px 20px; text-align: left;\" class=\"bodycopy\"><h1 style=\"line-height: 40px;  margin-left:10px;\" class=\"\">SPiDERTM Login Info.</h1>\n" +
+                "                        <td dir=\"ltr\" valign=\"top\" style=\"font-family: sans-serif; font-size: 16px; mso-height-rule: exactly;  color: #474444; padding: 20px;0px 0px 20px; text-align: left;\" class=\"bodycopy\"><h1 style=\"line-height: 40px;  margin-left:10px;\" class=\"\">SPiDER TM Login Info.</h1>\n" +
                 "</td></tr><tr>\n" +
                 "<td dir=\"ltr\" valign=\"top\" style=\"font-family: sans-serif; font-size: 16px; mso-height-rule: exactly;  color: #474444; padding: 20px;0px 0px 10px; text-align: left;\" class=\"bodycopy\">\n" +
                 "\t<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n" +

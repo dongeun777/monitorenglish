@@ -143,6 +143,7 @@
                 $('#step2bar').css({"background": "darkblue"});
                 document.getElementById("registerLog").hidden = true;
                 document.getElementById("youtube").hidden = true;
+                document.getElementById("loading").hidden = true;
                 getLogList();
             } else if (sessionStep == 0) {
 
@@ -150,6 +151,7 @@
                 document.getElementById("logTitle").innerText = "Step1: 장비를 등록하시고 완료버튼을 눌러주세요.";
                 document.getElementById("registerLog").hidden = false;
                 document.getElementById("youtube").hidden = true;
+                document.getElementById("loading").hidden = true;
                 getLogList();
             } else {
 
@@ -159,6 +161,7 @@
                 document.getElementById("registerLog2").hidden = true;
                 document.getElementById("registerLog3").hidden = true;
                 document.getElementById("youtube").hidden = false;
+                document.getElementById("loading").hidden = false;
                 var timer = setInterval(function () {
                     readLog();
                     ;
@@ -297,7 +300,12 @@
             success: function (data) {
                 // console.log(data);
 
-                if (data == 'end') location.reload();
+                if (data == 'end') {
+
+                    document.getElementById("loading").hidden = true;
+                    document.getElementById("complete").hidden = false;
+
+                }
 
 
             }, error: function (request, status, error) {
@@ -1757,13 +1765,37 @@
                     </div>
                 </div>
 
-                <div class="col-xl-4 col-lg-5 " id="youtube">
+                <div class="col-xl-4 col-lg-5 " id="youtube" style="z-index: 100;">
 
 
-                    <iframe width="700" height="400"
+                    <iframe width="800" height="450"
                             src="https://www.youtube.com/embed/01SZg39z6xA?autoplay=1&mute=1" frameborder="0"
                             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                             allowfullscreen></iframe>
+
+
+
+
+
+
+                </div>
+
+                <div class="col-xl-12 col-lg-5 " id="loading" style="height: 70px; background: white;">
+                    <span style="font-size: 20px; font-weight: bold; width: 100px; float: left"> 배포진행중 </span>
+
+                    <div id="tenor"
+                         style=" width:0px ; height: 0px; margin:auto;float: left; margin-top: -30px;" >
+                        <img src="/image/tenor.gif" style="width:100px; height: 100px; ">
+                    </div>
+
+
+                </div>
+
+
+                <div class="col-xl-12 col-lg-5 " id="complete" style="height: 70px; background: white;" hidden ="true">
+                    <span style="font-size: 20px; font-weight: bold; width: 225px; float: left"> 배포가 완료되었습니다. </span>
+
+                    <a style="font-size: 20px; font-weight: bold;  float: left;" href="/main" > 대시보드 바로가기 </a>
 
 
                 </div>
