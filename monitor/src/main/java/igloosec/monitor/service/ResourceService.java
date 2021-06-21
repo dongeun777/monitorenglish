@@ -68,14 +68,14 @@ public class ResourceService {
 
         // disk expansion shell request
         if(diskExpansionRequest(tmPath, userParam, diskSize) == false) {
-            logger.error("disk expansion failed");
+            logger.error("disk expansion request failed");
             return false;
         }
 
         // disk expansion standby
         String partitionName = diskExpansionStandby(tmPath, userParam);
         if(partitionName == null || partitionName.equals("")) {
-            logger.error("disk expansion failed");
+            logger.error("disk expansion standby failed");
             return false;
         }
 
@@ -181,17 +181,16 @@ public class ResourceService {
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
         long startTm = System.currentTimeMillis();
 
-        String partitionName = "";
-
         String tmLogPath = null;
-
+        String partitionName = null;
         while(true) {
+            partitionName = "/";
             String result = null;
             BufferedReader br = null;
             try {
                 tmLogPath = tmPath + "/tm5disk." + userParam + ".log";
                 if (isWindows) {
-                    br = new BufferedReader(new FileReader("D:\\tm5disk." + userParam + ".log"));
+                    br = new BufferedReader(new FileReader("D:\\T1.txt"));
                 } else {
                     br = new BufferedReader(new FileReader(tmLogPath));
                 }

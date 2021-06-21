@@ -44,12 +44,18 @@
                 SELECT rsg_grp,sum(total) AS total, sum(free) AS free
                 FROM USER_DISK_USAGE
                 WHERE rsg_grp = #{rscparam}
-                  AND current != 'N/A'
+                AND current != 'N/A'
+                GROUP BY rsg_grp
             ) a,
             (
                 SELECT distinct cpu, ram
-                FROM azurecost
-                WHERE id = (SELECT distinct vm_series_id FROM USER_LIST WHERE rscGrp = #{rscparam})
+                FROM azurecost a,(
+                    SELECT sum(usages) as usages
+                    FROM USER_EQUIP_LIST
+                    WHERE email = (SELECT email FROM USER_LIST WHERE rscGrp = #{rscparam})
+                ) b
+                WHERE beforeSize <![CDATA[<]]> usages
+                AND usages <![CDATA[<=]]> logSize
             ) b
     </select>
 

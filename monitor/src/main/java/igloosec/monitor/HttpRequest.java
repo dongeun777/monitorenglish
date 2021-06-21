@@ -147,7 +147,7 @@ public class HttpRequest {
         if(partitionName != null) {
             param += "&partition_add=true";
             param += "&partition_pri=1";
-            param += "&partition_limit=512";
+            param += "&partition_limit=1024";
             param += "&partition_name=" + partitionName;
         }
 

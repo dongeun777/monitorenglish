@@ -95,20 +95,24 @@ public class ScheduleService {
                 vo.setCreatedTime(entity.getCreatedTime());
                 vo.setDescription(entity.getDescription());
 
-                // db에 leads 정보가 정상적으로 저장되면, 계정 생성 요청 및 해당 entity table에서 삭제
-                if (mapper.insertLeadsInfo(vo)) {
-                    logger.info("[LEADS PULLING] Database insert success - {}", vo.getEmail());
-                    // 계정 생성 요청
-                    HttpRequest request = new HttpRequest();
-                    if (request.doGetHttps(vo.getEmail(), vo.getCompany())) {    // 계정 생성 성공 시
-                        logger.info("[LEADS PULLING] Account creation successful - {}", vo.getEmail());
-                        // entity tablel에서 해당 값 삭제
-                        TableOperation deleteEntity = TableOperation.delete(entity);
+                try {
+                    // db에 leads 정보가 정상적으로 저장되면, 계정 생성 요청 및 해당 entity table에서 삭제
+                    if (mapper.insertLeadsInfo(vo)) {
+                        logger.info("[LEADS PULLING] Database insert success - {}", vo.getEmail());
+                        // 계정 생성 요청
+                        HttpRequest request = new HttpRequest();
+                        if (request.doGetHttps(vo.getEmail(), vo.getCompany())) {    // 계정 생성 성공 시
+                            logger.info("[LEADS PULLING] Account creation successful - {}", vo.getEmail());
+                            // entity tablel에서 해당 값 삭제
+                            TableOperation deleteEntity = TableOperation.delete(entity);
 
-                        TableResult result = cloudTable.execute(deleteEntity);
+                            TableResult result = cloudTable.execute(deleteEntity);
 
-                        logger.info("[LEADS PULLING] Successful deletion of leads information - {}", vo.getEmail());
+                            logger.info("[LEADS PULLING] Successful deletion of leads information - {}", vo.getEmail());
+                        }
                     }
+                } catch(Exception e) {
+                    logger.error(CommonUtil.getPrintStackTrace(e));
                 }
             }
 
