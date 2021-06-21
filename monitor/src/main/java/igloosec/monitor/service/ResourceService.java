@@ -94,7 +94,7 @@ public class ResourceService {
             JsonObject obj = new JsonParser().parse(data).getAsJsonObject();
             JsonObject resObj = (JsonObject) obj.get("responseHeader");
             if(resObj.get("status").getAsInt() != 0) {
-                logger.error("multivolume add error - {}", data);
+                logger.error("add multivolume error - {}", data);
                 return false;
             }
             logger.info("add multivolume response : {}", data);
@@ -103,7 +103,7 @@ public class ResourceService {
             return false;
         }
 
-        logger.info("multivolume add success - {}", rscGrp);
+        logger.info("add multivolume success - {}", rscGrp);
 
 
         // disk usage update
@@ -175,14 +175,14 @@ public class ResourceService {
     }
 
     private String diskExpansionStandby(String tmPath, String userParam) {
+        String partitionNm = null;
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
         long startTm = System.currentTimeMillis();
 
         String tmLogPath = tmPath + "/tm5disk." + userParam + ".log";
         String tmLogCompletedPath = tmPath + "/completed/tm5disk." + userParam + ".log." + CommonUtil.getCurrentDate();
-        String partitionName = null;
+        String tmpNm = "/";
         while(true) {
-            partitionName = "/";
             String result = null;
             BufferedReader br = null;
 
@@ -196,21 +196,29 @@ public class ResourceService {
                 String line = null;
                 while ((line = br.readLine()) != null) {
                     if (line.contains("end..")) {
-                        return partitionName;
+                        partitionNm = tmpNm;
+                        break;
                     }
 
                     // get partition name
                     if(line.contains("SIEM_DATA")) {
+                        if(tmpNm.equals("/") == false) {
+                            continue;
+                        }
                         String[] strArr = line.split("/");
                         for(int i = 0; i < strArr.length; i++) {
                             if(strArr[i].equals("data")) {
-                                partitionName += "data/";
+                                tmpNm += "data/";
                             } else if(strArr[i].contains("SIEM_DATA")) {
                                 String[] siemDataStrArr = strArr[i].split("\\\\");
-                                partitionName += siemDataStrArr[0];
+                                tmpNm += siemDataStrArr[0];
                             }
                         }
                     }
+                }
+
+                if(partitionNm != null) {
+                    break;
                 }
             } catch (FileNotFoundException fe) {
                 continue;
@@ -240,8 +248,8 @@ public class ResourceService {
         }
 
         // log file move
-        if(partitionName == null || partitionName.equals("") || partitionName.equals("/")) {
-            return partitionName;
+        if(partitionNm == null || partitionNm.equals("") || partitionNm.equals("/")) {
+            return partitionNm;
         }
 
         // file move failed -> file remove
@@ -261,6 +269,6 @@ public class ResourceService {
             logger.info("log file move success : {} -> {}", tmLogPath, tmLogCompletedPath);
         }
 
-        return partitionName;
+        return partitionNm;
     }
 }

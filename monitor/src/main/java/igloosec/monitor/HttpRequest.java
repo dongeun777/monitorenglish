@@ -149,7 +149,7 @@ public class HttpRequest {
             param += "&partition_pri=" + ConfigUtils.getConf("partitionPri");
             param += "&partition_limit=" + ConfigUtils.getConf("partitionLimit");
             param += "&partition_name=" + partitionName;
-            logger.info("sparrow api request param : {}", param);
+            logger.info("add multivolume request param : {}", param);
         }
 
         OutputStream out_stream = con.getOutputStream();
