@@ -2,12 +2,16 @@ package igloosec.monitor.controller;
 
 import com.google.gson.Gson;
 import com.sun.mail.smtp.SMTPSaslAuthenticator;
+import igloosec.monitor.CommonUtil;
 import igloosec.monitor.TOTPTokenValidation;
 import igloosec.monitor.service.HomeService;
 import igloosec.monitor.service.MemberService;
+import igloosec.monitor.service.ResourceService;
 import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
 import org.apache.commons.codec.binary.Base32;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -37,7 +41,7 @@ import java.util.function.Consumer;
 @Controller
 public class HomeController {
 
-
+    private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
 
     private JavaMailSender javaMailSender;
@@ -142,7 +146,7 @@ public class HomeController {
     public String joinMember(MemberVo memberVo) throws MessagingException {
 
         List<MemberVo> list =homeService.checkMember(memberVo);
-        System.out.println("acount size : " + list.size());
+        logger.info("[{}] acount size : {}", memberVo.getEmail() + list.size());
         String retVal = null;
 
         // 신규 고객일 경우
@@ -161,11 +165,10 @@ public class HomeController {
                sendregistermail(memberVo.getEmail(),firstPasswd);
                //sendtmmail(memberVo.getEmail());
             } catch (MessagingException e) {
-                e.printStackTrace();
+                logger.error(CommonUtil.getPrintStackTrace(e));
             }
             homeService.joinUser(memberVo);
             retVal = "Success";
-            //return "Success";
         }
         // 기존에 요청했던 고객일 경우
         else{
@@ -173,17 +176,16 @@ public class HomeController {
             try {
                 sendMailRepeatRequest(memberVo.getEmail());
             } catch (MessagingException e) {
-                e.printStackTrace();
+                logger.error(CommonUtil.getPrintStackTrace(e));
             }
             retVal = "fail";
-            //return "fail";
         }
 
         // 고객 유입 메일 전송
         try {
             sendMailCustomerInflux(memberVo.getEmail());
         } catch (MessagingException e) {
-            e.printStackTrace();
+            logger.error(CommonUtil.getPrintStackTrace(e));
         }
         
         return retVal;

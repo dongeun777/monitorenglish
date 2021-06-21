@@ -130,8 +130,15 @@
             data: { rscparam: sessionRsc
             },
             success: function (data) {
-                $('#cpuVal').text(data.cpu + " core");
-                $('#memVal').text(data.memory + "GB");
+                $('#cpuVal').text(" - ");
+                $('#memoryVal').text(" - ");
+                $('#diskVal').text(" - ");
+                if(data.cpu) {
+                    $('#cpuVal').text(data.cpu + " core");
+                }
+                if(data.memory) {
+                    $('#memoryVal').text(data.memory + "GB");
+                }
                 if(data.usageDiskPer) {
                     $('#diskVal').text(data.total + "GB / " + data.usageDiskPer);
                 }
@@ -231,25 +238,23 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-xl-6 col-lg-10">
+                    <div class="col-xl-10 col-lg-12">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
 
                             <!-- Card Body -->
                             <div class="card-body">
-                                <table class="table table-bordered mb-3" style="width:50%" cellspacing="0">
+                                <table class="table table-bordered mb-3" cellspacing="0" id="resourceTable">
                                     <thead style="text-align: center; position: sticky; top: 0px; background-color: white;">
                                     <tr>
-                                        <th style="width: 50%">CPU</th>
-                                        <th style="width: 50%" id="cpuVal"></th>
+                                        <th style="width:33%">CPU</th>
+                                        <th style="width:33%">Memory</th>
+                                        <th style="width:33%">Disk</th>
                                     </tr>
                                     <tr>
-                                        <th style="width: 50%">Memory</th>
-                                        <th style="width: 50%" id="memVal"></th>
-                                    </tr>
-                                    <tr>
-                                        <th style="width: 50%">Disk</th>
-                                        <th style="width: 50%" id="diskVal"></th>
+                                        <th id="cpuVal"></th>
+                                        <th id="memoryVal"></th>
+                                        <th id="diskVal"></th>
                                     </tr>
                                     </thead>
                                 </table>
@@ -273,8 +278,9 @@
                                     </div>
 
                                 </div>
-                                <button class="btn btn-primary mt-1" data-toggle="modal"
-                                        data-target="#checkExpansion">디스크 확장
+                                <button class="btn btn-danger mt-1 float-right" data-toggle="modal"
+                                        data-target="#checkExpansion">
+                                    <i class="fa fa-plus"></i>디스크 확장
                                 </button>
                             </div>
                         </div>
@@ -292,7 +298,6 @@
                                         <table class="table table-bordered" id="userTable" cellspacing="0">
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
                                             <tr>
-
                                                 <th  th:text="#{label.date}"></th>
                                                 <th  th:text="#{label.type}"></th>
                                                 <th  th:text="#{label.unit}"></th>

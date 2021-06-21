@@ -2,10 +2,12 @@ package igloosec.monitor.service;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import igloosec.monitor.CommonUtil;
 import igloosec.monitor.ConfigUtils;
 import igloosec.monitor.HttpRequest;
 import igloosec.monitor.mapper.HomeMapper;
 import igloosec.monitor.mapper.ResourceMapper;
+import igloosec.monitor.mapper.ScheduleMapper;
 import igloosec.monitor.vo.ResourceVo;
 import igloosec.monitor.vo.UsageVo;
 import org.slf4j.Logger;
@@ -13,8 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,11 +26,15 @@ public class ResourceService {
 
     private static final Logger logger = LoggerFactory.getLogger(ResourceService.class);
     public final ResourceMapper mapper;
+    public final ScheduleMapper scheduleMapper;
+    public final ScheduleService scheduleService;
     public final static int DISK_EXPANSION_MAX_TM = 300000; // 5Ка
     //public final static int DISK_EXPANSION_MAX_TM = 60000; // 1Ка
 
-    public ResourceService(ResourceMapper mapper) {
+    public ResourceService(ResourceMapper mapper, ScheduleMapper scheduleMapper, ScheduleService scheduleService) {
         this.mapper = mapper;
+        this.scheduleMapper = scheduleMapper;
+        this.scheduleService = scheduleService;
     }
 
     public List<ResourceVo> selectResourceList(ResourceVo param) {
@@ -67,6 +75,7 @@ public class ResourceService {
         // disk expansion standby
         String partitionName = diskExpansionStandby(tmPath, userParam);
         if(partitionName == null || partitionName.equals("")) {
+            logger.error("disk expansion failed");
             return false;
         }
 
@@ -77,7 +86,10 @@ public class ResourceService {
         if(ip == null || ip.equals("")) {
             logger.error("User IP information does not exist - {}", rscGrp);
             return false;
+        } else {
+            ip = ip.trim();
         }
+
         HttpRequest request = new HttpRequest();
 
         try {
@@ -88,14 +100,50 @@ public class ResourceService {
                 logger.error("multivolume add error - {}", data);
                 return false;
             }
+            logger.info("add multivolume response : {}", data);
         } catch(Exception e) {
-            logger.error(e.getMessage());
+            logger.error(CommonUtil.getPrintStackTrace(e));
+            return false;
         }
 
         logger.info("multivolume add success - {}", rscGrp);
 
+
+        // disk usage update
+        if(!diskUsageUpdate(rscGrp, ip)) {
+            logger.error("disk usage update failed - {}, {}", rscGrp, partitionName);
+            return false;
+        }
+
+        logger.info("disk usage update success - {}, {}", rscGrp, partitionName);
+
         return true;
 
+    }
+
+    private boolean diskUsageUpdate(String rscGrp, String ip) {
+        List<ResourceVo> insertList = new ArrayList<ResourceVo>();
+
+        try {
+            HttpRequest request = new HttpRequest();
+            String data = request.doPostHttp(ip, null);
+            if(data != null) {
+                // parsing
+                List<ResourceVo> retList = scheduleService.resourceFileParse(rscGrp, data);
+
+                if(retList.size() != 0) {
+                    insertList.addAll(retList);
+                }
+            }
+            //System.out.println(request.doPostHttp(vo.getIpAddr().trim()));
+        } catch (Exception e) {
+            logger.error(CommonUtil.getPrintStackTrace(e));
+            return false;
+        }
+
+        // db update
+        scheduleMapper.insertResourceInfo(insertList);
+        return true;
     }
 
     private boolean diskExpansionRequest(String tmPath, String userParam, int diskSize) {
@@ -122,7 +170,7 @@ public class ResourceService {
 
             retVal = true;
         } catch(Exception e) {
-            logger.error(e.getMessage());
+            logger.error(CommonUtil.getPrintStackTrace(e));
             retVal = false;
         }
 
@@ -135,14 +183,17 @@ public class ResourceService {
 
         String partitionName = "";
 
+        String tmLogPath = null;
+
         while(true) {
             String result = null;
             BufferedReader br = null;
             try {
+                tmLogPath = tmPath + "/tm5disk." + userParam + ".log";
                 if (isWindows) {
                     br = new BufferedReader(new FileReader("D:\\tm5disk." + userParam + ".log"));
                 } else {
-                    br = new BufferedReader(new FileReader(tmPath + "/tm5disk." + userParam + ".log"));
+                    br = new BufferedReader(new FileReader(tmLogPath));
                 }
                 String line = null;
                 while ((line = br.readLine()) != null) {
@@ -164,13 +215,13 @@ public class ResourceService {
                     }
                 }
             } catch (IOException ioe) {
-                logger.error(ioe.getMessage());
+                logger.error(CommonUtil.getPrintStackTrace(ioe));
             } finally {
                 try {
                     if (br != null)
                         br.close();
                 } catch (Exception e) {
-                    logger.error(e.getMessage());
+                    logger.error(CommonUtil.getPrintStackTrace(e));
                 }
             }
 
@@ -184,7 +235,22 @@ public class ResourceService {
             try {
                 Thread.sleep(100);
             } catch(Exception e) {
-                logger.error(e.getMessage());
+                logger.error(CommonUtil.getPrintStackTrace(e));
+            }
+        }
+
+        // log file remove
+        if(partitionName != null && partitionName.equals("")) {
+            File file = new File(tmLogPath);
+            if( file.exists() ) {
+                if(file.delete()){
+                    logger.info("log file remove success : {}", tmLogPath);
+
+                } else {
+                    logger.error("log file remove failed : {}", tmLogPath);
+                }
+            }else{
+                logger.error("log file does not exist : {}", tmLogPath);
             }
         }
 

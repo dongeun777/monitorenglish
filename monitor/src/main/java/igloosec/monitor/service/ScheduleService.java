@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.table.*;
+import igloosec.monitor.CommonUtil;
 import igloosec.monitor.ConfigUtils;
 import igloosec.monitor.HttpRequest;
 import igloosec.monitor.mapper.HomeMapper;
@@ -51,6 +52,11 @@ public class ScheduleService {
      */
     @Scheduled(cron = "0/10 * * * * *")  // 10초마다
     public void getLeadsInfo() {
+
+        String os = CommonUtil.getOS();
+        if (os.contains("win")) {
+            return;
+        }
         //logger.info("[LEADS PULLING] Start getting leads information");
 
         // Configure your storage connection string
@@ -107,7 +113,7 @@ public class ScheduleService {
             }
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(CommonUtil.getPrintStackTrace(e));
         } finally {
             //logger.info("[LEADS PULLING] End of getting leads information");
         }
@@ -131,7 +137,7 @@ public class ScheduleService {
             MemberVo vo = list.get(i);
 
             if(vo.getIpAddr() != null && vo.getIpAddr().equals("") == false) {
-//                System.out.println(vo.getRscGrp() + "/" + vo.getIpAddr());
+                logger.info("[DISK PULLING] resource group : {} ip : {}", vo.getRscGrp(), vo.getIpAddr());
                 try {
                     // get data
                     String data = request.doPostHttp(vo.getIpAddr().trim(), null);
@@ -146,7 +152,7 @@ public class ScheduleService {
                     }
                     //System.out.println(request.doPostHttp(vo.getIpAddr().trim()));
                 } catch (Exception e) {
-                    logger.error(e.getMessage());
+                    logger.error(CommonUtil.getPrintStackTrace(e));
                 }
             }
         }
@@ -174,7 +180,7 @@ public class ScheduleService {
     }
 
 
-    private List<ResourceVo> resourceFileParse(String rsgGrp, String data) {
+    public List<ResourceVo> resourceFileParse(String rsgGrp, String data) {
 
         List<ResourceVo> list = new ArrayList<ResourceVo>();
         JsonObject obj = new JsonParser().parse(data).getAsJsonObject();

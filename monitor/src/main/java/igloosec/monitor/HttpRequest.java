@@ -1,5 +1,9 @@
 package igloosec.monitor;
 
+import igloosec.monitor.controller.HomeController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
@@ -10,6 +14,9 @@ import java.net.URLEncoder;
 
 
 public class HttpRequest {
+
+    private static final Logger logger = LoggerFactory.getLogger(HttpRequest.class);
+
     public boolean doGetHttps(String email, String company) {
         String urlString = "https://igloocld.com/userRegister?" +
                 "email=" + email;
@@ -17,7 +24,7 @@ public class HttpRequest {
             try {
                 company = URLEncoder.encode(company, "UTF-8");
             } catch (UnsupportedEncodingException ue) {
-                ue.printStackTrace();
+                logger.error(CommonUtil.getPrintStackTrace(ue));
                 return false;
             }
             urlString += "&company=" + company;
@@ -61,13 +68,13 @@ public class HttpRequest {
             if (responseCode == HttpsURLConnection.HTTP_OK) { // 정상 호출 200
                 return true;
             } else { // 에러 발생
-                System.out.println("responseCode : " + responseCode);
-                System.out.println("responseMessage : " + httpsConn.getResponseMessage());
+                logger.error("responseCode : {}", responseCode);
+                logger.error("responseMessage : {}", httpsConn.getResponseMessage());
+
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("error : " + e.getMessage());
-            e.printStackTrace();
+            logger.error(CommonUtil.getPrintStackTrace(e));
             return false;
         } finally {
             try {
@@ -75,7 +82,7 @@ public class HttpRequest {
                     httpsConn.disconnect();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(CommonUtil.getPrintStackTrace(e));
                 return false;
             }
         }
@@ -89,7 +96,7 @@ public class HttpRequest {
             try {
                 company = URLEncoder.encode(company, "UTF-8");
             } catch (UnsupportedEncodingException ue) {
-                ue.printStackTrace();
+                logger.error(CommonUtil.getPrintStackTrace(ue));
                 return false;
             }
             urlString += "&company=" + company;
@@ -116,7 +123,8 @@ public class HttpRequest {
                     in.close();
                 }
             } catch(IOException ie) {
-                ie.printStackTrace();
+                logger.error(CommonUtil.getPrintStackTrace(ie));
+
             }
         }
 
