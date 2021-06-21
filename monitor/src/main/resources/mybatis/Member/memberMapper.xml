@@ -79,6 +79,9 @@
 <!--                 LIMIT 1-->
 <!--    </select>-->
 
+    <delete id="deleteUserDiskUsage" parameterType="MemberVo">
+        DELETE FROM USER_DISK_USAGE WHERE rsg_grp = (SELECT rscGrp FROM USER_LIST WHERE email = #{email})
+    </delete>
 </mapper>
 
 

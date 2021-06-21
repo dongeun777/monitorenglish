@@ -20,7 +20,7 @@ public class HttpRequest {
     public boolean doGetHttps(String email, String company) {
         String urlString = "https://igloocld.com/userRegister?" +
                 "email=" + email;
-        if (company != null || company.equals("") == false) {
+        if (company != null && company.equals("") == false) {
             try {
                 company = URLEncoder.encode(company, "UTF-8");
             } catch (UnsupportedEncodingException ue) {
@@ -92,7 +92,7 @@ public class HttpRequest {
     public boolean doGetHttp(String email, String company) {
         String urlString = "http://localhost:8080/userRegister?" +
                 "email=" + email;
-        if (company != null || company.equals("") == false) {
+        if (company != null && company.equals("") == false) {
             try {
                 company = URLEncoder.encode(company, "UTF-8");
             } catch (UnsupportedEncodingException ue) {

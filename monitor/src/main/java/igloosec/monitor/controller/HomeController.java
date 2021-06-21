@@ -146,7 +146,7 @@ public class HomeController {
     public String joinMember(MemberVo memberVo) throws MessagingException {
 
         List<MemberVo> list =homeService.checkMember(memberVo);
-        logger.info("[{}] acount size : {}", memberVo.getEmail() + list.size());
+        logger.info("[{}] acount size : {}", memberVo.getEmail(),  list.size());
         String retVal = null;
 
         // 신규 고객일 경우

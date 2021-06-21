@@ -24,4 +24,5 @@ public interface MemberMapper {
     List<MemberVo> selectMemberList();
     void deleteFedTable(MemberVo memberVo);
     String selectPath();
+    void deleteUserDiskUsage(MemberVo memberVo);
 }
