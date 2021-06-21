@@ -128,15 +128,15 @@
                                     <span id="auth1" th:text="${session['auth']}" hidden="true"> </span>
                                     <span id="email" th:text="${session['email']}" hidden="true"> </span>
                                     <div class="table-responsive" style="overflow:auto; ">
-                                        <button class="btn btn-primary mr-3 mb-1 float-right" onclick="location.href='/insert'"><i class="fa fa-pen mr-1"></i>글쓰기</button>
+                                        <button class="btn btn-primary mr-3 mb-1 float-right" onclick="location.href='/insert'"><i class="fa fa-pen mr-1"></i>Write</button>
                                         <table class="table table-bordered" id="boardTable" cellspacing="0">
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
                                             <tr>
                                                 <th>No</th>
-                                                <th>Subject</th>
-                                                <th>Writer</th>
-                                                <th>content</th>
-                                                <th>regDate</th>
+                                                <th th:text="#{label.subject}">Subject</th>
+                                                <th th:text="#{label.writer}">Writer</th>
+                                                <th th:text="#{label.content}">content</th>
+                                                <th th:text="#{label.regdate}"></th>
                                                 <th></th>
                                             </tr>
                                             </thead>

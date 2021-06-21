@@ -49,12 +49,14 @@
                         {data: "email"},
                         {data: "regDate"},
                         {data: "rscGrp"},
+                        {data: "vmseries"},
+                        {data: "disksize"},
                         {data: "costInBillingCurrency"},
                         {data: "usage_data"}
 
                     ],
                     columnDefs:[{
-                        targets: [5,6] , render: $.fn.dataTable.render.number( ',' )
+                        targets: [6,7,8] , render: $.fn.dataTable.render.number( ',' )
                     }]
 
 
@@ -124,6 +126,8 @@
                                                 <th>Email</th>
                                                 <th th:text="#{label.regdate}"></th>
                                                 <th th:text="#{label.rscgrp}"></th>
+                                                <th>VM Series</th>
+                                                <th>Disk Size(GB)</th>
                                                 <th th:text="#{label.cloudcost}"></th>
                                                 <th th:text="#{label.tmlog}"</th>
                                             </tr>

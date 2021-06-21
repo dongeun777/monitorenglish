@@ -41,6 +41,11 @@ public class MemberVo implements UserDetails {
 
     private String name;
 
+    private String vmseries;
+    private String disksize;
+
+
+
 
     public String getEmail() {
         return email;
@@ -258,5 +263,21 @@ public class MemberVo implements UserDetails {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getVmseries() {
+        return vmseries;
+    }
+
+    public void setVmseries(String vmseries) {
+        this.vmseries = vmseries;
+    }
+
+    public String getDisksize() {
+        return disksize;
+    }
+
+    public void setDisksize(String disksize) {
+        this.disksize = disksize;
     }
 }

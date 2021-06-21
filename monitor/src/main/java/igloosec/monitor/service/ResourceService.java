@@ -28,8 +28,8 @@ public class ResourceService {
     public final ResourceMapper mapper;
     public final ScheduleMapper scheduleMapper;
     public final ScheduleService scheduleService;
-    public final static int DISK_EXPANSION_MAX_TM = 300000; // 5ºÐ
-    //public final static int DISK_EXPANSION_MAX_TM = 60000; // 1ºÐ
+    public final static int DISK_EXPANSION_MAX_TM = 300000; // 5ï¿½ï¿½
+    //public final static int DISK_EXPANSION_MAX_TM = 60000; // 1ï¿½ï¿½
 
     public ResourceService(ResourceMapper mapper, ScheduleMapper scheduleMapper, ScheduleService scheduleService) {
         this.mapper = mapper;
@@ -225,7 +225,7 @@ public class ResourceService {
                 }
             }
 
-            // 5ºÐ ÀÌ»ó µð½ºÅ© È®Àå ÀÛ¾÷ÀÌ Áö¿¬µÇ¸é ½ÇÆÐ Ã³¸®
+            // 5ï¿½ï¿½ ï¿½Ì»ï¿½ ï¿½ï¿½Å© È®ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
             long currentTm = System.currentTimeMillis();
             if (currentTm - startTm > DISK_EXPANSION_MAX_TM) {
                 logger.info("The disk expansion has passed {} seconds.", (DISK_EXPANSION_MAX_TM / 1000));
