@@ -22,7 +22,7 @@ public class MemberVo implements UserDetails {
     private String company;
     private String step;
     private String deleteVal;
-
+    private String id;
 
     //shell parameter
     private String totalParam;
@@ -279,5 +279,13 @@ public class MemberVo implements UserDetails {
 
     public void setDisksize(String disksize) {
         this.disksize = disksize;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

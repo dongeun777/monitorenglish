@@ -48,14 +48,11 @@
                 GROUP BY rsg_grp
             ) a,
             (
-                SELECT distinct cpu, ram
+                SELECT cpu, ram
                 FROM azurecost a,(
-                    SELECT sum(usages) as usages
-                    FROM USER_EQUIP_LIST
-                    WHERE email = (SELECT email FROM USER_LIST WHERE rscGrp = #{rscparam})
+                    SELECT distinct vm_series_id FROM USER_LIST WHERE rscGrp = #{rscparam}
                 ) b
-                WHERE beforeSize <![CDATA[<]]> usages
-                AND usages <![CDATA[<=]]> logSize
+                WHERE a.id = b.vm_series_id
             ) b
     </select>
 
