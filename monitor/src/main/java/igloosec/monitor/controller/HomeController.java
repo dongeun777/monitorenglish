@@ -385,6 +385,8 @@ public class HomeController {
         } catch (InterruptedException e) {
 
         }
+
+        param.setId(result.getId());
         homeService.completeLog2(param);
         session.setAttribute("step","2");
         return "redirect:/main";
