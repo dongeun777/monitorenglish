@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +25,8 @@ public class ResourceService {
     public final ResourceMapper mapper;
     public final ScheduleMapper scheduleMapper;
     public final ScheduleService scheduleService;
-    public final static int DISK_EXPANSION_MAX_TM = 300000; // 5��
-    //public final static int DISK_EXPANSION_MAX_TM = 60000; // 1��
+    public final static int DISK_EXPANSION_MAX_TM = 300000; // 5minute
+    //public final static int DISK_EXPANSION_MAX_TM = 60000; // 1minute
 
     public ResourceService(ResourceMapper mapper, ScheduleMapper scheduleMapper, ScheduleService scheduleService) {
         this.mapper = mapper;
@@ -74,7 +71,7 @@ public class ResourceService {
 
         // disk expansion standby
         String partitionName = diskExpansionStandby(tmPath, userParam);
-        if(partitionName == null || partitionName.equals("")) {
+        if(partitionName == null || partitionName.equals("") || partitionName.equals("/")) {
             logger.error("disk expansion standby failed");
             return false;
         }
@@ -181,19 +178,21 @@ public class ResourceService {
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
         long startTm = System.currentTimeMillis();
 
-        String tmLogPath = null;
+        String tmLogPath = tmPath + "/tm5disk." + userParam + ".log";
+        String tmLogCompletedPath = tmPath + "/completed/tm5disk." + userParam + ".log." + CommonUtil.getCurrentDate();
         String partitionName = null;
         while(true) {
             partitionName = "/";
             String result = null;
             BufferedReader br = null;
+
             try {
-                tmLogPath = tmPath + "/tm5disk." + userParam + ".log";
                 if (isWindows) {
                     br = new BufferedReader(new FileReader("D:\\T1.txt"));
                 } else {
                     br = new BufferedReader(new FileReader(tmLogPath));
                 }
+
                 String line = null;
                 while ((line = br.readLine()) != null) {
                     if (line.contains("end..")) {
@@ -213,8 +212,10 @@ public class ResourceService {
                         }
                     }
                 }
-            } catch (IOException ioe) {
-                logger.error(CommonUtil.getPrintStackTrace(ioe));
+            } catch (FileNotFoundException fe) {
+                continue;
+            } catch (IOException e) {
+                logger.error(CommonUtil.getPrintStackTrace(e));
             } finally {
                 try {
                     if (br != null)
@@ -224,7 +225,7 @@ public class ResourceService {
                 }
             }
 
-            // 5�� �̻� ��ũ Ȯ�� �۾��� �����Ǹ� ���� ó��
+            // work delay check
             long currentTm = System.currentTimeMillis();
             if (currentTm - startTm > DISK_EXPANSION_MAX_TM) {
                 logger.info("The disk expansion has passed {} seconds.", (DISK_EXPANSION_MAX_TM / 1000));
@@ -238,19 +239,26 @@ public class ResourceService {
             }
         }
 
-        // log file remove
-        if(partitionName != null && partitionName.equals("")) {
+        // log file move
+        if(partitionName == null || partitionName.equals("") || partitionName.equals("/")) {
+            return partitionName;
+        }
+
+        // file move failed -> file remove
+        if(CommonUtil.moveFile(tmLogPath, tmLogCompletedPath) == false) {
+            logger.error("log file move failed : {} -> {}", tmLogPath, tmLogCompletedPath);
             File file = new File(tmLogPath);
             if( file.exists() ) {
                 if(file.delete()){
                     logger.info("log file remove success : {}", tmLogPath);
-
                 } else {
                     logger.error("log file remove failed : {}", tmLogPath);
                 }
             }else{
                 logger.error("log file does not exist : {}", tmLogPath);
             }
+        } else {
+            logger.info("log file move success : {} -> {}", tmLogPath, tmLogCompletedPath);
         }
 
         return partitionName;

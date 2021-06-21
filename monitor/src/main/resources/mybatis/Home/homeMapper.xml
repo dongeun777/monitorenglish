@@ -82,7 +82,7 @@
     </update>
 
     <update id="completeLog2" parameterType="MemberVo">
-        update USER_LIST SET step = 2 where email = #{email};
+        update USER_LIST SET step = 2, vm_series_id = #{id} where email = #{email};
 
     </update>
 
@@ -101,7 +101,7 @@
         SELECT round(costtotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS costtotal,
                round(oneyearCostTotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS oneyearCostTotal,
                round(threeyearCostTotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS threeyearCostTotal,
-               cpu, ram, disk, vmseries, pathStr, shellcom
+               cpu, ram, disk, vmseries, pathStr, shellcom, id
         FROM azurecost WHERE beforeSize<![CDATA[<]]> #{usageparam} AND #{usageparam}<![CDATA[<=]]>logSize;
     </select>
 

@@ -180,7 +180,7 @@ public class ScheduleService {
         // config setting
         ConfigUtils.setConfig(list);
 
-        logger.info("[SET CONFIG] config settings");
+        logger.info("[SET CONFIG] config settings [{}]", list.size());
     }
 
 

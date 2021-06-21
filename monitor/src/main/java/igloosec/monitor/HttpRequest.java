@@ -146,9 +146,10 @@ public class HttpRequest {
 
         if(partitionName != null) {
             param += "&partition_add=true";
-            param += "&partition_pri=1";
-            param += "&partition_limit=1024";
+            param += "&partition_pri=" + ConfigUtils.getConf("partitionPri");
+            param += "&partition_limit=" + ConfigUtils.getConf("partitionLimit");
             param += "&partition_name=" + partitionName;
+            logger.info("sparrow api request param : {}", param);
         }
 
         OutputStream out_stream = con.getOutputStream();
