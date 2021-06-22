@@ -29,9 +29,13 @@
         getDiskUsage();
 
         $("#diskCapacity").change( function() {
-            var text = "디스크 확장 시 추가 요금이 발생 됩니다.\n" +
-                this.options[this.selectedIndex].text + " 기준 추가 예상 금액 약 " + comma(map[this.value])+ "원 입니다.";
-            $("#estimatedAmount").text(text);
+            if($("#diskCapacity option:selected").val() != "none") {
+                var text = "디스크 확장 시 추가 요금이 발생 됩니다.\n" +
+                    $("#diskCapacity option:selected").text() + " 기준 추가 예상 금액 약 " + comma(map[this.value]) + "원 입니다.";
+                $("#estimatedAmount").text(text);
+            } else {
+                $("#estimatedAmount").text("");
+            }
         });
 
         // azure disk price
@@ -156,7 +160,6 @@
             success: function (data) {
                 for(var i in data){
                     map[data[i].diskSize] = data[i].diskPrice;
-                    console.log(data[i].diskSize + "/" + data[i].diskPrice);
                 }
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -258,7 +261,7 @@
                                     </tr>
                                     </thead>
                                 </table>
-                                <h6 class="m-0 font-weight-bold text-gray-800" style="float:top" id="diskUsage">디스크 사용률</h6>
+                                <h6 class="m-0 font-weight-bold text-gray-800" style="float:top" id="diskUsage">디스크 사용량</h6>
                                 <div class="card shadow h-100 py-2 mb-4" >
                                     <div class="table-responsive" style="overflow:auto;">
                                         <table class="table table-bordered" id="diskTable" cellspacing="0">
@@ -277,6 +280,9 @@
                                         </table>
                                     </div>
 
+                                </div>
+                                <div class="m-0 font-weight-bold text-danger">
+                                    * 디스크는 최대 7개까지 확장 가능합니다.
                                 </div>
                                 <button class="btn btn-danger mt-1 float-right" data-toggle="modal"
                                         data-target="#checkExpansion">
