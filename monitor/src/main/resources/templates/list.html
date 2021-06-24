@@ -55,17 +55,26 @@
                             }
                         }
 
-                    ]/*,
-                    columnDefs:[{
-                        targets: 4 ,
-                        render: $.fn.dataTable.render.moment('YYYY-MM-DD HH:mm:ss.SSS', 'YYYY-MM-DD HH:mm'),
-                    }]*/
+                    ],
+                    columnDefs: [{
+                        targets: [3,5],
+                        visible: false
+                    }]
 
                 });
 
                 var table = $('#boardTable').DataTable();
 
-                $('#boardTable tbody').on('click', 'tr .btn', function () {
+                //$('#boardTable tbody').on('click', 'tr .btn', function () {
+                //     var tr = $(this).closest('tr');
+                //     var dt = table.row(tr).data();
+                //     console.log(dt);
+                //
+                //     location.href='/detail?bno=' + dt.bno;
+                //
+                // });
+
+                $('#boardTable tbody').on('click', 'tr', function () {
                     var tr = $(this).closest('tr');
                     var dt = table.row(tr).data();
                     console.log(dt);

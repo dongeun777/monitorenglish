@@ -114,28 +114,22 @@
             getResourceUsage(sessionRsc);
         } else {
 
-            $('input[name="costTotal"]').change(function(){
-                if($(this).val() == "noRe") {
+            $('input[name="costTotal"]').change(function () {
+                if ($(this).val() == "noRe") {
                     document.getElementById("costTotalBox").hidden = false;
                     document.getElementById("costTotal1Box").hidden = true;
                     document.getElementById("costTotal3Box").hidden = true;
-                }
-                else if($(this).val() == "Re1"){
+                } else if ($(this).val() == "Re1") {
                     document.getElementById("costTotalBox").hidden = true;
                     document.getElementById("costTotal1Box").hidden = false;
                     document.getElementById("costTotal3Box").hidden = true;
-                }
-                else if($(this).val() == "Re3"){
+                } else if ($(this).val() == "Re3") {
                     document.getElementById("costTotalBox").hidden = true;
                     document.getElementById("costTotal1Box").hidden = true;
                     document.getElementById("costTotal3Box").hidden = false;
                 }
 
             });
-
-
-
-
 
 
             if (sessionStep == 1) {
@@ -264,8 +258,8 @@
         let element = document.getElementById('addDiv');
 
         $("#addDiv").append('                                <div class="row mb-3 ml-4"  id="equip' + ++tempVal + '">\n' +
-            '        <select class="form-control" style="width: 26%;"  name="fire" id="logSrc' + tempVal + '">\n' +
-            '           <option value="">선택</option>\n' +
+            '        <select class="form-control" style="width: 35%;"  name="fire" id="logSrc' + tempVal + '">\n' +
+            '           <option value="">장비선택</option>\n' +
             '            <option value="FW">FW</option>\n' +
             '            <option value="IPS">IPS</option>\n' +
             '            <option value="IDS">IDS</option>\n' +
@@ -333,7 +327,6 @@
     }
 
 
-
     function completeLogCheck() {
         if (document.getElementById('logTotal').innerText == "") {
             window.alert('장비 정보와 로그를 등록해주세요');
@@ -365,7 +358,7 @@
 
     }
 
-    function deleteLog(logid){
+    function deleteLog(logid) {
 
 
         $.ajax({
@@ -476,7 +469,9 @@
         }
 
     }
+
     var logtable;
+
     function getLogList() {
 
         //$('#logListTable').dataTable().ajax.reload();
@@ -496,12 +491,13 @@
                     serverSide: false,
                     searching: false,
                     columns: [
-                        {data:"logid"},
+                        {data: "logid"},
                         {data: "equip"},
                         {data: "usages"},
-                        {data: "logid",
-                            "render": function(data, type, row){
-                                if(type=='display'){
+                        {
+                            data: "logid",
+                            "render": function (data, type, row) {
+                                if (type == 'display') {
                                     data = '<button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>';
 
                                 }
@@ -509,9 +505,9 @@
                             }
                         }
                     ],
-                    columnDefs:[{
-                        targets:[0],
-                        visible:false
+                    columnDefs: [{
+                        targets: [0],
+                        visible: false
                     }]
                 });
 
@@ -520,10 +516,10 @@
 
                 $('#logListTable tbody').on('click', 'tr .btn', function () {
                     var tr = $(this).closest('tr');
-                    var dt = table.row( tr ).data();
+                    var dt = table.row(tr).data();
 
 
-                    console.log("del:"+dt.logid) ;
+                    console.log("del:" + dt.logid);
                     deleteLog(dt.logid);
                     //document.getElementById("emailChk").innerHTML=dt.email;
 
@@ -690,7 +686,7 @@
             paramDate: lastparameter,
             rscparam: rscparam
         };
-        sumbefore =0;
+        sumbefore = 0;
 
         $.getJSON("/getChartList.do", params, function (data) {
 
@@ -708,7 +704,7 @@
 
                 $.each(data2, function (inx, obj) {
 
-                    chartLabels2.push(obj.idate );
+                    chartLabels2.push(obj.idate);
                     chartData2[(obj.idate * 1) - 1] = obj.usage_data;
                     sumbefore += obj.usage_data * 1;
 
@@ -928,7 +924,7 @@
                             });
                             var currentValue = dataset.data[tooltipItem.index];
                             var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
-                            return  percentage + "%," + currentValue + "원";
+                            return percentage + "%," + currentValue + "원";
                         }
                     }
 
@@ -1077,11 +1073,12 @@
         $.ajax({
             url: "/getResourceUsage.do",
             type: "GET",
-            data: { rscparam: rscparam
+            data: {
+                rscparam: rscparam
             },
             success: function (data) {
                 var diskPer = "0%";
-                if(data.usageDiskPer) {
+                if (data.usageDiskPer) {
                     diskPer = data.usageDiskPer;
                 }
                 $("#diskValue").text(diskPer);
@@ -1096,13 +1093,13 @@
 <body id="page-top">
 
 
-
 <div id="wrapper">
 
     <!--<div th:insert="sidemenu.html :: side_menu"></div>-->
 
     <div id="div_load_image"
-         style="position: absolute; top:50%; left: 50%; width:0px ; height: 0px; z-index: 9999; background: #f0f0f0; margin:auto;  " hidden="true">
+         style="position: absolute; top:50%; left: 50%; width:0px ; height: 0px; z-index: 9999; background: #f0f0f0; margin:auto;  "
+         hidden="true">
         <img src="/image/loading.gif" style="width:100px; height: 100px; ">
     </div>
 
@@ -1137,7 +1134,7 @@
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/resource">
                 <i class="fas fa-fw fa-chart-pie"></i>
-                <span  th:text="#{label.resourcemanagement}"></span></a>
+                <span th:text="#{label.resourcemanagement}"></span></a>
         </li>
 
 
@@ -1160,7 +1157,6 @@
                 <i class="fas fa-fw fa-question"></i>
                 <span>Q&A</span></a>
         </li>
-
 
 
         <!-- Divider -->
@@ -1195,11 +1191,11 @@
                 <ul class="navbar-nav ml-auto">
                     <!-- Nav Item - User Information -->
                     <li class="nav-item" style="margin-top: 3px;">
-                        <a href="/main?lang=ko-kr"  class="text-gray-400"  data-th-text="#{label.lang.ko}" ></a>
+                        <a href="/main?lang=ko-kr" class="text-gray-400" data-th-text="#{label.lang.ko}"></a>
                     </li>
                     <div class="topbar-divider d-none d-sm-block" style="height: calc(4.375rem - 3rem);"></div>
                     <li class="nav-item" style="margin-top: 3px;">
-                        <a href="/main?lang=en-us"   class="text-gray-400" data-th-text="#{label.lang.us}" ></a>
+                        <a href="/main?lang=en-us" class="text-gray-400" data-th-text="#{label.lang.us}"></a>
                     </li>
 
                     <li class="nav-item dropdown no-arrow">
@@ -1207,10 +1203,6 @@
                         <span id="email" th:text="${session['email']}" hidden="true"> </span>
                         <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                         <span id="step" hidden="true" th:text="${session['step']}"> </span>
-
-
-
-
 
 
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"
@@ -1240,7 +1232,7 @@
 
                 <div class="row" th:if="${session['auth']} !='ROLE_USER'"
                      style="margin-left: 2px;margin-bottom: 10px;">
-                    <span class="m-1 font-size-115 mt-2 mr-2"  th:text="#{label.customersearch}"></span>
+                    <span class="m-1 font-size-115 mt-2 mr-2" th:text="#{label.customersearch}"></span>
 
 
                     <div class="input-group" style="width: 19%;">
@@ -1330,11 +1322,13 @@
                                              style="font-size: 20px;" th:text="#{label.disk}"></div>
                                         <div class="row no-gutters align-items-center">
                                             <div class="col-auto">
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800" id="diskValue"></div>
+                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"
+                                                     id="diskValue"></div>
                                             </div>
                                             <div class="col">
                                                 <div class="progress progress-sm mr-2">
-                                                    <div class="progress-bar bg-info" role="progressbar" id="diskProgress"></div>
+                                                    <div class="progress-bar bg-info" role="progressbar"
+                                                         id="diskProgress"></div>
                                                     <!--
                                                     <div class="progress-bar bg-info" role="progressbar"
                                                          style="width: 0%" id="diskProgress"></div>
@@ -1344,7 +1338,8 @@
                                         </div>
                                     </div>
                                     <div class="col-auto">
-                                        <a class="nav-link" href="/resource"><i class="fas fa-plus fa-2x text-gray-300"></i></a>
+                                        <a class="nav-link" href="/resource"><i
+                                                class="fas fa-plus fa-2x text-gray-300"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -1364,7 +1359,7 @@
 
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary"  th:text="#{label.dailygraph}" ></h6>
+                                <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.dailygraph}"></h6>
 
                             </div>
                             <!-- Card Body -->
@@ -1422,7 +1417,7 @@
                             <!-- Card Header - Dropdown -->
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.barchart}" ></h6>
+                                <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.barchart}"></h6>
 
                             </div>
                             <!-- Card Body -->
@@ -1443,7 +1438,7 @@
 
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary"  th:text="#{label.dailylog}"></h6>
+                                <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.dailylog}"></h6>
 
                             </div>
                             <!-- Card Body -->
@@ -1481,7 +1476,8 @@
                             <!-- Card Header - Dropdown -->
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.azureresource}">Azure 리소스별 사용량</h6>
+                                <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.azureresource}">Azure
+                                    리소스별 사용량</h6>
 
                             </div>
                             <!-- Card Body -->
@@ -1538,9 +1534,9 @@
                                                         <span style="color: black; font-size: 25px; font-weight: normal; " >이글루시큐리티 모니터링 시스템입니다. </span>
 
                                                     </div>-->
-                        <div class="col-xl-12 col-lg-6">
+                        <div class="col-xl-8 col-lg-12 col-md-12">
                             <span style="color: black; font-size: 25px; font-weight: bold; " id="logTitle">장비 정보를 등록해주세요. </span>
-                            <div class="progress" style="width: 50%; height: 30px;">
+                            <div class="progress" style="height: 30px;">
                                 <div class="progress-bar progress-bar-success" role="progressbar" style="width:33.3%"
                                      id="step1bar">
                                     Step1: 장비 등록
@@ -1593,8 +1589,8 @@
                                         <div class="row mb-3 ml-4" id="equip0">
 
 
-                                            <select class="form-control" style="width: 26%;" name="fire" id="logSrc0">
-                                                <option value="">선택</option>
+                                            <select class="form-control" style="width: 35%;" name="fire" id="logSrc0">
+                                                <option value="">장비선택</option>
                                                 <option value="FW">FW</option>
                                                 <option value="IPS">IPS</option>
                                                 <option value="IDS">IDS</option>
@@ -1665,9 +1661,9 @@
                                     </div>
 
 
-
                                     <button class="btn btn-primary mt-1"
-                                            th:if="${session['step']} =='1'" onclick='goBack()'><i class="fa fa-arrow-alt-circle-left mr-1"></i>Step 1
+                                            th:if="${session['step']} =='1'" onclick='goBack()'><i
+                                            class="fa fa-arrow-alt-circle-left mr-1"></i>Step 1
 
                                     </button>
 
@@ -1687,189 +1683,205 @@
                                 </div>
 
                                 <div class="row ml-2 mt-1">
-                                    <label class="radio-inline mr-1 ml-4 mt-2">
-                                        <input type="radio" name="costTotal" id="inlineRadio11" value="noRe" checked="checked"> 종량제
+                                    <span class="mr-1 ml-4 mt-2"　style="font-weight: bold;"> 기간 옵션 선택 </span>
+                                </div>
+
+                                <div class="row ml-2">
+                                    <label class="radio-inline mr-3 ml-4 mt-2 ">
+                                        <input type="radio" name="costTotal" id="inlineRadio11" value="noRe"
+                                               checked="checked"> 종량제
+                                    </label>
+                                    <label class="radio-inline mr-3 mt-2">
+                                        <input type="radio" name="costTotal" id="inlineRadio22" value="Re1"> 1년
+                                        예약
                                     </label>
                                     <label class="radio-inline mr-1 mt-2">
-                                        <input type="radio" name="costTotal" id="inlineRadio22" value="Re1"> 1년 예약
+                                        <input type="radio" name="costTotal" id="inlineRadio33" value="Re3"> 3년
+                                        예약
                                     </label>
-                                    <label class="radio-inline mr-1 mt-2">
-                                        <input type="radio" name="costTotal" id="inlineRadio33" value="Re3"> 3년 예약
-                                    </label>
+                                </div>
                                 <div>
 
-                                <div class="card-body">
-                                    <div class="card border-left-primary shadow py-2 mt-2" style="height: 45%;">
-                                        <div class="text-dark ml-4 "
-                                             style="font-size: 20px; font-weight: bold; ">VM specification
-                                        </div>
-                                        <div class="text-dark ml-4 "
-                                             style="font-size: 18px; font-weight: normal; " id="cpuVal"></div>
-                                        <div class="text-dark ml-4 "
-                                             style="font-size: 18px; font-weight: normal; " id="ramVal"></div>
-                                        <div class="text-dark ml-4 "
-                                             style="font-size: 18px; font-weight: normal; " id="diskVal"></div>
-
-                                    </div>
-                                    <div class="card border-left-primary mt-1 shadow py-2" style="height: 45%;">
-
-                                        <div id="costTotalBox" hidden="true">
+                                    <div class="card-body">
+                                        <div class="card border-left-primary shadow py-2"
+                                             style="height: 45%;">
                                             <div class="text-dark ml-4 "
-                                                 style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                                 style="font-size: 20px; font-weight: bold; ">VM
+                                                specification
                                             </div>
                                             <div class="text-dark ml-4 "
-                                                 style="font-size: 19px; font-weight: bold; " id="costTotal" ></div>
-                                        </div>
-
-                                        <div id="costTotal1Box" hidden="true">
+                                                 style="font-size: 18px; font-weight: normal; "
+                                                 id="cpuVal"></div>
                                             <div class="text-dark ml-4 "
-                                                 style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                                 style="font-size: 18px; font-weight: normal; "
+                                                 id="ramVal"></div>
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 18px; font-weight: normal; "
+                                                 id="diskVal"></div>
+
+                                        </div>
+                                        <div class="card border-left-primary mt-1 shadow py-2"
+                                             style="height: 45%;">
+
+                                            <div id="costTotalBox" hidden="true">
+                                                <div class="text-dark ml-4 "
+                                                     style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                                </div>
+                                                <div class="text-dark ml-4 "
+                                                     style="font-size: 19px; font-weight: bold; "
+                                                     id="costTotal"></div>
                                             </div>
-                                            <div class="text-dark ml-4 "
-                                                 style="font-size: 19px; font-weight: bold; " id="cost1Total"></div>
-                                        </div>
 
-                                        <div id="costTotal3Box" hidden="true">
-                                            <div class="text-dark ml-4 "
-                                                 style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                            <div id="costTotal1Box" hidden="true">
+                                                <div class="text-dark ml-4 "
+                                                     style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                                </div>
+                                                <div class="text-dark ml-4 "
+                                                     style="font-size: 19px; font-weight: bold; "
+                                                     id="cost1Total"></div>
                                             </div>
-                                            <div class="text-dark ml-4 "
-                                                 style="font-size: 19px; font-weight: bold; " id="cost3Total"></div>
+
+                                            <div id="costTotal3Box" hidden="true">
+                                                <div class="text-dark ml-4 "
+                                                     style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                                </div>
+                                                <div class="text-dark ml-4 "
+                                                     style="font-size: 19px; font-weight: bold; "
+                                                     id="cost3Total"></div>
+                                            </div>
+
+                                            <div class="text-dark ml-4 mr-4 "
+                                                 style="font-size: 15px; font-weight: normal; ">TM License
+                                                비용을 제외한 Azure사용에
+                                                대한 월별 금액이며, 사용량이나 환율에 따라 변경될 수 있습니다.
+                                            </div>
                                         </div>
-
-                                        <div class="text-dark ml-4 mr-4 "
-                                             style="font-size: 15px; font-weight: normal; ">TM License 비용을 제외한 Azure사용에
-                                            대한 월별 금액이며, 사용량이나 환율에 따라 변경될 수 있습니다.
-                                        </div>
-                                    </div>
-
-
 
 
                                         <button class="btn btn-primary mt-1" data-toggle="modal"
-                                                data-target="#checkDeploy" style="height: 30px; line-height: 20px;"
+                                                data-target="#checkDeploy"
+                                                style="height: 30px; line-height: 20px;"
                                                 th:if="${session['step']} =='1'">배포시작
 
                                         </button>
 
-                                </div>
+                                    </div>
 
+
+                                </div>
 
                             </div>
 
+
+                        </div>
+                    </div>
+
+                    <div class="col-xl-4 col-lg-5 " id="youtube" style="z-index: 100;">
+
+
+                        <iframe width="800" height="450"
+                                src="https://www.youtube.com/embed/01SZg39z6xA?autoplay=1&mute=1"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen></iframe>
+
+
+                    </div>
+
+                    <div class="col-xl-12 col-lg-5 " id="loading" style="height: 70px; ">
+                        <span style="font-size: 20px; font-weight: bold; width: 100px; float: left"> 배포진행중 </span>
+
+                        <div id="tenor"
+                             style=" width:0px ; height: 0px; margin:auto;float: left; margin-top: -10px;">
+                            <img src="/image/loading.png" style="width:100px; height: 50px;margin-left: -20px; ">
                         </div>
 
 
-
-
-                    </div>
-                </div>
-
-                <div class="col-xl-4 col-lg-5 " id="youtube" style="z-index: 100;">
-
-
-                    <iframe width="800" height="450"
-                            src="https://www.youtube.com/embed/01SZg39z6xA?autoplay=1&mute=1" frameborder="0"
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-
-
-
-
-
-
-                </div>
-
-                <div class="col-xl-12 col-lg-5 " id="loading" style="height: 70px; background: white;">
-                    <span style="font-size: 20px; font-weight: bold; width: 100px; float: left"> 배포진행중 </span>
-
-                    <div id="tenor"
-                         style=" width:0px ; height: 0px; margin:auto;float: left; margin-top: -30px;" >
-                        <img src="/image/tenor.gif" style="width:100px; height: 100px; ">
                     </div>
 
 
+                    <div class="col-xl-12 col-lg-5 " id="complete" style="height: 70px;"
+                         hidden="true">
+                        <span style="font-size: 20px; font-weight: bold; width: 225px; float: left"> 배포가 완료되었습니다. </span>
+
+                        <a style="font-size: 20px; font-weight: bold;  float: left;" href="/main"> 대시보드
+                            바로가기 </a>
+
+
+                    </div>
+                    <!--                <div class="modal-footer">
+                                        <button class="btn btn-primary"  type="submit" >등록</button>
+                                        <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+
+                                    </div>-->
+
+
                 </div>
 
 
-                <div class="col-xl-12 col-lg-5 " id="complete" style="height: 70px; background: white;" hidden ="true">
-                    <span style="font-size: 20px; font-weight: bold; width: 225px; float: left"> 배포가 완료되었습니다. </span>
+            </div>
+            <!-- End of Main Content -->
 
-                    <a style="font-size: 20px; font-weight: bold;  float: left;" href="/main" > 대시보드 바로가기 </a>
+            <!-- Footer -->
+            <footer th:replace="mainfooter.html :: footer"></footer>
+            <!-- End of Footer -->
 
+        </div>
+        <!-- End of Content Wrapper -->
 
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">LOGOUT 하시겠습니까?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
                 </div>
-                <!--                <div class="modal-footer">
-                                    <button class="btn btn-primary"  type="submit" >등록</button>
-                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
-
-                                </div>-->
-
-
-            </div>
-
-
-        </div>
-        <!-- End of Main Content -->
-
-        <!-- Footer -->
-        <footer th:replace="mainfooter.html :: footer"></footer>
-        <!-- End of Footer -->
-
-    </div>
-    <!-- End of Content Wrapper -->
-
-</div>
-<!-- End of Page Wrapper -->
-
-<!-- Scroll to Top Button-->
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
-
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">LOGOUT 하시겠습니까?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <!--<div class="modal-body">LOGOUT 하시겠습니까?</div>-->
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="/logout">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="checkDeploy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="checkDeployLabel">정말 배포하시겠습니까?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div>
-
+                <!--<div class="modal-body">LOGOUT 하시겠습니까?</div>-->
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit" onclick='createvm()' id="deployBtn">배포</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
-
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="/logout">Logout</a>
                 </div>
-
             </div>
         </div>
     </div>
 
-</div>
+    <div class="modal fade" id="checkDeploy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="checkDeployLabel">정말 배포하시겠습니까?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit" onclick='createvm()' id="deployBtn">
+                            배포
+                        </button>
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
 
 </body>
 

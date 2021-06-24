@@ -44,6 +44,8 @@ public class MemberService implements UserDetailsService {
 
     public void deleteUser(MemberVo memberVo) {
         // delete USER_DISK_USAGE
+        mapper.deleteUsedAmount(memberVo);
+        mapper.deleteTmStats(memberVo);
         mapper.deleteUserDiskUsage(memberVo);
         mapper.deleteMember(memberVo);
         mapper.deleteEquipList(memberVo);

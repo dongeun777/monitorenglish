@@ -82,6 +82,15 @@
     <delete id="deleteUserDiskUsage" parameterType="MemberVo">
         DELETE FROM USER_DISK_USAGE WHERE rsg_grp = (SELECT rscGrp FROM USER_LIST WHERE email = #{email})
     </delete>
+
+    <delete id="deleteUsedAmount" parameterType="MemberVo">
+        DELETE FROM USED_AMOUNT WHERE resourceGroupName = (SELECT rscGrp FROM USER_LIST WHERE email = #{email})
+    </delete>
+
+
+    <delete id="deleteTmStats" parameterType="MemberVo">
+        DELETE FROM tm_stats WHERE rscgrp = (SELECT rscGrp FROM USER_LIST WHERE email = #{email})
+    </delete>
 </mapper>
 
 
