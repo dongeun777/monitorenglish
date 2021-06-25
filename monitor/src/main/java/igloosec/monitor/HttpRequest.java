@@ -170,7 +170,7 @@ public class HttpRequest {
         return data;
     }
 
-    public Map<String, Object> multiVolume(String ip, String rscGrp, String partitionName, String jobType) {
+    public Map<String, Object> multiVolume(String logHead, String ip, String rscGrp, String partitionName, String jobType) {
         Map<String, Object> retMap = new HashMap<String, Object>();
 
         retMap.put("result", false);
@@ -194,8 +194,8 @@ public class HttpRequest {
             }
 
             if(jobType.equals("get") == false) {
-                logger.info("{} multivolume request uri : {}", jobType, uri);
-                logger.info("{} multivolume request param : {}", jobType, param);
+                logger.info("{} {} multivolume request uri : {}", logHead, jobType, uri);
+                logger.info("{} {} multivolume request param : {}", logHead, jobType, param);
             }
 
             String data = doPostHttp(uri, param);
@@ -203,11 +203,11 @@ public class HttpRequest {
             JsonObject obj = new JsonParser().parse(data).getAsJsonObject();
             JsonObject resObj = (JsonObject) obj.get("responseHeader");
             if(resObj.get("status").getAsInt() != 0) {
-                logger.error("{} multivolume error - {}", jobType, data);
+                logger.error("{} {} multivolume error - {}", logHead, jobType, data);
                 return retMap;
             }
             if(jobType.equals("get") == false) {
-                logger.info("{} multivolume response : {}", jobType, data);
+                logger.info("{} {} multivolume response : {}", logHead, jobType, data);
             }
             retMap.put("result", true);
         } catch(Exception e) {
@@ -216,7 +216,7 @@ public class HttpRequest {
         }
 
         if(jobType.equals("get") == false) {
-            logger.info("{} multivolume success - {}, {}", jobType, rscGrp, partitionName);
+            logger.info("{} {} multivolume success - {}, {}", logHead, jobType, rscGrp, partitionName);
         }
 
         return retMap;
