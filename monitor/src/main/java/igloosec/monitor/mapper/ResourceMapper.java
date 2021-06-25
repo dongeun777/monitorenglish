@@ -19,4 +19,8 @@ public interface ResourceMapper {
     List<ResourceVo> selectDiskPrice();
 
     String selectUserVmIp(String rscGrp);
+
+    boolean insertDiskName(ResourceVo param);
+
+    boolean deleteDiskName(ResourceVo param);
 }

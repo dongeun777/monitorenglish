@@ -1,5 +1,7 @@
 package igloosec.monitor;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import igloosec.monitor.controller.HomeController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,8 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class HttpRequest {
@@ -133,24 +137,14 @@ public class HttpRequest {
 
 
     // HTTP POST request
-    public String doPostHttp(String ip, String partitionName) throws Exception {
+    public String doPostHttp(String uri, String param) throws Exception {
 
-        URL url = new URL("http://" + ip + ":8983/solr/indexer.json");
+        URL url = new URL(uri);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
         con.setRequestMethod("POST"); // HTTP POST 메소드 설정
         con.setDoOutput(true); // POST 파라미터 전달을 위한 설정
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-        String param    = "wt=json&type=TARGET&action=DISK&partition=true";
-
-        if(partitionName != null) {
-            param += "&partition_add=true";
-            param += "&partition_pri=" + ConfigUtils.getConf("partitionPri");
-            param += "&partition_limit=" + ConfigUtils.getConf("partitionLimit");
-            param += "&partition_name=" + partitionName;
-            logger.info("add multivolume request param : {}", param);
-        }
 
         OutputStream out_stream = con.getOutputStream();
 
@@ -174,6 +168,58 @@ public class HttpRequest {
         data    = buff.toString().trim();
 
         return data;
+    }
+
+    public Map<String, Object> multiVolume(String ip, String rscGrp, String partitionName, String jobType) {
+        Map<String, Object> retMap = new HashMap<String, Object>();
+
+        retMap.put("result", false);
+
+        try {
+            String uri = "http://" + ip + ":8983/solr/indexer.json";
+
+            String param    = "wt=json&type=TARGET&action=DISK&partition=true";
+            if(jobType.equals("get") == false) {
+                if (jobType.equals("add") == true) {         // add multivolume
+                    param += "&partition_add=true";
+                } else if (jobType.equals("remove") == true) {  // remove multivolume
+                    param += "&partition_add=false";
+                } else {
+                    logger.error("multivolume error - jobType is {}", jobType);
+                    return retMap;
+                }
+                param += "&partition_pri=" + ConfigUtils.getConf("partitionPri");
+                param += "&partition_limit=" + ConfigUtils.getConf("partitionLimit");
+                param += "&partition_name=" + partitionName;
+            }
+
+            if(jobType.equals("get") == false) {
+                logger.info("{} multivolume request uri : {}", jobType, uri);
+                logger.info("{} multivolume request param : {}", jobType, param);
+            }
+
+            String data = doPostHttp(uri, param);
+            retMap.put("data", data);
+            JsonObject obj = new JsonParser().parse(data).getAsJsonObject();
+            JsonObject resObj = (JsonObject) obj.get("responseHeader");
+            if(resObj.get("status").getAsInt() != 0) {
+                logger.error("{} multivolume error - {}", jobType, data);
+                return retMap;
+            }
+            if(jobType.equals("get") == false) {
+                logger.info("{} multivolume response : {}", jobType, data);
+            }
+            retMap.put("result", true);
+        } catch(Exception e) {
+            logger.error(CommonUtil.getPrintStackTrace(e));
+            return retMap;
+        }
+
+        if(jobType.equals("get") == false) {
+            logger.info("{} multivolume success - {}, {}", jobType, rscGrp, partitionName);
+        }
+
+        return retMap;
     }
 }
 

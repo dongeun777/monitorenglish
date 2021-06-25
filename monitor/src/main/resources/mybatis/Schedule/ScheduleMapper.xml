@@ -52,7 +52,8 @@
         INSERT INTO USER_DISK_USAGE values
         <foreach collection="list" item="item" separator=",">
             ( #{item.rscparam}
-            , #{item.diskName}
+            , #{item.partitionName}
+            , null
             , #{item.priority}
             , #{item.limits}
             , #{item.total}
@@ -64,7 +65,7 @@
         </foreach>
         on duplicate key update
         rsg_grp = values(rsg_grp)
-        ,name = values(name)
+        ,partition_name = values(partition_name)
         ,priority = values(priority)
         ,limits = values(limits)
         ,total = values(total)

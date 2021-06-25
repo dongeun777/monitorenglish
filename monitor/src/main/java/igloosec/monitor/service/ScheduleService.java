@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class ScheduleService {
@@ -50,7 +51,8 @@ public class ScheduleService {
     /**
      * leads data
      */
-    @Scheduled(cron = "0/10 * * * * *")  // 10초마다
+    //@Scheduled(cron = "0/10 * * * * *")  // 10초마다
+    @Scheduled(cron = "* * * * * *")  // 1초마다
     public void getLeadsInfo() {
 
         String os = CommonUtil.getOS();
@@ -126,9 +128,9 @@ public class ScheduleService {
     /**
      * resource data
      */
-    @Scheduled(cron = "0 0/5 * * * *")  // 5분마다
+    @Scheduled(cron = "0 0/1 * * * *")  // 5분마다
     public void getResourceInfo() {
-        logger.info("[DISK PULLING] Start getting disk information");
+        //logger.info("[DISK PULLING] Start getting disk information");
         // 전체 유저 리소스그룹 조회
         List<MemberVo> list = memberMapper.selectMemberList();
 
@@ -141,14 +143,14 @@ public class ScheduleService {
             MemberVo vo = list.get(i);
 
             if(vo.getIpAddr() != null && vo.getIpAddr().equals("") == false) {
-                logger.info("[DISK PULLING] resource group : {} ip : {}", vo.getRscGrp(), vo.getIpAddr());
+                //logger.info("[DISK PULLING] resource group : {} ip : {}", vo.getRscGrp(), vo.getIpAddr());
                 try {
                     // get data
-                    String data = request.doPostHttp(vo.getIpAddr().trim(), null);
-                    if(data != null) {
-                        logger.info("[DISK PULLING] [{}] data pulling success", vo.getRscGrp());
+                    Map<String, Object> data = request.multiVolume(vo.getIpAddr().trim(), vo.getRscGrp(), null, "get");
+                    if(data.get("data") != null) {
+                        //logger.info("[DISK PULLING] [{}] data pulling success", vo.getRscGrp());
                         // parsing
-                        List<ResourceVo> retList = this.resourceFileParse(vo.getRscGrp(), data);
+                        List<ResourceVo> retList = this.resourceFileParse(vo.getRscGrp(), (String)data.get("data"));
 
                         if(retList.size() != 0) {
                             insertList.addAll(retList);
@@ -164,7 +166,7 @@ public class ScheduleService {
         // db update
         mapper.insertResourceInfo(insertList);
 
-        logger.info("[DISK PULLING] db update success");
+        //logger.info("[DISK PULLING] db update success");
         logger.info("[DISK PULLING] End getting disk information");
     }
 
@@ -195,7 +197,7 @@ public class ScheduleService {
             if(arr.get(i).isJsonPrimitive() == false) {
                 ResourceVo vo = new ResourceVo();
                 vo.setRscparam(rsgGrp);
-                vo.setDiskName(arr.get(i).getAsJsonObject().getAsJsonPrimitive("name").getAsString());
+                vo.setPartitionName(arr.get(i).getAsJsonObject().getAsJsonPrimitive("name").getAsString());
                 vo.setPriority(arr.get(i).getAsJsonObject().getAsJsonPrimitive("priority").getAsInt());
                 vo.setLimits(arr.get(i).getAsJsonObject().getAsJsonPrimitive("limit").getAsInt());
                 vo.setTotal(arr.get(i).getAsJsonObject().getAsJsonPrimitive("total").getAsString());
@@ -206,7 +208,7 @@ public class ScheduleService {
             }
         }
 
-        logger.info("[DISK PULLING] [{}] parse success", rsgGrp);
+        //logger.info("[DISK PULLING] [{}] parse success", rsgGrp);
 
         return list;
     }

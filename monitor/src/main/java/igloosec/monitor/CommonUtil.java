@@ -35,7 +35,7 @@ public class CommonUtil {
             Files.move(received , complete);
             return true;
         } catch(Exception e) {
-            logger.error(CommonUtil.getPrintStackTrace(e));
+            //logger.error(CommonUtil.getPrintStackTrace(e));
             return false;
         }
     }
@@ -45,4 +45,5 @@ public class CommonUtil {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         return sdf.format(nowDate);
     }
+
 }

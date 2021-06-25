@@ -2,6 +2,8 @@ package igloosec.monitor.controller;
 
 import igloosec.monitor.service.ResourceService;
 import igloosec.monitor.vo.ResourceVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import java.util.List;
 @Controller
 public class ResourceController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ResourceController.class);
     private final ResourceService resourceService;
     @Autowired
     public ResourceController(ResourceService resourceService) {
@@ -71,12 +74,19 @@ public class ResourceController {
     @ResponseBody
     @RequestMapping(value = "/setDiskExpansion.do")
     public void setDiskExpansion(HttpSession session, ResourceVo param) {
+        logger.info("start");
         // disk expansion
         resourceService.addMultiVolume(param.getRscparam(), param.getDiskSize());
-        /*
 
-        model.addAttribute("list",list);
-        */
+        return;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteDisk")
+    public void deleteDisk(HttpSession session, ResourceVo param) {
+        // disk remove
+        resourceService.delMultiVolume(param);
+
         return;
     }
 

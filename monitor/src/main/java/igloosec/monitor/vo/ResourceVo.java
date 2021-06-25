@@ -15,6 +15,7 @@ public class ResourceVo {
     // disk usage
     private int cpu;
     private int memory;
+    private String partitionName;
     private String diskName;
     private int priority;
     private int limits;
@@ -25,7 +26,7 @@ public class ResourceVo {
     private String usageDiskPer;
     private String usages;
     private String updateTm;
-
+    private int criteria;
     private int diskSize;
     private double diskPrice;
 
@@ -115,6 +116,14 @@ public class ResourceVo {
 
     public void setMemory(int memory) {
         this.memory = memory;
+    }
+
+    public String getPartitionName() {
+        return partitionName;
+    }
+
+    public void setPartitionName(String partitionName) {
+        this.partitionName = partitionName;
     }
 
     public String getDiskName() {
@@ -211,5 +220,13 @@ public class ResourceVo {
 
     public void setDiskPrice(double diskPrice) {
         this.diskPrice = diskPrice;
+    }
+
+    public int getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(int criteria) {
+        this.criteria = criteria;
     }
 }

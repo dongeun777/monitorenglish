@@ -18,8 +18,9 @@
 
         sessionRsc = document.getElementById("rscgrp").innerText;
 
-        document.getElementById("div_load").hidden = true;
-        document.getElementById("div_load_image").hidden = true;
+        $("#div_load, #div_load_image").hide();
+        //document.getElementById("div_load").hidden = true;
+        //document.getElementById("div_load_image").hidden = true;
 
         getResourceList();
 
@@ -40,6 +41,8 @@
 
         // azure disk price
         getDiskPrice();
+
+        $("#diskExpBtn").on("click", function(){ diskExpansion() });
     }
 
 
@@ -95,6 +98,10 @@
             success: function (data) {
                 tablelength = data.length;
 
+                if(tablelength >= 8) {
+                    $('#expansionBtn').hide();
+                }
+
                 var displayDiskUpdateTm = $('#disk').text();
                 if(data[0]) {
                     displayDiskUpdateTm += " (" + data[0].updateTm + $("#diskUpdateTm").text();
@@ -104,20 +111,53 @@
                 $('#diskTable').dataTable({
                     aaData: data,
                     bPaginate: false,
-                    bLengthChange: false,
+                    bLengthChange: true,
                     bInfo: false,
                     bAutoWidth: false,
-                    processing: false,
+                    processing: true,
                     ordering: false,
                     serverSide: false,
                     searching: false,
                     columns: [
-                        {data: "diskName"},
+                        {data: "partitionName"},
                         {data: "total"},
                         {data: "usageDiskPer"},
                         {data: "usages"},
-                        {data: "free"}
-                    ]
+                        {data: "free"},
+                        {data: "diskName",
+                            "render": function(data, type, row) {
+                                if (row.partitionName != '/data') {
+                                    if (type == 'display') {
+                                        data = '<button class="mb-2 mr-2 btn btn-danger btn-sm">Del</button>';
+                                    }
+                                }
+                                return data;
+                            }
+                        }
+                    ],
+                    'rowCallback': function(row, data, index) {
+                        var diskPer = data.usageDiskPer.replace('%', '');
+                        if(data.current == 'true') {
+                            if (diskPer >= data.criteria) {
+                                $('td', row).css('background-color', 'rgba(255,0,0,0.3)');
+                                $('td', row).css('color', 'black');
+                            }
+                        }
+                    }
+                });
+
+                var table = $('#diskTable').DataTable();
+
+
+                $('#diskTable tbody').on('click', 'tr .btn', function () {
+                    var tr = $(this).closest('tr');
+                    var dt = table.row( tr ).data();
+
+                    if($(this).text() == "Del"){
+                        document.getElementById("diskNameChk").innerHTML=dt.diskName;
+                        document.getElementById("partitionNameChk").innerHTML=dt.partitionName;
+                        $('#deleteDiskModal').modal("show");
+                    }
                 });
 
             }, error: function (request, status, error) {
@@ -173,24 +213,26 @@
         if(diskSize == 'none') {
             window.alert('디스크 용량을 선택해 주세요.');
             return;
-        }
-        $('#checkExpansion').modal("hide");
-        document.getElementById("div_load").hidden = false;
-        document.getElementById("div_load_image").hidden = false;
+        } else {
+            $('#checkExpansion').modal("hide");
+            $("#div_load, #div_load_image").show();
+            //document.getElementById("div_load_image").hidden = false;
 
-        $.ajax({
-            url: "/setDiskExpansion.do",
-            type: "POST",
-            data: {
-                rscparam: sessionRsc
-                , diskSize: diskSize
-            },
-            success: function (data) {
-                location.reload();
-            }, error: function (request, status, error) {
-                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-            }
-        });
+            console.log("rscparam : " + sessionRsc + ", diskSize : " + diskSize);
+            $.ajax({
+                url: "/setDiskExpansion.do",
+                type: "POST",
+                data: {
+                    rscparam: sessionRsc
+                    , diskSize: diskSize
+                },
+                success: function (data) {
+                    location.reload();
+                }, error: function (request, status, error) {
+                    console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                }
+            });
+        }
     }
 
     function comma(num) {
@@ -210,6 +252,25 @@
         return str;
 
     }
+
+    function deleteDisk(){
+        $('#deleteDiskModal').modal("hide");
+        $("#div_load, #div_load_image").show();
+
+        $.ajax({
+            url: "/deleteDisk",
+            type: "POST",
+            data: {
+                rscparam: sessionRsc,
+                diskName: document.getElementById('diskNameChk').innerHTML,
+                partitionName: document.getElementById('partitionNameChk').innerHTML
+            },
+            success: function (data) {
+                window.alert("삭제가 완료되었습니다.");
+                location.reload();
+            }
+        })
+    }
 </script>
 
 
@@ -217,7 +278,8 @@
 <!-- Page Wrapper -->
 <div id="wrapper">
     <div th:insert="sidemenu.html :: side_menu"></div>
-
+    <span id="diskNameChk"  hidden="true"></span>
+    <span id="partitionNameChk"  hidden="true"></span>
 
     <div id="content-wrapper" class="d-flex flex-column">
 
@@ -272,6 +334,7 @@
                                                 <th  th:text="#{label.diskUsagePer}"></th>
                                                 <th  th:text="#{label.diskUsage}"></th>
                                                 <th  th:text="#{label.diskFree}"></th>
+                                                <th></th>
                                             </tr>
                                             </thead>
                                             <tbody style="text-align: center">
@@ -285,7 +348,7 @@
                                     * 디스크는 최대 7개까지 확장 가능합니다.
                                 </div>
                                 <button class="btn btn-danger mt-1 float-right" data-toggle="modal"
-                                        data-target="#checkExpansion">
+                                        data-target="#checkExpansion" id="expansionBtn" th:if="${session['auth']} =='ROLE_USER'">
                                     <i class="fa fa-plus"></i>디스크 확장
                                 </button>
                             </div>
@@ -398,9 +461,33 @@
             </div>
             <div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit" onclick='diskExpansion()' id="expansionBtn">확인</button>
+                    <button id="diskExpBtn" class="btn btn-primary" type="button">확인</button>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal fade" id="deleteDiskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteDiskModalLabel">삭제하시겠습니까?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="submit" onclick="deleteDisk()">삭제</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+
+                </div>
+
             </div>
         </div>
     </div>

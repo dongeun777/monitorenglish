@@ -9,14 +9,15 @@
         SELECT CONCAT(substring(date,7,10),"-",substring(date,1,2),"-",substring(date,4,2)) As date
         , MeterCategory As meterCategory ,meterSubCategory ,quantity,unitOfMeasure, round(costInBillingCurrency,5) As costInBillingCurrency
         FROM ERD.USED_AMOUNT
-        WHERE resourceGroupName ='${rscparam}'
+        WHERE resourceGroupName = #{rscparam}
 
     </select>
 
     <select id="selectDiskUsageList" resultType="ResourceVo"  parameterType="ResourceVo">
         SELECT
             rsg_grp AS rscparam
-             ,name AS diskName
+             ,partition_name AS partitionName
+             ,disk_name AS diskName
              ,priority AS priority
              ,limits AS limits
              ,FORMAT(total,0) AS total
@@ -25,12 +26,14 @@
              ,data AS data
              ,FORMAT(total - free,0) AS usages
              ,CONCAT(round(((total - free) / total) * 100,2),'%') AS usageDiskPer
-             ,(SELECT DATE_FORMAT(STR_TO_DATE(MAX(crt_dtm),'%Y%m%d%H%i%S'),'%Y.%m.%d %H') as updateTm FROM USER_DISK_USAGE
-            WHERE rsg_grp = #{rscparam}
-            AND current != 'N/A') AS updateTm
+             ,(SELECT DATE_FORMAT(STR_TO_DATE(MAX(crt_dtm),'%Y%m%d%H%i%S'),'%Y.%m.%d %H') as updateTm
+                FROM USER_DISK_USAGE
+                WHERE rsg_grp = #{rscparam}
+                AND current != 'N/A') AS updateTm
+             ,(SELECT cfg_value FROM config WHERE cfg_key = 'diskExpansionCriteria') as criteria
         FROM USER_DISK_USAGE
         WHERE rsg_grp = #{rscparam}
-        AND current != 'N/A'
+          AND current != 'N/A'
     </select>
 
     <select id="selectResourceUsage" resultType="ResourceVo"  parameterType="ResourceVo">
@@ -66,6 +69,36 @@
         SELECT ipAddr FROM USER_LIST
         WHERE rscGrp = #{rscGrp}
     </select>
+
+    <insert id="insertDiskName" parameterType="ResourceVo">
+        INSERT INTO USER_DISK_USAGE
+        (
+        rsg_grp
+        ,partition_name
+        ,disk_name
+        ,crt_dtm
+        )
+        values
+        (
+         #{rscparam}
+        , #{partitionName}
+        , #{diskName}
+        , (SELECT DATE_FORMAT(now(),'%Y%m%d%H%i%S'))
+        )
+        on duplicate key update
+         rsg_grp = values(rsg_grp)
+        ,partition_name = values(partition_name)
+        ,disk_name = values(disk_name)
+        ,crt_dtm = (SELECT DATE_FORMAT(now(),'%Y%m%d%H%i%S'))
+    </insert>
+
+    <update id="updateDiskName" parameterType="ResourceVo">
+        UPDATE USER_DISK_USAGE SET disk_name = #{diskName} WHERE rsg_grp = #{rscparam} AND partition_name = #{partitionName}
+    </update>
+
+    <delete id="deleteDiskName" parameterType="ResourceVo">
+        DELETE FROM USER_DISK_USAGE WHERE rsg_grp = #{rscparam} AND partition_name = #{partitionName} AND disk_name = #{diskName}
+    </delete>
 </mapper>
 
 
