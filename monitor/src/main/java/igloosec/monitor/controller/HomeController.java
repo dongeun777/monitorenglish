@@ -164,6 +164,8 @@ public class HomeController {
             try {
                sendregistermail(memberVo.getEmail(),firstPasswd);
                //sendtmmail(memberVo.getEmail());
+
+               // sendMailRepeatRequest(memberVo.getEmail());
             } catch (MessagingException e) {
                 logger.error(CommonUtil.getPrintStackTrace(e));
             }
@@ -1615,7 +1617,7 @@ public class HomeController {
         mimeMessage.setFrom(new InternetAddress(MAIL_FROM));
         mimeMessage.setRecipient(Message.RecipientType.TO,
                 new InternetAddress(email));
-        mimeMessage.setSubject("#igloo security 모니터링시스템");
+        mimeMessage.setSubject("Your email has already been registered.");
         mimeMessage.setContent("<html><head><title>Welcome to IGLOO Cloud!</title><link rel=\"SHORTCUT ICON\" >\n" +
                 "    \n" +
                 "<meta name=\"robots\" content=\"noindex, nofollow\">\n" +
@@ -1847,14 +1849,14 @@ public class HomeController {
                 "                          <span style=\"font-size:11.0pt;  margin-left:10px; font-family:&quot;Arial&quot;,sans-serif;\n" +
                 "mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-ansi-language:\n" +
                 "EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA\">\n" +
-                "You already registered. Here is URL.</span><br>\n" +
+                "Your email has already been registered.</span><br>\n" +
                 "</td></tr><tr>\n" +
                 "<td dir=\"ltr\" valign=\"top\" style=\"font-family: sans-serif; font-size: 16px; mso-height-rule: exactly;  color: #474444; padding: 20px;0px 0px 10px; text-align: left;\" class=\"bodycopy\">\n" +
                 "\t<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"550\">\n" +
                 "\t\t<tbody><tr>\n" +
                 "\t\t\t<td width=\"30%\" valign=\"top\"><strong class=\"\">URL:</strong></td>\n" +
                 "\t\t\t<td> <a href=\"https://igloocld.com/ \" style=\"color:#E20082;text-decoration:none;\" data-targettype=\"webpage\">https://igloocld.com/ </a></td>\n" +
-                "\t\t</tr>\n" +
+                "\t\t<br></tr>\n" +
                 "\t</tbody></table></td></tr>\t\t\t\t\t\t\n" +
                 "\t\t\t\t\t\t\t\n" +
                 "\n" +

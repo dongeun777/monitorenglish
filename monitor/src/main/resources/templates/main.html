@@ -248,7 +248,10 @@
 
             document.getElementById("cpuVal").innerText = "CPU: " + data.cpu + "core";
             document.getElementById("ramVal").innerText = "RAM: " + data.ram + "GB";
+
             document.getElementById("diskVal").innerText = "DISK: " + data.disk + "TB";
+            let period = Math.floor(data.disk*1000/(document.getElementById("logTotal").innerText*90));
+            document.getElementById("diskPeriVal").innerText = "약" +period + "개월분 데이터 저장가능";
         });
 
     }
@@ -339,11 +342,17 @@
 
     function completeLog() {
 
+
+        console.log( $('input[name="costTotal"]:checked').val());
+
+
         $.ajax({
             url: "/completeLog.do",
             type: "POST",
             data: {
-                totalParam: document.getElementById("logTotal").innerText
+                totalParam: document.getElementById("logTotal").innerText,
+                costParam: $('input[name="costTotal"]:checked').val()
+
             },
             success: function (data) {
                 //alert("완료되었습니다.");
@@ -1619,7 +1628,7 @@
 
                         </div>
 
-                        <div class="col-xl-4 col-lg-5 " style="margin-left: -20px;" id="registerLog2">
+                        <div class="col-xl-4 col-lg-12 col-md-12" style="margin-left: -20px;" id="registerLog2">
                             <div class="card shadow h-100 py-2">
                                 <div class="card-header"><span class="text-dark ml-4"
                                                                style="color: black; font-size: 20px; font-weight: bold; "> 등록된 장비 목록</span>
@@ -1675,7 +1684,7 @@
                         </div>
 
 
-                        <div class="col-xl-4 col-lg-5 " style="margin-left: -20px;" id="registerLog3">
+                        <div class="col-xl-4  col-lg-12 col-md-12 " style="margin-left: -20px;" id="registerLog3">
                             <div class="card shadow h-100 py-2">
                                 <div class="card-header"><span class="text-dark ml-4"
                                                                style="font-size: 20px; font-weight: bold; "> Azure 예상 금액</span>
@@ -1683,28 +1692,38 @@
                                 </div>
 
                                 <div class="row ml-2 mt-1">
-                                    <span class="mr-1 ml-4 mt-2"　style="font-weight: bold;"> 기간 옵션 선택 </span>
+                                    <span class="mr-1 ml-4 mt-2" style="font-weight: bold;"> 기간 옵션 선택 </span>
                                 </div>
 
                                 <div class="row ml-2">
-                                    <label class="radio-inline mr-3 ml-4 mt-2 ">
+                                    <label class="radio-inline mr-5 ml-4 mt-2 ">
                                         <input type="radio" name="costTotal" id="inlineRadio11" value="noRe"
                                                checked="checked"> 종량제
                                     </label>
-                                    <label class="radio-inline mr-3 mt-2">
-                                        <input type="radio" name="costTotal" id="inlineRadio22" value="Re1"> 1년
-                                        예약
+                                    <label class="radio-inline mr-4 mt-2">
+                                        <input type="radio" name="costTotal" id="inlineRadio22" value="Re1"> 1년 예약제
                                     </label>
                                     <label class="radio-inline mr-1 mt-2">
-                                        <input type="radio" name="costTotal" id="inlineRadio33" value="Re3"> 3년
-                                        예약
+                                        <input type="radio" name="costTotal" id="inlineRadio33" value="Re3"> 3년 예약제
                                     </label>
+                                </div>
+                                <div class="row ml-2" style="margin-top: -20px;">
+                                    <label class="radio-inline mr-5 ml-5 mt-2 ">
+
+                                    </label>
+                                    <label class="radio-inline mr-3 mt-2 ml-5">
+                                        (~40% 할인)
+                                    </label>
+                                    <label class="radio-inline mr-1 mt-2 ml-3">
+                                        (~50% 할인)
+                                    </label>
+
                                 </div>
                                 <div>
 
                                     <div class="card-body">
                                         <div class="card border-left-primary shadow py-2"
-                                             style="height: 45%;">
+                                             style="height: 45%;  margin-top: -20px;">
                                             <div class="text-dark ml-4 "
                                                  style="font-size: 20px; font-weight: bold; ">VM
                                                 specification
@@ -1719,7 +1738,13 @@
                                                  style="font-size: 18px; font-weight: normal; "
                                                  id="diskVal"></div>
 
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 15px; font-weight: bold; "
+                                                 id="diskPeriVal"></div>
+
                                         </div>
+
+
                                         <div class="card border-left-primary mt-1 shadow py-2"
                                              style="height: 45%;">
 

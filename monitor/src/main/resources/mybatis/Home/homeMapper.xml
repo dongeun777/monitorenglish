@@ -77,7 +77,7 @@
 
 
     <update id="completeLog" parameterType="MemberVo">
-        update USER_LIST SET step = 1 where email = #{email};
+        update USER_LIST SET step = 1, cost_type =#{costParam}  where email = #{email};
 
     </update>
 

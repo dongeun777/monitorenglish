@@ -26,6 +26,7 @@ public class MemberVo implements UserDetails {
 
     //shell parameter
     private String totalParam;
+    private String costParam;
 
     private String qrcord;
     private String secretkey;
@@ -287,5 +288,13 @@ public class MemberVo implements UserDetails {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCostParam() {
+        return costParam;
+    }
+
+    public void setCostParam(String costParam) {
+        this.costParam = costParam;
     }
 }
