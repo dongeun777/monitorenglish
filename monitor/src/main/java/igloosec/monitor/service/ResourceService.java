@@ -55,46 +55,46 @@ public class ResourceService {
     }
 
     public boolean addMultiVolume(String rscGrp, int diskSize) {
-
-        logger.info("Start multivolume append operation");
-        logger.info("resource group : {} disk size : {}", rscGrp, diskSize);
+        String logHead = "[MULTIVOLUME ADD]["+rscGrp+"]";
+        logger.info("{} Start multivolume append operation", logHead);
+        logger.info("{} resource group : {} disk size : {}", logHead, rscGrp, diskSize);
 
         String userParam = rscGrp.substring(0, rscGrp.length() - 3);
 
         String tmPath = ConfigUtils.getConf("tmLogPath");
         if(tmPath == null) {
-            logger.error("key not exist : tmLogPath");
+            logger.error("{} key not exist : tmLogPath", logHead);
             return false;
         }
 
         // Move log files before operation
-        this.logFileMove(tmPath + "/tm5disk." + userParam + ".log",
+        this.logFileMove(logHead, tmPath + "/tm5disk." + userParam + ".log",
                 tmPath + "/completed/tm5disk." + userParam + ".log." + CommonUtil.getCurrentDate());
 
         // disk expansion shell request
-        if(diskExpansionRequest(tmPath, userParam, diskSize) == false) {
-            logger.error("disk expansion request failed");
+        if(diskExpansionRequest(logHead, tmPath, userParam, diskSize) == false) {
+            logger.error("{} disk expansion request failed", logHead);
             return false;
         }
 
         // disk expansion standby
-        ResourceVo retVo = diskExpansionStandby(tmPath, userParam);
+        ResourceVo retVo = diskExpansionStandby(logHead, tmPath, userParam);
         if(retVo.getPartitionName() == null || retVo.getPartitionName().equals("") || retVo.getPartitionName().equals("/")) {
-            logger.error("disk expansion standby failed - partition name does not exist");
+            logger.error("{} disk expansion standby failed - partition name does not exist", logHead);
             return false;
         }
 
         if(retVo.getDiskName() == null || retVo.getDiskName().equals("") || retVo.getDiskName().equals("/")) {
-            logger.error("disk expansion standby failed - disk name does not exist");
+            logger.error("{} disk expansion standby failed - disk name does not exist", logHead);
             return false;
         }
 
-        logger.info("disk expansion success - {}, {}, {}", rscGrp, retVo.getPartitionName(), retVo.getDiskName());
+        logger.info("{} disk expansion success - {}, {}, {}", logHead, rscGrp, retVo.getPartitionName(), retVo.getDiskName());
 
         // add multivolume, sparrow api request
         String ip = mapper.selectUserVmIp(rscGrp);
         if(ip == null || ip.equals("")) {
-            logger.error("User IP information does not exist - {}", rscGrp);
+            logger.error("{} User IP information does not exist - {}", logHead, rscGrp);
             return false;
         } else {
             ip = ip.trim();
@@ -103,40 +103,41 @@ public class ResourceService {
         retVo.setRscparam(rscGrp);
 
         HttpRequest request = new HttpRequest();
-        Map<String, Object> retMap = request.multiVolume(ip, retVo.getRscparam(), retVo.getPartitionName(), "add");
+        Map<String, Object> retMap = request.multiVolume(logHead, ip, retVo.getRscparam(), retVo.getPartitionName(), "add");
         if(retMap.get("result") == null || ((Boolean)retMap.get("result")) == false) {
             return false;
         }
 
         // disk usage update
-        if(!diskUsageUpdate(rscGrp, ip)) {
-            logger.error("disk usage update failed - {}, {}, {}", rscGrp, retVo.getPartitionName(), retVo.getDiskName());
+        if(!diskUsageUpdate(logHead, rscGrp, ip)) {
+            logger.error("{} disk usage update failed - {}, {}, {}", logHead, rscGrp, retVo.getPartitionName(), retVo.getDiskName());
             return false;
         }
 
         // disk name update
 
         if(!mapper.insertDiskName(retVo)) {
-            logger.error("disk name insert failed - {}, {}, {}", rscGrp, retVo.getPartitionName(), retVo.getDiskName());
+            logger.error("{} disk name insert failed - {}, {}, {}", logHead, rscGrp, retVo.getPartitionName(), retVo.getDiskName());
             return false;
         }
 
-        logger.info("disk usage update success - {}, {}, {}", rscGrp, retVo.getPartitionName(), retVo.getDiskName());
+        logger.info("{} disk usage update success - {}, {}, {}", logHead, rscGrp, retVo.getPartitionName(), retVo.getDiskName());
 
         return true;
 
     }
 
     public boolean delMultiVolume(ResourceVo param) {
-        logger.info("Start multivolume delete operation");
+        String logHead = "[MULTIVOLUME REMOVE]["+param.getRscparam()+"]";
+        logger.info("{} Start multivolume delete operation", logHead);
         String rscGrp = param.getRscparam();
         String partitionNm = param.getPartitionName();
         String diskNm = param.getDiskName();
-        logger.info("resource group : {}, partition name : {}, disk name : {}", rscGrp, partitionNm, diskNm);
+        logger.info("{} resource group : {}, partition name : {}, disk name : {}", logHead, rscGrp, partitionNm, diskNm);
 
         String tmPath = ConfigUtils.getConf("tmLogPath");
         if(tmPath == null) {
-            logger.error("key not exist : tmLogPath");
+            logger.error("{} key not exist : tmLogPath", logHead);
             return false;
         }
 
@@ -144,32 +145,32 @@ public class ResourceService {
         // remove multivolume, sparrow api request
         String ip = mapper.selectUserVmIp(rscGrp);
         if(ip == null || ip.equals("")) {
-            logger.error("User IP information does not exist - {}", rscGrp);
+            logger.error("{} User IP information does not exist - {}", logHead, rscGrp);
             return false;
         } else {
             ip = ip.trim();
         }
 
         HttpRequest request = new HttpRequest();
-        Map<String, Object> retMap = request.multiVolume(ip, rscGrp, partitionNm, "remove");
+        Map<String, Object> retMap = request.multiVolume(logHead, ip, rscGrp, partitionNm, "remove");
         if(retMap.get("result") == null || ((Boolean)retMap.get("result")) == false) {
             return false;
         }
 
         // disk detach shell request
         // Move log files before operation
-        this.logFileMove(tmPath + "/tm5diskRemove." + rscGrp + ".log",
+        this.logFileMove(logHead, tmPath + "/tm5diskRemove." + rscGrp + ".log",
                 tmPath + "/completed/tm5diskRemove." + rscGrp + ".log." + CommonUtil.getCurrentDate());
 
         // disk remove shell request
-        if(diskRemoveRequest(tmPath, rscGrp, diskNm, partitionNm) == false) {
-            logger.error("disk remove request failed");
+        if(diskRemoveRequest(logHead, tmPath, rscGrp, diskNm, partitionNm) == false) {
+            logger.error("{} disk remove request failed", logHead);
             return false;
         }
 
         // disk remove standby
-        if(diskRemoveStandby(tmPath, rscGrp) == false) {
-            logger.error("disk remove standby failed");
+        if(diskRemoveStandby(logHead, tmPath, rscGrp) == false) {
+            logger.error("{} disk remove standby failed", logHead);
             return false;
         }
 
@@ -179,24 +180,24 @@ public class ResourceService {
         vo.setPartitionName(partitionNm);
         vo.setDiskName(diskNm);
         if(!mapper.deleteDiskName(vo)) {
-            logger.error("disk name delete failed - {}, {}, {}", rscGrp, partitionNm, diskNm);
+            logger.error("{} disk name delete failed - {}, {}, {}", logHead, rscGrp, partitionNm, diskNm);
             return false;
         }
 
         // disk usage update
-        if(!diskUsageUpdate(rscGrp, ip)) {
-            logger.error("disk usage update failed - {}, {}, {}", rscGrp, rscGrp, diskNm);
+        if(!diskUsageUpdate(logHead, rscGrp, ip)) {
+            logger.error("{} disk usage update failed - {}, {}, {}", logHead, rscGrp, rscGrp, diskNm);
             return false;
         }
 
         // Move log files before operation
-        this.logFileMove(tmPath + "/tm5diskRemove." + rscGrp + ".log",
+        this.logFileMove(logHead, tmPath + "/tm5diskRemove." + rscGrp + ".log",
                 tmPath + "/completed/tm5diskRemove." + rscGrp + ".log." + CommonUtil.getCurrentDate());
         return true;
 
     }
 
-    private boolean diskRemoveRequest(String tmPath, String rscGrp, String diskNm, String partitionNm) {
+    private boolean diskRemoveRequest(String logHead, String tmPath, String rscGrp, String diskNm, String partitionNm) {
 
         boolean retVal = false;
 
@@ -206,7 +207,7 @@ public class ResourceService {
 
         String diskRemoveShell = ConfigUtils.getConf("tmDiskRemoveShell");
         if(diskRemoveShell == null) {
-            logger.error("key not exist : tmDiskRemoveShell");
+            logger.error("{} key not exist : tmDiskRemoveShell", logHead);
             return retVal;
         }
 
@@ -216,7 +217,7 @@ public class ResourceService {
             if (!isWindows) {
                 process = Runtime.getRuntime().exec(cmd);
             }
-            logger.info("run shell - {}", cmd);
+            logger.info("{} run shell - {}", logHead, cmd);
 
             retVal = true;
         } catch(Exception e) {
@@ -229,13 +230,12 @@ public class ResourceService {
 
 
 
-    private boolean diskUsageUpdate(String rscGrp, String ip) {
+    private boolean diskUsageUpdate(String logHead, String rscGrp, String ip) {
         List<ResourceVo> insertList = new ArrayList<ResourceVo>();
-
 
         try {
             HttpRequest request = new HttpRequest();
-            Map<String, Object> data = request.multiVolume(ip, rscGrp, null, "get");
+            Map<String, Object> data = request.multiVolume(logHead, ip, rscGrp, null, "get");
             if(data.get("data") != null) {
                 // parsing
                 List<ResourceVo> retList = scheduleService.resourceFileParse(rscGrp, (String)data.get("data"));
@@ -255,7 +255,7 @@ public class ResourceService {
         return true;
     }
 
-    private boolean diskExpansionRequest(String tmPath, String userParam, int diskSize) {
+    private boolean diskExpansionRequest(String logHead, String tmPath, String userParam, int diskSize) {
 
         boolean retVal = false;
 
@@ -265,7 +265,7 @@ public class ResourceService {
 
         String diskExpansionShell = ConfigUtils.getConf("tmDiskExpansionShell");
         if(diskExpansionShell == null) {
-            logger.error("key not exist : tmDiskExpansionShell");
+            logger.error("{} key not exist : tmDiskExpansionShell", logHead);
             return retVal;
         }
 
@@ -275,7 +275,7 @@ public class ResourceService {
             if (!isWindows) {
                 process = Runtime.getRuntime().exec(cmd);
             }
-            logger.info("run shell - {}", cmd);
+            logger.info("{} run shell - {}", logHead, cmd);
 
             retVal = true;
         } catch(Exception e) {
@@ -286,7 +286,7 @@ public class ResourceService {
         return retVal;
     }
 
-    private ResourceVo diskExpansionStandby(String tmPath, String userParam) {
+    private ResourceVo diskExpansionStandby(String logHead, String tmPath, String userParam) {
         // partition name
         String partitionNm = null;
         // disk name
@@ -333,11 +333,10 @@ public class ResourceService {
                         }
                         String[] strArr = line.split("/");
                         for(int i = 0; i < strArr.length; i++) {
-                            if(strArr[i].equals("data")) {
-                                tmpNm += "data/";
-                            } else if(strArr[i].contains("SIEM_DATA")) {
+                            if(strArr[i].contains("SIEM_DATA")) {
                                 String[] siemDataStrArr = strArr[i].split("\\\\");
-                                tmpNm += siemDataStrArr[0];
+                                tmpNm += siemDataStrArr[0].split(" ")[0];
+                                break;
                             }
                         }
                     }
@@ -362,7 +361,7 @@ public class ResourceService {
             // work delay check
             long currentTm = System.currentTimeMillis();
             if (currentTm - startTm > DISK_EXPANSION_MAX_TM) {
-                logger.info("The disk expansion has passed {} seconds.", (DISK_EXPANSION_MAX_TM / 1000));
+                logger.info("{} The disk expansion has passed {} seconds.", logHead, (DISK_EXPANSION_MAX_TM / 1000));
                 break;
             }
 
@@ -373,7 +372,7 @@ public class ResourceService {
             }
         }
 
-        this.logFileMove(tmLogPath, tmLogCompletedPath);
+        this.logFileMove(logHead, tmLogPath, tmLogCompletedPath);
 
         /*
         // log file move
@@ -389,13 +388,12 @@ public class ResourceService {
         return retVo;
     }
 
-    private boolean diskRemoveStandby(String tmPath, String rscGrp) {
+    private boolean diskRemoveStandby(String logHead, String tmPath, String rscGrp) {
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
         long startTm = System.currentTimeMillis();
 
         String tmLogPath = tmPath + "/tm5diskRemove." + rscGrp + ".log";
         String tmLogCompletedPath = tmPath + "/completed/tm5diskRemove." + rscGrp + ".log." + CommonUtil.getCurrentDate();
-        String tmpNm = "/";
         while(true) {
             String result = null;
             BufferedReader br = null;
@@ -429,7 +427,7 @@ public class ResourceService {
             // work delay check
             long currentTm = System.currentTimeMillis();
             if (currentTm - startTm > DISK_EXPANSION_MAX_TM) {
-                logger.info("The disk expansion has passed {} seconds.", (DISK_EXPANSION_MAX_TM / 1000));
+                logger.info("{} The disk expansion has passed {} seconds.", logHead, (DISK_EXPANSION_MAX_TM / 1000));
                 break;
             }
 
@@ -440,29 +438,29 @@ public class ResourceService {
             }
         }
 
-        this.logFileMove(tmLogPath, tmLogCompletedPath);
+        this.logFileMove(logHead, tmLogPath, tmLogCompletedPath);
         return false;
     }
 
 
-    private boolean logFileMove(String tmLogPath, String tmLogCompletedPath) {
+    private boolean logFileMove(String logHead, String tmLogPath, String tmLogCompletedPath) {
         boolean retVal = false;
         // file move failed -> file remove
         if(CommonUtil.moveFile(tmLogPath, tmLogCompletedPath) == false) {
-            logger.error("log file move failed : {} -> {}", tmLogPath, tmLogCompletedPath);
+            //logger.error("log file move failed : {} -> {}", tmLogPath, tmLogCompletedPath);
             File file = new File(tmLogPath);
             if( file.exists() ) {
                 if(file.delete()){
-                    logger.info("log file remove success : {}", tmLogPath);
+                    //logger.info("log file remove success : {}", tmLogPath);
                     return retVal;
                 } else {
-                    logger.error("log file remove failed : {}", tmLogPath);
+                    //logger.error("log file remove failed : {}", tmLogPath);
                 }
             }else{
-                logger.error("log file does not exist : {}", tmLogPath);
+                //logger.error("log file does not exist : {}", tmLogPath);
             }
         } else {
-            logger.info("log file move success : {} -> {}", tmLogPath, tmLogCompletedPath);
+            logger.info("{} log file move success : {} -> {}", logHead, tmLogPath, tmLogCompletedPath);
             retVal = true;
         }
 

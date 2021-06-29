@@ -146,7 +146,8 @@ public class ScheduleService {
                 //logger.info("[DISK PULLING] resource group : {} ip : {}", vo.getRscGrp(), vo.getIpAddr());
                 try {
                     // get data
-                    Map<String, Object> data = request.multiVolume(vo.getIpAddr().trim(), vo.getRscGrp(), null, "get");
+                    Map<String, Object> data = request.multiVolume(
+                            null ,vo.getIpAddr().trim(), vo.getRscGrp(), null, "get");
                     if(data.get("data") != null) {
                         //logger.info("[DISK PULLING] [{}] data pulling success", vo.getRscGrp());
                         // parsing
