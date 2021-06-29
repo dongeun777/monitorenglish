@@ -46,6 +46,8 @@ public class MemberVo implements UserDetails {
     private String disksize;
 
 
+    private String period;
+
 
 
     public String getEmail() {
@@ -296,5 +298,13 @@ public class MemberVo implements UserDetails {
 
     public void setCostParam(String costParam) {
         this.costParam = costParam;
+    }
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
     }
 }

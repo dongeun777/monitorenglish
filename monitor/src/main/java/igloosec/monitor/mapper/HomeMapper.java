@@ -45,4 +45,6 @@ public interface HomeMapper {
     UsageVo selectShellParam(String email);
 
     List<ConfigVo> selectConfig();
+
+    String getPeriod(MemberVo memberVo);
 }

@@ -479,6 +479,20 @@ public class HomeController {
     }
 
 
+    @ResponseBody
+    @RequestMapping(value = "/getPeriod.do")
+    public String getPeriod(MemberVo memberVo, HttpSession session )  {
+
+        String emailStr = (String) session.getAttribute("email");
+        memberVo.setEmail(emailStr);
+        String result = homeService.getPeriod(memberVo);
+        return result;
+
+
+
+    }
+
+
 
     public void sendmail(String email)  throws MessagingException {
 

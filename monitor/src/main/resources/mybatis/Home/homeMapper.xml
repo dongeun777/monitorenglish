@@ -138,11 +138,18 @@
         FROM leads_info a,USER_LIST b
         WHERE a.customer_email = b.email
         AND customer_email = #{email}
+        order by a.crt_dtm desc
+        LIMIT 1
     </select>
 
     <select id="selectConfig" resultType="ConfigVo">
         SELECT cfg_key AS cfgKey, cfg_value AS cfgVal FROM config
     </select>
+
+    <select id="getPeriod" resultType="String" parameterType="MemberVo">
+        SELECT cost_type as period FROM USER_LIST where email = #{email};
+    </select>
+
 </mapper>
 
 

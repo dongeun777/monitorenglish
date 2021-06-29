@@ -115,4 +115,7 @@ public class HomeService {
 
     // shell parameter
     public UsageVo selectShellParam(String email) {return mapper.selectShellParam(email); };
+
+    public String getPeriod(MemberVo memberVo) {return mapper.getPeriod(memberVo);
+    }
 }
