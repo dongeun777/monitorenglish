@@ -134,7 +134,8 @@
 
             if (sessionStep == 1) {
                 document.getElementById("logTitle").innerText = "Step2: 등록된 정보를 확인하시고, 배포버튼을 눌러주세요.";
-                $('#step2bar').css({"background": "darkblue"});
+                document.getElementById("step2").setAttribute("class", "step-item active");
+                //$('#step2bar').css({"background": "darkblue"});
                 document.getElementById("registerLog").hidden = true;
                 document.getElementById("registerLog2").hidden = true;
                 document.getElementById("registerLog3").hidden = true;
@@ -146,7 +147,8 @@
                 getPeriod();
             } else if (sessionStep == 0) {
 
-                $('#step1bar').css({"background": "darkblue"});
+                //$('#step1bar').css({"background": "darkblue"});
+                document.getElementById("step1").setAttribute("class", "step-item active");
                 document.getElementById("logTitle").innerText = "Step1: 장비를 등록하시고 완료버튼을 눌러주세요.";
                 document.getElementById("registerLog").hidden = false;
                 document.getElementById("registerLog4").hidden = true;
@@ -157,7 +159,11 @@
             } else {
 
                 document.getElementById("logTitle").innerText = "Step3: 배포중입니다, 배포에는 5분정도 소요됩니다.";
-                $('#step3bar').css({"background": "darkblue"});
+                document.getElementById("step3").setAttribute("class", "step-item active");
+
+
+
+                //$('#step3bar').css({"background": "darkblue"});
                 document.getElementById("registerLog").hidden = true;
                 document.getElementById("registerLog2").hidden = true;
                 document.getElementById("registerLog3").hidden = true;
@@ -328,6 +334,9 @@
 
                     document.getElementById("loading").hidden = true;
                     document.getElementById("complete").hidden = false;
+                    document.getElementById("step3").setAttribute("class", "step-item");
+                    document.getElementById("step4").setAttribute("class", "step-item active");
+                    document.getElementById("logTitle").innerText = "Step4 완료";
 
                 }
 
@@ -1606,7 +1615,7 @@
                                                     </div>-->
                         <div class="col-xl-8 col-lg-12 col-md-12">
                             <span style="color: black; font-size: 25px; font-weight: bold; " id="logTitle">장비 정보를 등록해주세요. </span>
-                            <div class="progress" style="height: 30px;">
+                            <!--<div class="progress" style="height: 30px;">
                                 <div class="progress-bar progress-bar-success" role="progressbar" style="width:33.3%"
                                      id="step1bar">
                                     Step1: 장비 등록
@@ -1618,6 +1627,22 @@
                                 <div class="progress-bar progress-bar-danger" role="progressbar" style="width:33.3%"
                                      id="step3bar">
                                     Step3: TM 생성
+                                </div>
+                            </div>-->
+
+
+                            <div class="step step-primary mb-1 mt-3" style="margin-left: -50px;">
+                                <div class="step-item" id="step1">
+                                    <a class="step-item-link" >Step1 장비등록</a>
+                                </div>
+                                <div class="step-item " id="step2">
+                                    <a class="step-item-link" >Step2 TM배포</a>
+                                </div>
+                                <div class="step-item " id="step3">
+                                    <a class="step-item-link " >Step3 TM생성</a>
+                                </div>
+                                <div class="step-item " id="step4">
+                                    <a class="step-item-link " >Step4 완료</a>
                                 </div>
                             </div>
 
