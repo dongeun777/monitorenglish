@@ -11,11 +11,14 @@ import igloosec.monitor.ConfigUtils;
 import igloosec.monitor.HttpRequest;
 import igloosec.monitor.mapper.HomeMapper;
 import igloosec.monitor.mapper.MemberMapper;
+import igloosec.monitor.mapper.ResourceMapper;
 import igloosec.monitor.mapper.ScheduleMapper;
 import igloosec.monitor.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -32,11 +35,15 @@ public class ScheduleService {
     public final ScheduleMapper mapper;
     public final MemberMapper memberMapper;
     public final HomeMapper homeMapper;
+    public final ResourceMapper resourceMapper;
+    public final ResourceService resourceService;
 
-    public ScheduleService(ScheduleMapper mapper, MemberMapper memberMapper, HomeMapper homeMapper) {
+    public ScheduleService(ScheduleMapper mapper, MemberMapper memberMapper, HomeMapper homeMapper, ResourceMapper resourceMapper, ResourceService resourceService) {
         this.mapper = mapper;
         this.memberMapper = memberMapper;
         this.homeMapper = homeMapper;
+        this.resourceMapper = resourceMapper;
+        this.resourceService = resourceService;
     }
 
     @Value("${azure.marketplace.account.name}")
@@ -48,6 +55,9 @@ public class ScheduleService {
     @Value("${azure.marketplace.table.name}")
     private String tableName;
 
+    @Autowired
+    Environment environment;
+
     /**
      * leads data
      */
@@ -56,9 +66,17 @@ public class ScheduleService {
     public void getLeadsInfo() {
 
         String os = CommonUtil.getOS();
+
         if (os.contains("win")) {
             return;
         }
+
+        String ip = CommonUtil.getIp();
+        //logger.info(ip + "/" + ConfigUtils.getConf("monitoringIp"));
+        if(ip == null || ConfigUtils.getConf("monitoringIp") == null || ip.equals(ConfigUtils.getConf("monitoringIp")) == false) {
+            return;
+        }
+
         //logger.info("[LEADS PULLING] Start getting leads information");
 
         // Configure your storage connection string
@@ -128,7 +146,7 @@ public class ScheduleService {
     /**
      * resource data
      */
-    @Scheduled(cron = "0 0/1 * * * *")  // 5분마다
+    @Scheduled(cron = "0 0/1 * * * *")  // 1분마다
     public void getResourceInfo() {
         //logger.info("[DISK PULLING] Start getting disk information");
         // 전체 유저 리소스그룹 조회
@@ -151,7 +169,7 @@ public class ScheduleService {
                     if(data.get("data") != null) {
                         //logger.info("[DISK PULLING] [{}] data pulling success", vo.getRscGrp());
                         // parsing
-                        List<ResourceVo> retList = this.resourceFileParse(vo.getRscGrp(), (String)data.get("data"));
+                        List<ResourceVo> retList = resourceService.resourceFileParse(vo.getRscGrp(), (String)data.get("data"));
 
                         if(retList.size() != 0) {
                             insertList.addAll(retList);
@@ -187,30 +205,41 @@ public class ScheduleService {
     }
 
 
-    public List<ResourceVo> resourceFileParse(String rsgGrp, String data) {
 
-        List<ResourceVo> list = new ArrayList<ResourceVo>();
-        JsonObject obj = new JsonParser().parse(data).getAsJsonObject();
 
-        JsonArray arr = (JsonArray)obj.get("list");
+    /**
+     * disk_autoscaling
+     */
+    //@Scheduled(cron = "0 0/5 * * * *")  // 1시간마다
+    public void diskAutoscaling() {
+        // user config list
+        List<ResourceVo> userList = mapper.getUserConfigList();
 
-        for(int i = 0; i < arr.size(); i++) {
-            if(arr.get(i).isJsonPrimitive() == false) {
-                ResourceVo vo = new ResourceVo();
-                vo.setRscparam(rsgGrp);
-                vo.setPartitionName(arr.get(i).getAsJsonObject().getAsJsonPrimitive("name").getAsString());
-                vo.setPriority(arr.get(i).getAsJsonObject().getAsJsonPrimitive("priority").getAsInt());
-                vo.setLimits(arr.get(i).getAsJsonObject().getAsJsonPrimitive("limit").getAsInt());
-                vo.setTotal(arr.get(i).getAsJsonObject().getAsJsonPrimitive("total").getAsString());
-                vo.setFree(arr.get(i).getAsJsonObject().getAsJsonPrimitive("free").getAsString());
-                vo.setCurrent(arr.get(i).getAsJsonObject().getAsJsonPrimitive("current").getAsString());
-                vo.setData(arr.get(i).getAsJsonObject().getAsJsonPrimitive("data").getAsString());
-                list.add(vo);
+        for(ResourceVo configVo : userList) {
+            // user config check
+
+            // autoscaling check
+            if(configVo.isDiskAutoscaling() == false) {
+                logger.info("[DISK AUTOSCALING] [{}] work end.. {}", configVo.getRscparam(), "Disable autoscaling");
+                continue;
+            }
+
+            // current disk usage
+            ResourceVo currentVo = resourceMapper.selectCurrentDiskUsage(configVo.getRscparam());
+            if(currentVo == null || currentVo.getRscparam() == null || currentVo.getUsageDiskPer() == null) {
+                logger.info("[DISK AUTOSCALING] [{}] work end.. {}", configVo.getRscparam(), "No disks being saved");
+                continue;
+            }
+
+            if(configVo.getDiskMaximum() < Double.parseDouble(currentVo.getUsageDiskPer())) {
+                logger.info("[DISK AUTOSCALING] [{}] Start disk autoscaling. current disk : {}, maximum disk : {}"
+                        , configVo.getRscparam(), Double.parseDouble(currentVo.getUsageDiskPer()), configVo.getDiskMaximum());
+                //resourceService.addMultiVolume(configVo.getRscparam(), configVo.getDiskSize());
+            } else {
+                logger.info("[DISK AUTOSCALING] [{}] Do not start disk autoscaling. current disk : {}, maximum disk : {}"
+                        , configVo.getRscparam(), Double.parseDouble(currentVo.getUsageDiskPer()), configVo.getDiskMaximum());
             }
         }
-
-        //logger.info("[DISK PULLING] [{}] parse success", rsgGrp);
-
-        return list;
     }
+
 }

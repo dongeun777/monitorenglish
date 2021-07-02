@@ -72,22 +72,57 @@ public class ResourceController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/setDiskExpansion.do")
-    public void setDiskExpansion(HttpSession session, ResourceVo param) {
-        logger.info("start");
+    @RequestMapping(value = "/requestExpansionShell")
+    public ResourceVo requestExpansionShell(HttpSession session, ResourceVo param) {
         // disk expansion
-        resourceService.addMultiVolume(param.getRscparam(), param.getDiskSize());
-
-        return;
+        return resourceService.requestExpansionShell(param.getRscparam(), param.getDiskSize());
     }
 
     @ResponseBody
-    @RequestMapping(value = "/deleteDisk")
-    public void deleteDisk(HttpSession session, ResourceVo param) {
-        // disk remove
-        resourceService.delMultiVolume(param);
-
-        return;
+    @RequestMapping(value = "/waitDiskExpansionComplete")
+    public String waitDiskExpansionComplete(HttpSession session, ResourceVo param) {
+        // disk expansion
+        if(resourceService.waitDiskExpansionComplete(param.getRscparam(), param.getIdx()) == true) {
+            return "succeed";
+        } else {
+            return "failed";
+        }
+        //resourceService.addMultiVolume(param.getRscparam(), param.getDiskSize());
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/requestRemoveShell")
+    public ResourceVo requestRemoveShell(HttpSession session, ResourceVo param) {
+        String rscGrp = param.getRscparam();
+        String partitionNm = param.getPartitionName();
+        String diskNm = param.getDiskName();
+        logger.info("requestRemoveShell {}, {}, {}, {}", rscGrp, partitionNm, diskNm);
+        // disk remove
+        return resourceService.requestRemoveShell(rscGrp, partitionNm, diskNm);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/waitDiskRemoveComplete")
+    public String waitDiskRemoveComplete(HttpSession session, ResourceVo param) {
+        String rscGrp = param.getRscparam();
+        String partitionNm = param.getPartitionName();
+        String diskNm = param.getDiskName();
+        int idx = param.getIdx();
+        logger.info("waitDiskRemoveComplete {}, {}, {}, {}", rscGrp, partitionNm, diskNm, idx);
+        // disk remove
+        if(resourceService.waitDiskRemoveComplete(rscGrp, idx, partitionNm, diskNm) == true) {
+            return "succeed";
+        } else {
+            return "failed";
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/checkDiskWork")
+    public boolean checkDiskWork(HttpSession session, ResourceVo param) {
+        // disk work check
+        return resourceService.checkDiskWork(param.getRscparam());
+    }
+
 
 }

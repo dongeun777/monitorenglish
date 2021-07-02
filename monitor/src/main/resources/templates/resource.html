@@ -15,20 +15,26 @@
     let sessionRsc =  "";
 
     window.onload = function () {
-
         sessionRsc = document.getElementById("rscgrp").innerText;
 
-        $("#div_load, #div_load_image").hide();
-        //document.getElementById("div_load").hidden = true;
-        //document.getElementById("div_load_image").hidden = true;
+        /*
+        $("[id^='delBtn']").each(function() {$(this).hide();});
+        $('#expansionBtn').hide();
+        $('#progressWork').hide();
+        */
+        //$("#div_load, #div_load_image").hide();
+
+        // azure disk price
+        getDiskPrice();
 
         getResourceList();
 
         // resource usage
         getResourceUsage();
+
         // disk usage
         getDiskUsage();
-
+        checkDiskWork();
         $("#diskCapacity").change( function() {
             if($("#diskCapacity option:selected").val() != "none") {
                 var text = "디스크 확장 시 추가 요금이 발생 됩니다.\n" +
@@ -39,13 +45,10 @@
             }
         });
 
-        // azure disk price
-        getDiskPrice();
-
         $("#diskExpBtn").on("click", function(){ diskExpansion() });
+        $("#diskDelBtn").on("click", function(){ diskRemove() });
+        $("#refreshBtn").on("click", function(){ location.reload(); });
     }
-
-
 
     function getResourceList() {
 
@@ -89,16 +92,18 @@
     }
 
     function getDiskUsage() {
-
+        var btnId = 0;
         $.ajax({
             url: "/getDiskUsageList.do",
             type: "GET",
             data: { rscparam: sessionRsc
             },
+            async : false,
             success: function (data) {
                 tablelength = data.length;
 
                 if(tablelength >= 8) {
+                    //$('#expansionBtn').hide();
                     $('#expansionBtn').hide();
                 }
 
@@ -126,16 +131,20 @@
                         {data: "free"},
                         {data: "diskName",
                             "render": function(data, type, row) {
-                                if (row.partitionName != '/data') {
-                                    if (type == 'display') {
-                                        data = '<button class="mb-2 mr-2 btn btn-danger btn-sm">Del</button>';
-                                    }
+                            var test = null;
+                                if (type == 'display') {
+                                    data = '<button class="btn btn-danger btn-sm" id="delBtn'+btnId+'">Del</button>';
+                                    btnId++;
+                                }
+                                if (row.partitionName == '/data') {
+                                    data = '<button class="btn btn-danger btn-sm" style="visibility: hidden;">Del</button>';
                                 }
                                 return data;
                             }
                         }
-                    ],
-                    'rowCallback': function(row, data, index) {
+                    ]
+                    /*
+                    ,'rowCallback': function(row, data, index) {
                         var diskPer = data.usageDiskPer.replace('%', '');
                         if(data.current == 'true') {
                             if (diskPer >= data.criteria) {
@@ -144,10 +153,10 @@
                             }
                         }
                     }
+                    */
                 });
 
                 var table = $('#diskTable').DataTable();
-
 
                 $('#diskTable tbody').on('click', 'tr .btn', function () {
                     var tr = $(this).closest('tr');
@@ -215,24 +224,120 @@
             return;
         } else {
             $('#checkExpansion').modal("hide");
-            $("#div_load, #div_load_image").show();
-            //document.getElementById("div_load_image").hidden = false;
-
-            console.log("rscparam : " + sessionRsc + ", diskSize : " + diskSize);
-            $.ajax({
-                url: "/setDiskExpansion.do",
-                type: "POST",
-                data: {
-                    rscparam: sessionRsc
-                    , diskSize: diskSize
-                },
-                success: function (data) {
+            // disk expansion shell request
+            var retVal = requestExpansionShell(diskSize);
+            waitDiskExpansionComplete(retVal);
+            //console.log("waitDiskExpansionComplete end");
+            var interval = setInterval(function ()
+            {
+                var chk = checkDiskWork();
+                // not working
+                if(chk == false) {
+                    clearInterval(interval);
                     location.reload();
-                }, error: function (request, status, error) {
-                    console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
                 }
-            });
+            }, 1000);
         }
+    }
+
+    function requestExpansionShell(diskSize) {
+        stateChange(true);
+
+        var retVal;
+        $.ajax({
+            url: "/requestExpansionShell",
+            type: "POST",
+            data: {
+                rscparam: sessionRsc
+                , diskSize: diskSize
+            },
+            async: false,
+            success: function (data) {
+                retVal = data;
+            }, error: function (request, status, error) {
+                console.log("requestExpansionShell code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+        return retVal;
+    }
+
+    function waitDiskExpansionComplete(retVal) {
+        $.ajax({
+            url: "/waitDiskExpansionComplete",
+            type: "POST",
+            async : true,
+            data: {
+                rscparam: sessionRsc
+                , idx: retVal.idx
+                , partitionName: retVal.partitionName
+                , diskName: retVal.diskName
+            },
+            success: function (data) {
+            }, error: function (request, status, error) {
+                console.log("waitDiskExpansionComplete code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+    }
+
+    function diskRemove() {
+        $('#deleteDiskModal').modal("hide");
+        // disk expansion shell request
+        var retVal = requestRemoveShell();
+        waitDiskRemoveComplete(retVal);
+        //console.log("waitDiskRemoveComplete end");
+        var interval = setInterval(function ()
+        {
+            var chk = checkDiskWork();
+            // not working
+            if(chk == false) {
+                clearInterval(interval);
+                location.reload();
+            }
+        }, 1000);
+
+    }
+
+    function requestRemoveShell() {
+        stateChange(true);
+
+        var retVal;
+        $.ajax({
+            url: "/requestRemoveShell",
+            type: "POST",
+            data: {
+                rscparam: sessionRsc,
+                diskName: document.getElementById('diskNameChk').innerHTML,
+                partitionName: document.getElementById('partitionNameChk').innerHTML
+            },
+            async: false,
+            success: function (data) {
+                // false - not working, true - working
+                retVal = data;
+            }, error: function (request, status, error) {
+                console.log("requestRemoveShell code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+        return retVal;
+    }
+
+    function waitDiskRemoveComplete(retVal) {
+        $.ajax({
+            url: "/waitDiskRemoveComplete",
+            type: "POST",
+            async : true,
+            data: {
+                rscparam: sessionRsc
+                , idx: retVal.idx
+                , partitionName: retVal.partitionName
+                , diskName: retVal.diskName
+            },
+            success: function (data) {
+            }, error: function (request, status, error) {
+                console.log("waitDiskRemoveComplete code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
     }
 
     function comma(num) {
@@ -253,23 +358,52 @@
 
     }
 
-    function deleteDisk(){
-        $('#deleteDiskModal').modal("hide");
-        $("#div_load, #div_load_image").show();
-
+    function checkDiskWork() {
+        var retVal;
         $.ajax({
-            url: "/deleteDisk",
+            url: "/checkDiskWork",
             type: "POST",
             data: {
-                rscparam: sessionRsc,
-                diskName: document.getElementById('diskNameChk').innerHTML,
-                partitionName: document.getElementById('partitionNameChk').innerHTML
+                rscparam: sessionRsc
             },
+            async : false,
             success: function (data) {
-                window.alert("삭제가 완료되었습니다.");
-                location.reload();
+                //console.log("checkDiskWork : " + data);
+                // false - not working, true - working
+                stateChange(data);
+                retVal = data;
+
+            }, error: function (request, status, error) {
+                console.log("checkDiskWork code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
-        })
+        });
+
+        return retVal;
+    }
+
+    function stateChange(state) {
+        /*
+        if(state == false) {
+            $("[id^='delBtn']").each(function() {$(this).show();});
+            $('#expansionBtn').show();
+            $('#progressWork').hide();
+        } else {
+            $("[id^='delBtn']").each(function() {$(this).hide();});
+            $('#expansionBtn').hide();
+            $('#progressWork').show();
+        }
+         */
+
+        if(state == false) {
+            $("[id^='delBtn']").each(function() {$(this).css('visibility', 'visible');});
+            $('#expansionBtn').show();
+            $('#progressWork').hide();
+        } else {
+            $("[id^='delBtn']").each(function() {$(this).css('visibility', 'hidden');});
+            $('#expansionBtn').hide();
+            $('#progressWork').show();
+        }
+
     }
 </script>
 
@@ -348,9 +482,13 @@
                                     * 디스크는 최대 7개까지 확장 가능합니다.
                                 </div>
                                 <button class="btn btn-danger mt-1 float-right" data-toggle="modal"
-                                        data-target="#checkExpansion" id="expansionBtn" th:if="${session['auth']} =='ROLE_USER'">
+                                        data-target="#checkExpansion" id="expansionBtn" th:if="${session['auth']} =='ROLE_USER'" style="display: none;">
                                     <i class="fa fa-plus"></i>디스크 확장
                                 </button>
+                                <div class="m-0 font-weight-bold text-gray-800 float-right" id="progressWork" style="display: none;">
+                                    현재 디스크 작업 진행 중 입니다.
+                                    <i class="fas fa-sync-alt" style="cursor: pointer" id="refreshBtn"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -419,12 +557,13 @@
 
 </div>
 
+<!--
 <div id="div_load" style="position: absolute;top:0;left:0;width:100%;height:100%;background-color:gray;opacity:0.3;z-index: 1;"></div>
 <div id="div_load_image"
      style="position: absolute; top:40%; left: 50%; width:0px ; height: 0px; z-index: 2; background: #f0f0f0; margin:auto;">
     <img src="/image/loading.gif" style="width:151px; height: 151px; ">
 </div>
-
+-->
 <div class="modal fade" id="checkExpansion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog" role="document">
@@ -437,7 +576,7 @@
             </div>
             <div class="modal-content">
                 <ul>
-                    <li style="color: white;">
+                    <li style="list-style:none;">
                 <div style="width:40%;float: left;height: 100%">
                     <select class="form-control mt-3" name="fire" id="diskCapacity">
                         <option value="none">디스크 용량 선택</option>
@@ -450,7 +589,7 @@
                     </select>
                 </div>
                     </li>
-                    <li style="color: white;">
+                    <li style="list-style:none;">
                 <div style="width:60%;float: right;">
                     <div class="text-dark ml-4 mr-4 "
                          style="font-size: 15px; font-weight: normal; " id="estimatedAmount">
@@ -482,11 +621,11 @@
             </div>
             <div>
 
-                <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit" onclick="deleteDisk()">삭제</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+            <div class="modal-footer">
+                <button id="diskDelBtn" class="btn btn-primary" type="button">삭제</button>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
 
-                </div>
+            </div>
 
             </div>
         </div>
