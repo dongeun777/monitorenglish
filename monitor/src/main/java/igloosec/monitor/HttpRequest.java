@@ -145,6 +145,7 @@ public class HttpRequest {
         con.setRequestMethod("POST"); // HTTP POST 메소드 설정
         con.setDoOutput(true); // POST 파라미터 전달을 위한 설정
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        con.setConnectTimeout(5000);    // 5second
 
         OutputStream out_stream = con.getOutputStream();
 
