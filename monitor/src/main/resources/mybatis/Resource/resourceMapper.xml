@@ -124,7 +124,7 @@
     </select>
 
     <select id="selectMaxIdxDiskWorkHistory" parameterType="ResourceVo" resultType="int">
-        SELECT MAX(IDX) + 1 FROM disk_work_history as a WHERE rsc_grp = #{rscparam}
+        SELECT ifnull(MAX(IDX) + 1,1) FROM disk_work_history as a WHERE rsc_grp = #{rscparam}
     </select>
 
     <insert id="initDiskWorkHistory" parameterType="ResourceVo">

@@ -177,7 +177,9 @@ public class ScheduleService {
                     }
                     //System.out.println(request.doPostHttp(vo.getIpAddr().trim()));
                 } catch (Exception e) {
-                    logger.error(CommonUtil.getPrintStackTrace(e));
+                    logger.error("{} error", vo.getRscGrp());
+                    logger.error(e.getMessage());
+                    //logger.error(CommonUtil.getPrintStackTrace(e));
                 }
             }
         }
