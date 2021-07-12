@@ -49,9 +49,17 @@ public class MemberVo implements UserDetails {
 
     private String period;
 
+    private String currentPwd;
+    private String newPwd;
+    private String changePwdResult;
+
+    private String applyId;
     private String product;
-
-
+    private String country;
+    private String paymentId;
+    private String autoscalingYN;
+    private int criticalValue;
+    private String phoneNum;
 
     public String getEmail() {
         return email;
@@ -319,11 +327,83 @@ public class MemberVo implements UserDetails {
         this.rowkey = rowkey;
     }
 
+    public String getCurrentPwd() {
+        return currentPwd;
+    }
+
+    public void setCurrentPwd(String currentPwd) {
+        this.currentPwd = currentPwd;
+    }
+
+    public String getNewPwd() {
+        return newPwd;
+    }
+
+    public void setNewPwd(String newPwd) {
+        this.newPwd = newPwd;
+    }
+
+    public String getChangePwdResult() {
+        return changePwdResult;
+    }
+
+    public void setChangePwdResult(String changePwdResult) {
+        this.changePwdResult = changePwdResult;
+    }
+
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
+    }
+
     public String getProduct() {
         return product;
     }
 
     public void setProduct(String product) {
         this.product = product;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getAutoscalingYN() {
+        return autoscalingYN;
+    }
+
+    public void setAutoscalingYN(String autoscalingYN) {
+        this.autoscalingYN = autoscalingYN;
+    }
+
+    public int getCriticalValue() {
+        return criticalValue;
+    }
+
+    public void setCriticalValue(int criticalValue) {
+        this.criticalValue = criticalValue;
+    }
+
+    public String getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(String applyId) {
+        this.applyId = applyId;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 }

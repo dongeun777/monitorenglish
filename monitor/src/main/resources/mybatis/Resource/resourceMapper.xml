@@ -30,7 +30,6 @@
                 FROM USER_DISK_USAGE
                 WHERE rsg_grp = #{rscparam}
                 AND current != 'N/A') AS updateTm
-             ,(SELECT cfg_value FROM config WHERE cfg_key = 'diskExpansionCriteria') as criteria
         FROM USER_DISK_USAGE
         WHERE rsg_grp = #{rscparam}
           AND current != 'N/A'

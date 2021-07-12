@@ -91,6 +91,44 @@
     <delete id="deleteTmStats" parameterType="MemberVo">
         DELETE FROM tm_stats WHERE rscgrp = (SELECT rscGrp FROM USER_LIST WHERE email = #{email})
     </delete>
+
+    <select id="selectUserProductInfoList" parameterType="String" resultType="MemberVo">
+        SELECT a.apply_id AS applyId
+             ,c.enabled
+             ,c.isAccountNonexpired
+             ,c.isAccountNonLocked
+             ,c.isCredentialsNonExpired
+             ,c.auth
+             ,a.email AS email
+             ,prod_id AS product
+             ,vendor AS cloud_vendor
+             ,region AS country
+             ,payment_id AS paymentId
+             ,autoscaling_yn AS autoscalingYN
+             ,critical_value AS criticalValue
+             ,extended_size AS disksize
+        FROM
+            (
+                SELECT * FROM product_apply
+                WHERE email = #{email}
+            ) a,disk_autoscaling b,USER_LIST c
+        WHERE a.apply_id = b.apply_id
+          AND a.email = c.email
+        ORDER BY a.regDate
+    </select>
+
+    <update id="updateUserInfo" parameterType="MemberVo">
+        UPDATE USER_LIST SET company= #{company} WHERE email = #{email}
+    </update>
+
+    <update id="updateUserDiskAutoscaling" parameterType="MemberVo">
+        UPDATE disk_autoscaling
+        SET autoscaling_yn = #{autoscalingYN}
+          , critical_value = #{criticalValue}
+          , extended_size = #{disksize}
+        WHERE apply_id = #{applyId}
+    </update>
+
 </mapper>
 
 

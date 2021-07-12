@@ -26,7 +26,6 @@ public class ResourceVo {
     private String usageDiskPer;
     private String usages;
     private String updateTm;
-    private int criteria;
     private int diskSize;
     private double diskPrice;
     private String vmSeries;
@@ -234,14 +233,6 @@ public class ResourceVo {
 
     public void setDiskPrice(double diskPrice) {
         this.diskPrice = diskPrice;
-    }
-
-    public int getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(int criteria) {
-        this.criteria = criteria;
     }
 
     public String getVmSeries() {

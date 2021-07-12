@@ -96,7 +96,7 @@ public class ResourceController {
         String rscGrp = param.getRscparam();
         String partitionNm = param.getPartitionName();
         String diskNm = param.getDiskName();
-        logger.info("requestRemoveShell {}, {}, {}, {}", rscGrp, partitionNm, diskNm);
+        //logger.info("requestRemoveShell {}, {}, {}, {}", rscGrp, partitionNm, diskNm);
         // disk remove
         return resourceService.requestRemoveShell(rscGrp, partitionNm, diskNm);
     }
@@ -108,7 +108,7 @@ public class ResourceController {
         String partitionNm = param.getPartitionName();
         String diskNm = param.getDiskName();
         int idx = param.getIdx();
-        logger.info("waitDiskRemoveComplete {}, {}, {}, {}", rscGrp, partitionNm, diskNm, idx);
+        //logger.info("waitDiskRemoveComplete {}, {}, {}, {}", rscGrp, partitionNm, diskNm, idx);
         // disk remove
         if(resourceService.waitDiskRemoveComplete(rscGrp, idx, partitionNm, diskNm) == true) {
             return "succeed";

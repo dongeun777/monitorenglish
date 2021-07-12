@@ -131,7 +131,6 @@
                         {data: "free"},
                         {data: "diskName",
                             "render": function(data, type, row) {
-                            var test = null;
                                 if (type == 'display') {
                                     data = '<button class="btn btn-danger btn-sm" id="delBtn'+btnId+'">Del</button>';
                                     btnId++;
@@ -143,17 +142,7 @@
                             }
                         }
                     ]
-                    /*
-                    ,'rowCallback': function(row, data, index) {
-                        var diskPer = data.usageDiskPer.replace('%', '');
-                        if(data.current == 'true') {
-                            if (diskPer >= data.criteria) {
-                                $('td', row).css('background-color', 'rgba(255,0,0,0.3)');
-                                $('td', row).css('color', 'black');
-                            }
-                        }
-                    }
-                    */
+
                 });
 
                 var table = $('#diskTable').DataTable();

@@ -9,6 +9,7 @@ import com.microsoft.azure.storage.table.*;
 import igloosec.monitor.CommonUtil;
 import igloosec.monitor.ConfigUtils;
 import igloosec.monitor.HttpRequest;
+import igloosec.monitor.MailSending;
 import igloosec.monitor.mapper.HomeMapper;
 import igloosec.monitor.mapper.MemberMapper;
 import igloosec.monitor.mapper.ResourceMapper;
@@ -147,7 +148,7 @@ public class ScheduleService {
     /**
      * resource data
      */
-    @Scheduled(cron = "0 0/1 * * * *")  // 1분마다
+    @Scheduled(cron = "0 * * * * *")  // 1분마다
     public void getResourceInfo() {
         //logger.info("[DISK PULLING] Start getting disk information");
         // 전체 유저 리소스그룹 조회
@@ -213,36 +214,53 @@ public class ScheduleService {
     /**
      * disk_autoscaling
      */
-    //@Scheduled(cron = "0 0/5 * * * *")  // 1시간마다
+    @Scheduled(cron = "0 0 * * * *")  // 1시간마다
     public void diskAutoscaling() {
+        logger.info("[DISK AUTOSCALING] Start disk autoscaling operation");
         // user config list
-        List<ResourceVo> userList = mapper.getUserConfigList();
+        List<MemberVo> productList = mapper.selectAutoscalingProductInfo();
 
-        for(ResourceVo configVo : userList) {
-            // user config check
-
-            // autoscaling check
-            if(configVo.isDiskAutoscaling() == false) {
-                logger.info("[DISK AUTOSCALING] [{}] work end.. {}", configVo.getRscparam(), "Disable autoscaling");
-                continue;
-            }
-
+        for(MemberVo memberVo : productList) {
             // current disk usage
-            ResourceVo currentVo = resourceMapper.selectCurrentDiskUsage(configVo.getRscparam());
+            ResourceVo param = new ResourceVo();
+            param.setRscparam(memberVo.getRscGrp());
+            ResourceVo currentVo = resourceMapper.selectResourceUsage(param);
             if(currentVo == null || currentVo.getRscparam() == null || currentVo.getUsageDiskPer() == null) {
-                logger.info("[DISK AUTOSCALING] [{}] work end.. {}", configVo.getRscparam(), "No disks being saved");
+                logger.info("[DISK AUTOSCALING] [{}] work end.. {}", memberVo.getRscGrp(), "No disks being saved");
                 continue;
             }
 
-            if(configVo.getDiskMaximum() < Double.parseDouble(currentVo.getUsageDiskPer())) {
-                logger.info("[DISK AUTOSCALING] [{}] Start disk autoscaling. current disk : {}, maximum disk : {}"
-                        , configVo.getRscparam(), Double.parseDouble(currentVo.getUsageDiskPer()), configVo.getDiskMaximum());
-                //resourceService.addMultiVolume(configVo.getRscparam(), configVo.getDiskSize());
+            double criticalValue = Double.valueOf(memberVo.getCriticalValue());
+            double currentValue = Double.parseDouble(currentVo.getUsageDiskPer().replace("%",""));
+
+            if(criticalValue < currentValue) {
+                // Sending messages that exceed the critical value
+                MailSending mail = new MailSending();
+                try {
+                    mail.sendMailCriticalValueExceeded(memberVo.getEmail(), currentValue, criticalValue);
+                } catch(Exception e) {
+                    logger.error(CommonUtil.getPrintStackTrace(e));
+                }
+                // autoscaling is disabled
+                if(memberVo.getAutoscalingYN().equals("Y")) {
+                    logger.info("[DISK AUTOSCALING] [{}] Start disk autoscaling. current disk : {}, maximum disk : {}"
+                            , memberVo.getRscGrp(), currentValue, criticalValue);
+                    //resourceService.addMultiVolume(configVo.getRscparam(), configVo.getDiskSize());
+                    ResourceVo vo = resourceService.requestExpansionShell(memberVo.getRscGrp(), Integer.parseInt(memberVo.getDisksize()));
+                    if (vo.isDiskWorkResult() == false) {
+                        logger.error("[DISK AUTOSCALING] [{}] requestExpansionShell error");
+                        continue;
+                    }
+                    if(resourceService.waitDiskExpansionComplete(vo.getRscparam(), vo.getIdx()) == false) {
+                        logger.error("[DISK AUTOSCALING] [{}] waitDiskExpansionComplete error");
+                    }
+                }
             } else {
                 logger.info("[DISK AUTOSCALING] [{}] Do not start disk autoscaling. current disk : {}, maximum disk : {}"
-                        , configVo.getRscparam(), Double.parseDouble(currentVo.getUsageDiskPer()), configVo.getDiskMaximum());
+                        , memberVo.getRscGrp(), currentValue, criticalValue);
             }
         }
-    }
 
+        logger.info("[DISK AUTOSCALING] End disk autoscaling operation");
+    }
 }

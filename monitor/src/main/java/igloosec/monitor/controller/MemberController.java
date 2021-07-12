@@ -6,17 +6,13 @@ import igloosec.monitor.service.MemberService;
 import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Member;
 import java.util.List;
 
 @Controller
@@ -102,12 +98,10 @@ public class MemberController {
         return "redirect:/member";
     }
 
-
-    @PostMapping("/modifyUser")
-    public String updatePw(MemberVo memberVo,HttpSession session) {
-        memberVo.setEmail((String) session.getAttribute("email"));
-        memberService.modifyUser(memberVo);
-        return "redirect:/member";
+    @ResponseBody
+    @RequestMapping(value = "/modifyUserPwd")
+    public String modifyUserPwd(MemberVo memberVo) {
+        return memberService.modifyUserPwd(memberVo);
     }
 
     @PostMapping("/modifyGrpIp")
@@ -162,6 +156,28 @@ public class MemberController {
 
 
 
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/getUserInfo")
+    public MemberVo getUserInfo(MemberVo memberVo) {
+        return memberService.getUserInfo(memberVo.getEmail());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getUserProductInfoList.do")
+    public List<MemberVo> getUserProductInfoList(MemberVo memberVo) {
+        if(memberVo.getEmail() == null) {
+            return null;
+        }
+        return memberService.getUserProductInfoList(memberVo.getEmail());
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/setUserInfoSave")
+    public boolean setUserInfoSave(String param) {
+        return memberService.setUserInfoSave(param);
     }
 
 //    @RequestMapping(value = "/readDeleteLog.do", method = RequestMethod.GET, produces="text/plain;charset=UTF-8")

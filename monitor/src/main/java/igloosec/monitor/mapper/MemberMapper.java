@@ -29,4 +29,10 @@ public interface MemberMapper {
     void deleteUsedAmount(MemberVo memberVo);
 
     void deleteTmStats(MemberVo memberVo);
+
+    List<MemberVo> selectUserProductInfoList(String email);
+
+    boolean updateUserInfo(MemberVo memberVo);
+
+    boolean updateUserDiskAutoscaling(MemberVo updateList);
 }
