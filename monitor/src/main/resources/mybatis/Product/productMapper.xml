@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="igloosec.monitor.mapper.ProductMapper">
+
+
+    <select id="selectProductList" resultType="ProductVo" >
+        select * from product;
+    </select>
+
+
+    <select id="productInsert" parameterType="ProductVO">
+        insert into product_apply (apply_id, email,prod_id,region,vendor,regDate,productName)
+        values (#{apply_id} ,#{email}, #{prod_id},#{region},#{vendor},now(),#{productName});
+
+    </select>
+
+    <select id="countProduct" resultType="int">
+        select count(*) from product_apply where email = #{email} and prod_id = '${prod_id}';
+    </select>
+
+</mapper>
+
+
