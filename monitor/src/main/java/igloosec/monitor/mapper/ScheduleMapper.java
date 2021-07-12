@@ -14,4 +14,6 @@ public interface ScheduleMapper {
     boolean insertLeadsInfo(LeadsInfoVo leadsInfoVo);
     boolean insertResourceInfo(List<ResourceVo> list);
 
+
+    List<ResourceVo> getUserConfigList();
 }
