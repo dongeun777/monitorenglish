@@ -11,8 +11,8 @@
 
 
     <select id="productInsert" parameterType="ProductVO">
-        insert into product_apply (apply_id, email,prod_id,region,vendor,regDate,productName)
-        values (#{apply_id} ,#{email}, #{prod_id},#{region},#{vendor},now(),#{productName});
+        insert into product_apply (apply_id,rscgrp, email,prod_id,region,vendor,regDate,productName)
+        values (#{apply_id},#{apply_id} ,#{email}, #{prod_id},#{region},#{vendor},now(),#{productName});
 
     </select>
 

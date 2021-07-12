@@ -116,6 +116,21 @@ public class HomeController {
     }
 
 
+    @GetMapping("/deploy")
+    public String deploy(Model model, HttpSession session) {
+
+        if(session.getAttribute("email")==null) return "redirect:/";
+        else return "deploy";
+    }
+
+    @GetMapping("/product")
+    public String product(Model model, HttpSession session) {
+
+        if(session.getAttribute("email")==null) return "redirect:/";
+        else return "product";
+    }
+
+
     @GetMapping("/resource")
     public String resource(Model model, HttpSession session) {
 
