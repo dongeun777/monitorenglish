@@ -95,6 +95,13 @@
         ,data = values(data)
         ,crt_dtm = (SELECT DATE_FORMAT(now(),'%Y%m%d%H%i%S'))
     </insert>
+
+    <select id="getUserConfigList" resultType="ResourceVo">
+        SELECT rsc_grp as rscparam
+             , IF(disk_autoscaling, 'true', 'false') AS diskAutoscaling
+             , disk_maximum AS diskMaximum
+        FROM USER_CONFIG
+    </select>
 </mapper>
 
 

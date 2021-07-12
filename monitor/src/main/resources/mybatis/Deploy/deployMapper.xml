@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="igloosec.monitor.mapper.DeployMapper">
+
+
+
+    <select id="registerLog" parameterType="UsageVo">
+        insert into ERD.USER_EQUIP_LIST (email, equip,usages,logid)
+        values (#{emailparam}, #{equipparam},${usageparam},#{logid});
+    </select>
+
+
+
+
+    <select id="selectLogList" parameterType="UsageVo" resultType="UsageVo">
+        select equip,usages,logid from ERD.USER_EQUIP_LIST where email ='${emailparam}'
+    </select>
+
+    <delete id="deleteLog" parameterType="String">
+        delete from USER_EQUIP_LIST where logid = #{logid};
+    </delete>
+
+
+    <update id="completeLog" parameterType="MemberVo">
+        UPDATE product_apply SET pStep = 1, cost_type =#{costParam}  where apply_id = #{email};
+
+    </update>
+
+    <update id="completeLog2" parameterType="MemberVo">
+        update USER_LIST SET step = 2, vm_series_id = #{id} where email = #{email};
+
+    </update>
+
+    <update id="goBack" parameterType="String">
+        update product_apply SET pStep = 0 where apply_id = #{email};
+
+    </update>
+
+    <delete id="productBack" parameterType="String">
+        delete from product_apply where apply_id = #{apply_id};
+
+    </delete>
+
+    <delete id="deleteEquip" parameterType="String">
+        delete from USER_EQUIP_LIST where email = #{apply_id};
+
+    </delete>
+
+
+    <select id="selectCostTotal" parameterType="UsageVo" resultType="UsageVo">
+        SELECT round(costtotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS costtotal,
+               round(oneyearCostTotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS oneyearCostTotal,
+               round(threeyearCostTotal* (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) AS threeyearCostTotal,
+               cpu, ram, disk, vmseries, pathStr, shellcom, id
+        FROM azurecost WHERE beforeSize<![CDATA[<]]> #{usageparam} AND #{usageparam}<![CDATA[<=]]>logSize;
+    </select>
+
+    <select id="selectPath"  resultType="String">
+        SELECT pathStr
+        FROM azurecost
+        LIMIT 1
+    </select>
+
+
+    <select id="getGrpList"  resultType="MemberVo">
+        SELECT rscGrp,company,email
+        FROM USER_LIST
+
+    </select>
+
+
+
+    <select id="selectMember" resultType="MemberVo" parameterType="String">
+        SELECT * FROM USER_LIST
+        where email = #{email}
+    </select>
+
+    <select id="selectShellParam" resultType="UsageVo" parameterType="String">
+        SELECT DISTINCT customer_country AS country,replace(offer_display_name, ' ', '_') AS product, cloud_vendor AS vendor
+        FROM leads_info a,USER_LIST b
+        WHERE a.customer_email = b.email
+        AND customer_email = #{email}
+        order by a.crt_dtm desc
+        LIMIT 1
+    </select>
+
+    <select id="selectConfig" resultType="ConfigVo">
+        SELECT cfg_key AS cfgKey, cfg_value AS cfgVal FROM config
+    </select>
+
+    <select id="getPeriod" resultType="String" parameterType="MemberVo">
+        SELECT cost_type as period FROM product_apply where apply_id = #{email};
+    </select>
+
+</mapper>
+
+

@@ -23,4 +23,14 @@ public interface ResourceMapper {
     boolean insertDiskName(ResourceVo param);
 
     boolean deleteDiskName(ResourceVo param);
+
+    int checkDiskWork(String rscGrp);
+
+    ResourceVo selectCurrentDiskUsage(String rscparam);
+
+    boolean initDiskWorkHistory(ResourceVo vo);
+
+    boolean updateDiskWorkHistory(ResourceVo retVo);
+
+    int selectMaxIdxDiskWorkHistory(ResourceVo vo);
 }

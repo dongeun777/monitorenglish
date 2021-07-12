@@ -97,8 +97,66 @@
     </update>
 
     <delete id="deleteDiskName" parameterType="ResourceVo">
-        DELETE FROM USER_DISK_USAGE WHERE rsg_grp = #{rscparam} AND partition_name = #{partitionName} AND disk_name = #{diskName}
+        DELETE FROM USER_DISK_USAGE WHERE rsg_grp = #{rscparam} AND partition_name = #{partitionName}
     </delete>
+
+    <select id="checkDiskWork" resultType="int" parameterType="String">
+        SELECT count(*) FROM disk_work_history
+        WHERE rsc_grp = #{rscGrp}
+        AND completed = false
+    </select>
+
+    <select id="selectCurrentDiskUsage" resultType="ResourceVo" parameterType="String">
+        SELECT rsg_grp AS rscparam
+             ,partition_name AS partitionName
+             ,disk_name AS diskName
+             ,priority AS priority
+             ,limits AS limits
+             ,FORMAT(total,0) AS total
+             ,FORMAT(free,0) AS free
+             ,current AS current
+             ,data AS data
+             ,FORMAT(total - free,0) AS usages
+             ,CONVERT((total - free) / total, CHAR) AS usageDiskPer
+        FROM USER_DISK_USAGE
+        WHERE rsg_grp = #{rscparam}
+        AND current = 'true'
+    </select>
+
+    <select id="selectMaxIdxDiskWorkHistory" parameterType="ResourceVo" resultType="int">
+        SELECT ifnull(MAX(IDX) + 1,1) FROM disk_work_history as a WHERE rsc_grp = #{rscparam}
+    </select>
+
+    <insert id="initDiskWorkHistory" parameterType="ResourceVo">
+        INSERT INTO disk_work_history
+        (
+            rsc_grp
+            ,idx
+            ,job_type
+            ,disk_size
+            ,completed
+            ,crt_dtm
+        ) VALUES
+        (
+            #{rscparam}
+            ,#{idx}
+            ,#{jobType}
+            ,#{diskSize}
+            ,false
+            ,(SELECT DATE_FORMAT(now(),'%Y%m%d%H%i%S'))
+        );
+    </insert>
+
+
+    <update id="updateDiskWorkHistory" parameterType="ResourceVo">
+        UPDATE disk_work_history
+        SET disk_name = #{diskName}
+          ,partition_name = #{partitionName}
+          ,completed = true
+          ,crt_dtm = (SELECT DATE_FORMAT(now(),'%Y%m%d%H%i%S'))
+        WHERE rsc_grp = #{rscparam}
+          AND idx = #{idx}
+    </update>
 </mapper>
 
 

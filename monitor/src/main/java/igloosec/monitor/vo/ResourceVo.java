@@ -29,6 +29,20 @@ public class ResourceVo {
     private int criteria;
     private int diskSize;
     private double diskPrice;
+    private String vmSeries;
+
+    // USER_DISK_USAGE
+    private boolean diskAutoscaling;
+    private double diskMaximum;
+
+    // disk_work_history
+    private int idx;
+    private String jobType;
+    private boolean completed;
+
+
+    private boolean diskWorkResult;
+
 
     public String getId() {
         return id;
@@ -228,5 +242,61 @@ public class ResourceVo {
 
     public void setCriteria(int criteria) {
         this.criteria = criteria;
+    }
+
+    public String getVmSeries() {
+        return vmSeries;
+    }
+
+    public void setVmSeries(String vmSeries) {
+        this.vmSeries = vmSeries;
+    }
+
+    public void setDiskAutoscaling(boolean diskAutoscaling) {
+        this.diskAutoscaling = diskAutoscaling;
+    }
+
+    public double getDiskMaximum() {
+        return diskMaximum;
+    }
+
+    public void setDiskMaximum(double diskMaximum) {
+        this.diskMaximum = diskMaximum;
+    }
+
+    public boolean isDiskAutoscaling() {
+        return diskAutoscaling;
+    }
+
+    public int getIdx() {
+        return idx;
+    }
+
+    public void setIdx(int idx) {
+        this.idx = idx;
+    }
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public boolean isDiskWorkResult() {
+        return diskWorkResult;
+    }
+
+    public void setDiskWorkResult(boolean diskWorkResult) {
+        this.diskWorkResult = diskWorkResult;
     }
 }

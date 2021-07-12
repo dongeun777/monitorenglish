@@ -145,6 +145,7 @@ public class HttpRequest {
         con.setRequestMethod("POST"); // HTTP POST 메소드 설정
         con.setDoOutput(true); // POST 파라미터 전달을 위한 설정
         con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        con.setConnectTimeout(5000);    // 5second
 
         OutputStream out_stream = con.getOutputStream();
 
@@ -174,11 +175,9 @@ public class HttpRequest {
         Map<String, Object> retMap = new HashMap<String, Object>();
 
         retMap.put("result", false);
-
+        String uri = "http://" + ip + ":8983/solr/indexer.json";
+        String param    = "wt=json&type=TARGET&action=DISK&partition=true";
         try {
-            String uri = "http://" + ip + ":8983/solr/indexer.json";
-
-            String param    = "wt=json&type=TARGET&action=DISK&partition=true";
             if(jobType.equals("get") == false) {
                 if (jobType.equals("add") == true) {         // add multivolume
                     param += "&partition_add=true";
@@ -211,7 +210,9 @@ public class HttpRequest {
             }
             retMap.put("result", true);
         } catch(Exception e) {
-            logger.error(CommonUtil.getPrintStackTrace(e));
+            logger.error("{}, {}, {}", rscGrp, uri, param);
+            logger.error(e.getMessage());
+            //logger.error(CommonUtil.getPrintStackTrace(e));
             return retMap;
         }
 
