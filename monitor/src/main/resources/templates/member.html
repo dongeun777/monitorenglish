@@ -280,11 +280,6 @@
                 email: userEmail
             },
             success: function (data) {
-                if(data == '') {
-                    return null;
-                }
-                tablelength = data.length;
-
                 $('#resourceTable').dataTable({
                     aaData: data,
                     bPaginate: false,
@@ -344,10 +339,10 @@
                                 return data;
                             }
                         }
-                    ],
+                    ]
 
                 });
-                //$('#resourceTable').DataTable().column(0).visible(false);
+
 
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -713,7 +708,7 @@
                                                 <table class="table table-bordered" id="resourceTable" cellspacing="0">
                                                     <thead style="text-align: center; position: sticky; top: 0px; ">
                                                     <tr>
-                                                        <th rowspan="2" style="vertical-align : middle;text-align:center;width:0px">applyId</th>
+                                                        <th rowspan="2" style="vertical-align : middle;text-align:center;">applyId</th>
                                                         <th rowspan="2" style="vertical-align : middle;text-align:center;">Vendor</th>
                                                         <th rowspan="2" style="vertical-align : middle;text-align:center;" th:text="#{label.product}"></th>
                                                         <th rowspan="2" style="vertical-align : middle;text-align:center;" th:text="#{label.country}"></th>

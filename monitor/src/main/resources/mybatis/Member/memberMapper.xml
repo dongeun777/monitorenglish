@@ -100,7 +100,7 @@
              ,c.isCredentialsNonExpired
              ,c.auth
              ,a.email AS email
-             ,prod_id AS product
+             ,productName AS product
              ,vendor AS cloud_vendor
              ,region AS country
              ,payment_id AS paymentId
