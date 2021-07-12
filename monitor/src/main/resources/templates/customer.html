@@ -63,6 +63,35 @@
                 });
 
 
+
+                var table = $('#userTable').DataTable();
+
+
+                $('#userTable tbody').on('click', 'tr', function () {
+                    var tr = $(this).closest('tr');
+                    var dt = table.row(tr).data();
+                    console.log("rscGrp:" + dt.rscGrp);
+
+
+                    $.ajax({
+                        url: "/grpChange.do",
+                        type: "GET",
+                        data: {
+                            rscGrp: dt.rscGrp
+
+                        },
+
+                        success: function (data) {
+                            //location.reload();
+                            location.href="/main"
+                        }
+                    });
+
+
+
+                });
+
+
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }

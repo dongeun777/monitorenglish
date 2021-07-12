@@ -100,6 +100,7 @@ public class ScheduleService {
                 try {
                     // db에 leads 정보가 정상적으로 저장되면, 계정 생성 요청 및 해당 entity table에서 삭제
                     if (mapper.insertLeadsInfo(vo)) {
+                        //mapper.insertProductInfo(vo);
                         logger.info("[LEADS PULLING] Database insert success - {}", vo.getEmail());
                         // 계정 생성 요청
                         HttpRequest request = new HttpRequest();

@@ -23,6 +23,7 @@ public class MemberVo implements UserDetails {
     private String step;
     private String deleteVal;
     private String id;
+    private String rowkey;
 
     //shell parameter
     private String totalParam;
@@ -47,6 +48,8 @@ public class MemberVo implements UserDetails {
 
 
     private String period;
+
+    private String product;
 
 
 
@@ -306,5 +309,21 @@ public class MemberVo implements UserDetails {
 
     public void setPeriod(String period) {
         this.period = period;
+    }
+
+    public String getRowkey() {
+        return rowkey;
+    }
+
+    public void setRowkey(String rowkey) {
+        this.rowkey = rowkey;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
     }
 }

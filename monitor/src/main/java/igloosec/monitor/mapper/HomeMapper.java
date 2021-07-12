@@ -1,6 +1,7 @@
 package igloosec.monitor.mapper;
 
 import igloosec.monitor.vo.ConfigVo;
+import igloosec.monitor.vo.LeadsInfoVo;
 import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -47,4 +48,20 @@ public interface HomeMapper {
     List<ConfigVo> selectConfig();
 
     String getPeriod(MemberVo memberVo);
+
+    List<MemberVo> getCustGrpList(MemberVo memberVo);
+
+    List<MemberVo> rscCheck(MemberVo param);
+
+    List<LeadsInfoVo> selectLeadsList(String emailStr);
+
+    void leadsToProduct(LeadsInfoVo vo);
+
+    void goNext(LeadsInfoVo vo);
+
+    void goChoice(String email);
+
+    void deleteChoice1(String email);
+
+    void deleteChoice2(String email);
 }

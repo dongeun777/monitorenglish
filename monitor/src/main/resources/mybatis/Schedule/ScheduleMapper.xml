@@ -3,6 +3,27 @@
 
 
 <mapper namespace="igloosec.monitor.mapper.ScheduleMapper">
+
+    <insert id="insertProductInfo" parameterType="LeadsInfoVo">
+        INSERT INTO product_apply(
+                               apply_id
+                              ,email
+                              ,prod_id
+                              ,region
+        )
+        VALUES
+        (
+        #{rowKey}
+        ,#{Email}
+        ,#{offerDisplayName}
+        ,#{Country}
+        )
+
+    </insert>
+
+
+
+
     <insert id="insertLeadsInfo" parameterType="LeadsInfoVo">
         INSERT INTO leads_info(
                                partition_key

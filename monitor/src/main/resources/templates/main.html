@@ -58,6 +58,7 @@
 
         document.getElementById("div_load_image").hidden = true;
 
+
         if (sessionRsc != "") {
 
             document.getElementById("dashboard").hidden = false;
@@ -114,22 +115,7 @@
             getResourceUsage(sessionRsc);
         } else {
 
-            $('input[name="costTotal"]').change(function () {
-                if ($(this).val() == "noRe") {
-                    document.getElementById("costTotalBox").hidden = false;
-                    document.getElementById("costTotal1Box").hidden = true;
-                    document.getElementById("costTotal3Box").hidden = true;
-                } else if ($(this).val() == "Re1") {
-                    document.getElementById("costTotalBox").hidden = true;
-                    document.getElementById("costTotal1Box").hidden = false;
-                    document.getElementById("costTotal3Box").hidden = true;
-                } else if ($(this).val() == "Re3") {
-                    document.getElementById("costTotalBox").hidden = true;
-                    document.getElementById("costTotal1Box").hidden = true;
-                    document.getElementById("costTotal3Box").hidden = false;
-                }
 
-            });
 
 
             if (sessionStep == 1) {
@@ -147,20 +133,40 @@
                 getPeriod();
             } else if (sessionStep == 0) {
 
+
+
                 //$('#step1bar').css({"background": "darkblue"});
                 document.getElementById("step1").setAttribute("class", "step-item active");
                 document.getElementById("logTitle").innerText = "Step1: 장비를 등록하시고 완료버튼을 눌러주세요.";
                 document.getElementById("registerLog").hidden = false;
+                document.getElementById("registerLog2").hidden = false;
+                document.getElementById("registerLog3").hidden = false;
                 document.getElementById("registerLog4").hidden = true;
                 document.getElementById("registerSummary").hidden = true;
                 document.getElementById("youtube").hidden = true;
                 document.getElementById("loading").hidden = true;
+
+                $('input[name="costTotal"]').change(function () {
+                    if ($(this).val() == "noRe") {
+                        document.getElementById("costTotalBox").hidden = false;
+                        document.getElementById("costTotal1Box").hidden = true;
+                        document.getElementById("costTotal3Box").hidden = true;
+                    } else if ($(this).val() == "Re1") {
+                        document.getElementById("costTotalBox").hidden = true;
+                        document.getElementById("costTotal1Box").hidden = false;
+                        document.getElementById("costTotal3Box").hidden = true;
+                    } else if ($(this).val() == "Re3") {
+                        document.getElementById("costTotalBox").hidden = true;
+                        document.getElementById("costTotal1Box").hidden = true;
+                        document.getElementById("costTotal3Box").hidden = false;
+                    }
+
+                });
                 getLogList();
             } else {
 
                 document.getElementById("logTitle").innerText = "Step3: 배포중입니다, 배포에는 5분정도 소요됩니다.";
                 document.getElementById("step3").setAttribute("class", "step-item active");
-
 
 
                 //$('#step3bar').css({"background": "darkblue"});
@@ -190,6 +196,76 @@
 
     let tempVal = 0;
     let logSumVal = 0;
+
+    function test() {
+
+        console.log("kor");
+    }
+
+    function grpChange() {
+
+        $.ajax({
+            url: "/grpChange.do",
+            type: "GET",
+            data: {
+                rscGrp: $("#grpSelcet option:selected").val()
+            },
+            success: function (data) {
+                //location.reload();
+                selectData();
+            }, error: function (request, status, error) {
+
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+    }
+
+
+    function rscCheck() {
+
+        $.ajax({
+            url: "/rscCheck.do",
+            type: "GET",
+            data: {
+                rscGrp: document.getElementById("rscname").value
+            },
+            success: function (data) {
+
+                if(data == 0)  {
+                    document.getElementById("resultSpan").innerText ="사용가능한 ID입니다.";
+                    $('#deployBtn').attr('disabled', false);
+
+                }
+                else document.getElementById("resultSpan").innerText ="이미 사용중인 ID입니다.";
+                document.getElementById("resultSpan").hidden =false;
+            }, error: function (request, status, error) {
+
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+    }
+
+
+    function grpChange2() {
+
+        $.ajax({
+            url: "/grpChange.do",
+            type: "GET",
+            data: {
+                rscGrp: $("#grpSelcet2 option:selected").val()
+            },
+            success: function (data) {
+                //location.reload();
+                selectData2();
+            }, error: function (request, status, error) {
+
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+    }
 
     function goAgreement() {
         if ($('input:checkbox[id="agreement"]').is(":checked") == true) $('#checkDeploy').modal("show");
@@ -365,6 +441,21 @@
 
     }
 
+    function goChoice() {
+
+        $.ajax({
+            url: "/goChoice.do",
+            type: "POST",
+            success: function (data) {
+                location.reload();
+            }, error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+
+    }
+
 
     function completeLogCheck() {
         if (document.getElementById('logTotal').innerText == "") {
@@ -432,9 +523,20 @@
         getResourceUsage($("#grpSelcet option:selected").val());
     }
 
+    function selectData2() {
+        //console.log($("#grpSelcet option:selected").val());
+        clearChart();
+        getChatdata($("#grpSelcet2 option:selected").val());
+        getMeterSum($("#grpSelcet2 option:selected").val());
+        getMeterDetailList($("#grpSelcet2 option:selected").val());
+        getUsageList($("#grpSelcet2 option:selected").val());
+        getResourceUsage($("#grpSelcet2 option:selected").val());
+    }
+
 
     function createvm() {
-        $('#deployBtn').hide();
+        //$('#deployBtn').hide();
+        $('#deployBtn').attr('disabled', false);
 
 
         $.ajax({
@@ -550,6 +652,8 @@
 
 
     }
+
+
 
     function getLogList() {
 
@@ -1269,7 +1373,7 @@
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
                     <!-- Nav Item - User Information -->
-                    <li class="nav-item" style="margin-top: 3px;">
+                    <li class="nav-item" style="margin-top: 3px;" onclick="test()">
                         <a href="/main?lang=ko-kr" class="text-gray-400" data-th-text="#{label.lang.ko}"></a>
                     </li>
                     <div class="topbar-divider d-none d-sm-block" style="height: calc(4.375rem - 3rem);"></div>
@@ -1282,7 +1386,7 @@
                         <span id="email" th:text="${session['email']}" hidden="true"> </span>
                         <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                         <span id="step" hidden="true" th:text="${session['step']}"> </span>
-
+                        <span id="lang" hidden="true" th:text="${session['lang']}"> </span>
 
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"
                            style="margin-right: -20px">
@@ -1316,7 +1420,8 @@
 
                     <div class="input-group" style="width: 19%;">
                         <select class="select float-right form-control" name="itemId"
-                                id="grpSelcet">
+                                id="grpSelcet" onchange="grpChange()"
+                                style="border-top-right-radius: .35rem;border-bottom-right-radius: .35rem;">
 
                             <option value="tm5SArsg" th:text="#{label.customerchoice}"></option>
 
@@ -1325,7 +1430,32 @@
 
                         </select>
 
-                        <div class="input-group-append">
+                        <div class="input-group-append" hidden="true">
+                            <button class="btn btn-primary" type="button" onclick='selectData()'>
+                                <i class="fas fa-search fa-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" th:if="${session['auth']} =='ROLE_USER'"
+                     style="margin-left: 2px;margin-bottom: 10px;">
+                    <span class="m-1 font-size-115 mt-2 mr-2" th:text="#{label.productsearch}"></span>
+
+
+                    <div class="input-group" style="width: 19%;">
+                        <select class="select float-right form-control" name="itemId"
+                                id="grpSelcet2" onchange="grpChange2()"
+                                style="border-top-right-radius: .35rem;border-bottom-right-radius: .35rem;">
+
+                            <option value="" th:text="#{label.productchoice}"></option>
+
+                            <option th:each="itemData : ${grpCustList}" th:value="${itemData.rscGrp}"
+                                    th:text="${itemData.product}"></option>
+
+                        </select>
+
+                        <div class="input-group-append" hidden="true">
                             <button class="btn btn-primary" type="button" onclick='selectData()'>
                                 <i class="fas fa-search fa-sm"></i>
                             </button>
@@ -1614,35 +1744,22 @@
 
                                                     </div>-->
                         <div class="col-xl-8 col-lg-12 col-md-12">
-                            <span style="color: black; font-size: 25px; font-weight: bold; " id="logTitle">장비 정보를 등록해주세요. </span>
-                            <!--<div class="progress" style="height: 30px;">
-                                <div class="progress-bar progress-bar-success" role="progressbar" style="width:33.3%"
-                                     id="step1bar">
-                                    Step1: 장비 등록
-                                </div>
-                                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:33.3%"
-                                     id="step2bar">
-                                    Step2: TM 배포
-                                </div>
-                                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:33.3%"
-                                     id="step3bar">
-                                    Step3: TM 생성
-                                </div>
-                            </div>-->
+                            <span style="color: black; font-size: 25px; font-weight: bold; " id="logTitle">등록할 항목을 선택해주세요. </span>
 
 
-                            <div class="step step-primary mb-1 mt-3" style="margin-left: -50px;">
+
+                            <div class="step step-primary mb-1 mt-3" style="margin-left: -50px;" id="stepbar">
                                 <div class="step-item" id="step1">
-                                    <a class="step-item-link" >Step1 장비등록</a>
+                                    <a class="step-item-link">Step1 장비등록</a>
                                 </div>
                                 <div class="step-item " id="step2">
-                                    <a class="step-item-link" >Step2 TM배포</a>
+                                    <a class="step-item-link">Step2 TM배포</a>
                                 </div>
                                 <div class="step-item " id="step3">
-                                    <a class="step-item-link " >Step3 TM생성</a>
+                                    <a class="step-item-link ">Step3 TM생성</a>
                                 </div>
                                 <div class="step-item " id="step4">
-                                    <a class="step-item-link " >Step4 완료</a>
+                                    <a class="step-item-link ">Step4 완료</a>
                                 </div>
                             </div>
 
@@ -1652,6 +1769,10 @@
                     </div>
 
                     <div class="row mt-1 mb-3">
+
+
+
+
                         <div class="col-xl-4 col-lg-5 " style="margin-left: -20px;" id="registerLog">
                             <div class="card shadow h-100 py-2">
                                 <div class="card-header"><span class="text-dark ml-4"
@@ -1665,20 +1786,7 @@
                                     </div>
 
                                 </div>
-                                <!--<div class="card-header py-3 d-flex flex-row align-items-center">
-                                    <div>
-                                    <span class="text-dark ml-4" style="color: black; font-size: 15px; font-weight: bold; "> 장비 종류</span>
-                                    </div>
-                                    <div>
-                                        <span class="text-dark ml-4" style="color: black; font-size: 15px; font-weight: bold; "> 일일 전체 로그량(GB)</span>
-                                    </div>
 
-
-                                  <span class="float-right" >
-                                    <a class="btn btn-primary" ><i class=" "></i> </a>
-                                    <a class="btn btn-primary" onclick='delFrm()'><i class="fas fa-minus "></i> </a>
-                                  </span>
-                                </div>-->
                                 <div class="card-body">
                                     <div id="addDiv">
                                         <div class="row mb-3 ml-4" id="equip0">
@@ -1708,6 +1816,13 @@
 
                                     <button class="btn btn-primary ml-4" onclick='registerLog()'>등록</button>
 
+
+ <!--                                   <button class="btn btn-primary mt-1" style="display: block; position: absolute; bottom: 20px;"
+                                            onclick='goChoice()'><i
+                                            class="fa fa-arrow-alt-circle-left mr-1"></i>Back
+
+                                    </button>
+-->
                                 </div>
 
                             </div>
@@ -1754,6 +1869,8 @@
                                     <div class="text-gray-600 ml-1 mt-2 float-right "
                                          style="font-size: 15px; font-weight: bold; ">전체 Log 사용량:
                                     </div>
+
+
 
 
                                     <button class="btn btn-primary mt-1"
@@ -1835,13 +1952,13 @@
                                              style="height: 45%;">
 
                                             <div id="costTotalBox" hidden="true">
-                                            <div class="text-dark ml-4 "
-                                                 style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                                <div class="text-dark ml-4 "
+                                                     style="font-size: 19px; font-weight: bold; ">월별 예상 금액
+                                                </div>
+                                                <div class="text-dark ml-4 "
+                                                     style="font-size: 19px; font-weight: bold; "
+                                                     id="costTotal"></div>
                                             </div>
-                                            <div class="text-dark ml-4 "
-                                                 style="font-size: 19px; font-weight: bold; "
-                                                 id="costTotal"></div>
-                                        </div>
 
                                             <div id="costTotal1Box" hidden="true">
                                                 <div class="text-dark ml-4 "
@@ -1883,7 +2000,8 @@
                         <div class="col-xl-4 col-lg-12 col-md-12" style="margin-left: -20px;" id="registerSummary">
                             <div class="card shadow h-100 py-2">
                                 <div class="card-header">
-                                    <span class="text-dark ml-4" style="color: black; font-size: 20px; font-weight: bold; "> TM 배포 정보 </span>
+                                    <span class="text-dark ml-4"
+                                          style="color: black; font-size: 20px; font-weight: bold; "> TM 배포 정보 </span>
 
                                 </div>
 
@@ -1891,8 +2009,8 @@
                                 <div class="card-body">
 
 
-
-                                    <div class="card shadow py-2" style="height: 90%; background: #F8F9FC; border: 2px solid white;">
+                                    <div class="card shadow py-2"
+                                         style="height: 90%; background: #F8F9FC; border: 2px solid white;">
 
 
 
@@ -1900,9 +2018,8 @@
                                               style=" font-size: 20px;  font-weight: bold;">기간옵션
                                         </span>
                                         <span class="text-dark ml-4 mr-4"
-                                                  style=" font-size: 18px; border-bottom: 1px solid #efefef; " id="period">
+                                              style=" font-size: 18px; border-bottom: 1px solid #efefef; " id="period">
                                         </span>
-
 
 
                                         <div class="text-dark ml-4 mt-2"
@@ -1924,33 +2041,32 @@
                                              id="diskPeriVal2"></div>
 
 
-
-                                    <div id="costTotalBox2" hidden="true" class="mt-2">
-                                        <div class="text-dark ml-4 "
-                                             style="font-size: 20px; font-weight: bold; ">월별 예상 금액
+                                        <div id="costTotalBox2" hidden="true" class="mt-2">
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 20px; font-weight: bold; ">월별 예상 금액
+                                            </div>
+                                            <div class="text-dark ml-4  mr-4"
+                                                 style="font-size: 18px; border-bottom: 1px solid #efefef; "
+                                                 id="costTotal2"></div>
                                         </div>
-                                        <div class="text-dark ml-4  mr-4"
-                                             style="font-size: 18px; border-bottom: 1px solid #efefef; "
-                                             id="costTotal2"></div>
-                                    </div>
 
-                                    <div id="costTotal1Box2" hidden="true"  class="mt-2">
-                                        <div class="text-dark ml-4 "
-                                             style="font-size: 20px; font-weight: bold; ">월별 예상 금액
+                                        <div id="costTotal1Box2" hidden="true" class="mt-2">
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 20px; font-weight: bold; ">월별 예상 금액
+                                            </div>
+                                            <div class="text-dark ml-4 mr-4"
+                                                 style="font-size: 18px; border-bottom: 1px solid #efefef;  "
+                                                 id="cost1Total2"></div>
                                         </div>
-                                        <div class="text-dark ml-4 mr-4"
-                                             style="font-size: 18px; border-bottom: 1px solid #efefef;  "
-                                             id="cost1Total2"></div>
-                                    </div>
 
-                                    <div id="costTotal3Box2" hidden="true" class="mt-2">
-                                        <div class="text-dark ml-4 "
-                                             style="font-size: 20px; font-weight: bold; ">월별 예상 금액
+                                        <div id="costTotal3Box2" hidden="true" class="mt-2">
+                                            <div class="text-dark ml-4 "
+                                                 style="font-size: 20px; font-weight: bold; ">월별 예상 금액
+                                            </div>
+                                            <div class="text-dark ml-4 mr-4"
+                                                 style="font-size: 18px; border-bottom: 1px solid #efefef;"
+                                                 id="cost3Total2"></div>
                                         </div>
-                                        <div class="text-dark ml-4 mr-4"
-                                             style="font-size: 18px; border-bottom: 1px solid #efefef;"
-                                             id="cost3Total2"></div>
-                                    </div>
 
                                     </div>
 
@@ -2108,10 +2224,30 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
+
+            <!--    <div class="modal-body">
+
+                    <span class="m-1 font-size-115 mt-2 mr-2">제품ID를 정해주세요</span>
+
+
+                    <div class="input-group" >
+                        <input class="form-control"
+                               id="rscname" style="border-top-right-radius: .35rem;border-bottom-right-radius: .35rem;">
+
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="button" onclick='rscCheck()'>
+                                중복체크
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <span class="m-1 font-size-115 mt-3 mr-2" hidden ="true" id="resultSpan"></span>
+                </div>-->
                 <div>
 
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit" onclick='createvm()' id="deployBtn">
+                        <button class="btn btn-primary" type="submit" onclick='createvm()' id="deployBtn" >
                             배포
                         </button>
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>

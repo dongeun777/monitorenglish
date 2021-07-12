@@ -1,6 +1,7 @@
 package igloosec.monitor.service;
 
 import igloosec.monitor.mapper.HomeMapper;
+import igloosec.monitor.vo.LeadsInfoVo;
 import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -96,6 +97,11 @@ public class HomeService {
         mapper.goBack(email);
     }
 
+
+    public void goChoice(String email) {
+        mapper.goChoice(email);
+    }
+
     public UsageVo selectCostTotal(UsageVo param) {
         return mapper.selectCostTotal(param);
     }
@@ -112,10 +118,37 @@ public class HomeService {
         return  mapper.getGrpList();
     }
 
+    public List<MemberVo> getCustGrpList(MemberVo memberVo) {
+        return  mapper.getCustGrpList(memberVo);
+    }
+
+
+
 
     // shell parameter
     public UsageVo selectShellParam(String email) {return mapper.selectShellParam(email); };
 
     public String getPeriod(MemberVo memberVo) {return mapper.getPeriod(memberVo);
+    }
+
+    public List<MemberVo> rscCheck(MemberVo param) {return mapper.rscCheck(param);
+    }
+
+    public List<LeadsInfoVo> selectLeadsList(String emailStr) {return mapper.selectLeadsList(emailStr);
+    }
+
+    public void leadsToProduct(LeadsInfoVo vo) { mapper.leadsToProduct(vo);
+    }
+
+    public void goNext(LeadsInfoVo vo) { mapper.goNext(vo);
+    }
+
+    public void deleteChoice1(String email) { mapper.deleteChoice1(email);
+    }
+
+    public void deleteChoice2(String email) { mapper.deleteChoice2(email);
+    }
+
+    public void insertToProduct(LeadsInfoVo parameter) { mapper.leadsToProduct(parameter);
     }
 }

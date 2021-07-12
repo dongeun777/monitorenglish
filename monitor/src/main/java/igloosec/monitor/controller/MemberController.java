@@ -68,11 +68,17 @@ public class MemberController {
     @RequestMapping(value="/logout")
     public String logoutProcess(HttpSession session) {
 
-        session.setAttribute("loginCheck",null);
+        session.removeAttribute("loginCheck");
+        session.removeAttribute("email");
+        session.removeAttribute("step");
+        session.removeAttribute("rscgrp");
+        session.removeAttribute("auth");
+
+/*        session.setAttribute("loginCheck",null);
         session.setAttribute("email",null);
         session.setAttribute("step",null);
         session.setAttribute("rscgrp",null);
-        session.setAttribute("auth",null);
+        session.setAttribute("auth",null);*/
 
         return "redirect:/";
     }

@@ -4,13 +4,13 @@
 
 <mapper namespace="igloosec.monitor.mapper.HomeMapper">
     <select id="selectUsage" parameterType="UsageVo" resultType="UsageVo">
-        SELECT substring(event_date,9,2) AS idate ,round(event_volume/1024/1024) AS usage_data FROM ERD.tm_stats
+        SELECT substring(event_date,9,2) AS idate ,round(event_volume/1024/1024) AS usage_data FROM tm_stats
         WHERE event_date LIKE '${paramDate}%' AND rscgrp ='${rscparam}'
     </select>
 
 
     <select id="selectUsagebefore" parameterType="UsageVo"  resultType="UsageVo">
-        SELECT substring(event_date,9,2) AS idate ,round(event_volume/1024/1024) AS usage_data FROM ERD.tm_stats
+        SELECT substring(event_date,9,2) AS idate ,round(event_volume/1024/1024) AS usage_data FROM tm_stats
         WHERE event_date LIKE '${paramDate}%' AND rscgrp ='${rscparam}'
     </select>
 
@@ -18,21 +18,21 @@
     <select id="selectMeterDetail" parameterType="UsageVo" resultType="UsageVo">
         SELECT meterCategory,'Storage' as meterSubCategory,CONCAT(ROUND(quantity,2)*10,'K' ) AS quantity, unitOfMeasure FROM(
 
-             SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
+             SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM USED_AMOUNT
              WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
              GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
         )a where quantity <![CDATA[>=]]> 0.01 and meterSubCategory LIKE '%Managed Disks' and unitOfMeasure ='10K'
         UNION
         SELECT meterCategory,'Virtual Machines' as meterSubCategory,CONCAT(ROUND(quantity,2)*10 , CASE WHEN unitOfMeasure Like '10%' THEN substring(unitOfMeasure,3,5) WHEN unitOfMeasure LIKE '1 %' THEN substring(unitOfMeasure,3,10) ELSE substring(unitOfMeasure,2,10) END ) AS quantity, unitOfMeasure FROM(
 
-            SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
+            SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM USED_AMOUNT
             WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
             GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
         )b where quantity <![CDATA[>=]]> 0.01 and meterSubCategory LIKE 'Virtual Machines%'
         UNION
         SELECT meterCategory, meterSubCategory,CONCAT(ROUND(quantity,2)*10 , CASE WHEN unitOfMeasure Like '10%' THEN substring(unitOfMeasure,3,5) WHEN unitOfMeasure LIKE '1 %' THEN substring(unitOfMeasure,3,10) ELSE substring(unitOfMeasure,2,10) END ) AS quantity, unitOfMeasure FROM(
 
-         SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM ERD.USED_AMOUNT
+         SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM USED_AMOUNT
          WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}' and meterSubCategory NOT LIKE 'Virtual Machines%'
          GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
      )c where quantity <![CDATA[>=]]> 0.01 and meterSubCategory NOT LIKE '%Managed Disks'
@@ -41,7 +41,7 @@
 
 
     <select id="selectMeterSum" parameterType="UsageVo"  resultType="UsageVo">
-        SELECT meterCategory, round(SUM(costInBillingCurrency),2) as costInBillingCurrency FROM ERD.USED_AMOUNT
+        SELECT meterCategory, round(SUM(costInBillingCurrency),2) as costInBillingCurrency FROM USED_AMOUNT
         WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
         GROUP BY meterCategory;
 
@@ -49,7 +49,7 @@
 
 
     <select id="registerLog" parameterType="UsageVo">
-        insert into ERD.USER_EQUIP_LIST (email, equip,usages,logid)
+        insert into USER_EQUIP_LIST (email, equip,usages,logid)
         values (#{emailparam}, #{equipparam},${usageparam},#{logid});
     </select>
 
@@ -62,13 +62,24 @@
        select * from USER_LIST where email ='${email}'
     </select>
 
+    <select id="rscCheck" parameterType="MemberVo" resultType="MemberVo">
+        select rscgrp as rscGrp from product_apply where rscgrp ='${rscGrp}'
+    </select>
+
 
     <select id="checkResetMember" parameterType="MemberVo" resultType="MemberVo">
         select DISTINCT email  from USER_LIST A, leads_info B where customer_email =email and email='${email}' and CONCAT(customer_last_name,customer_first_name) ='${name}';
     </select>
 
+    <select id="selectLeadsList" parameterType="String" resultType="LeadsInfoVo">
+        select 'AZURE' as vendor, row_key as rowKey ,offer_display_name as offerDisplayName, customer_country as customerCountry,CONCAT(substring(crt_dtm,1,4),'.',substring(crt_dtm,5,2),'.',substring(crt_dtm,7,2),' ',substring(crt_dtm,9,2),':',substring(crt_dtm,11,2),':',substring(crt_dtm,13,2)) as createdTime
+        from leads_info
+        where customer_email ='${emailStr}'
+    </select>
+
+
     <select id="selectLogList" parameterType="UsageVo" resultType="UsageVo">
-        select equip,usages,logid from ERD.USER_EQUIP_LIST where email ='${emailparam}'
+        select equip,usages,logid from USER_EQUIP_LIST where email ='${emailparam}'
     </select>
 
     <delete id="deleteLog" parameterType="String">
@@ -118,6 +129,11 @@
 
     </select>
 
+    <select id="getCustGrpList"  resultType="MemberVo" parameterType="MemberVo">
+        select rscgrp as rscGrp,productName as product from product_apply where email=#{email} and rscgrp!='';
+
+    </select>
+
     <select id="selectSecretKey"  parameterType="MemberVo" resultType="String">
         SELECT secretkey
         FROM USER_LIST where email = #{email};
@@ -149,6 +165,52 @@
     <select id="getPeriod" resultType="String" parameterType="MemberVo">
         SELECT cost_type as period FROM USER_LIST where email = #{email};
     </select>
+
+
+    <insert id="leadsToProduct" parameterType="LeadsInfoVo">
+        INSERT INTO product_apply(
+                                  apply_id
+                                 ,email
+                                 ,prod_id
+                                 ,region
+                                 ,vendor
+                                 ,regDate
+                                 ,productName
+                                 ,rscgrp
+        )
+        VALUES
+        (
+        #{rowKey}
+        ,#{emailAddr}
+        ,#{offerDisplayName}
+        ,#{customerCountry}
+        ,#{vendor}
+        ,(SELECT DATE_FORMAT(now(),'%Y%m%d%H%i%S'))
+        ,#{offerDisplayName}
+        ,#{rscGrp}
+        )
+
+    </insert>
+
+
+    <update id="goNext" parameterType="LeadsInfoVo">
+        update USER_LIST SET step = 0,rowkey = #{rowKey} where email = #{emailAddr};
+    </update>
+
+
+    <update id="goChoice" parameterType="String">
+        update USER_LIST SET step = 100,rowkey ='' where email = #{email};
+    </update>
+
+    <delete id="deleteChoice1" parameterType="String">
+        delete from USER_EQUIP_LIST where email = #{email};
+    </delete>
+
+    <delete id="deleteChoice2" parameterType="String">
+        delete from product_apply where email = #{email};
+    </delete>
+
+
 
 </mapper>
 

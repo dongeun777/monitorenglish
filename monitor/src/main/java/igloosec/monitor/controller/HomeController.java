@@ -7,6 +7,7 @@ import igloosec.monitor.TOTPTokenValidation;
 import igloosec.monitor.service.HomeService;
 import igloosec.monitor.service.MemberService;
 import igloosec.monitor.service.ResourceService;
+import igloosec.monitor.vo.LeadsInfoVo;
 import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
 import org.apache.commons.codec.binary.Base32;
@@ -71,29 +72,34 @@ public class HomeController {
     }
 
     @GetMapping("/insert")
-    public String insert(Model model, HttpServletRequest request) {
-        HttpSession session =request.getSession(false);
+    public String insert(Model model, HttpSession session) {
+
         model.addAttribute("grpList", homeService.getGrpList());
 
-        if(session==null) return "redirect:/";
+        if(session.getAttribute("email")==null) return "redirect:/";
         else return "insert";
     }
 
     @GetMapping("/list")
-    public String list(Model model, HttpServletRequest request) {
-        HttpSession session =request.getSession(false);
+    public String list(Model model, HttpSession session) {
+
         model.addAttribute("grpList", homeService.getGrpList());
 
-        if(session==null) return "redirect:/";
+        if(session.getAttribute("email")==null) return "redirect:/";
         else return "list";
     }
 
     @GetMapping("/main")
-    public String main(Model model, HttpServletRequest request) {
-        HttpSession session =request.getSession(false);
-        model.addAttribute("grpList", homeService.getGrpList());
+    public String main(Model model, HttpSession session) {
 
-        if(session==null) return "redirect:/";
+        String emailStr = (String) session.getAttribute("email");
+        MemberVo param =new MemberVo();
+        param.setEmail(emailStr);
+
+        if(session.getAttribute("rscgrp")!=null || session.getAttribute("rscgrp")!="" ) model.addAttribute("grpList", homeService.getGrpList());
+        if(session.getAttribute("rscgrp")!=null || session.getAttribute("rscgrp")!="") model.addAttribute("grpCustList", homeService.getCustGrpList(param));
+
+        if(session.getAttribute("email")==null) return "redirect:/";
         else return "main";
     }
 
@@ -111,35 +117,47 @@ public class HomeController {
 
 
     @GetMapping("/resource")
-    public String resource(Model model, HttpServletRequest request) {
-        HttpSession session =request.getSession(false);
-        if(session==null) return "redirect:/";
+    public String resource(Model model, HttpSession session) {
+
+        if(session.getAttribute("email")==null) return "redirect:/";
         else return "resource";
     }
 
 
     @GetMapping("/cost")
-    public String cost(Model model, HttpServletRequest request) {
-        HttpSession session =request.getSession(false);
-        if(session==null) return "redirect:/";
+    public String cost(Model model, HttpSession session) {
+
+        if(session.getAttribute("email")==null) return "redirect:/";
         else return "cost";
     }
 
     @GetMapping("/member")
-    public String member(Model model, HttpServletRequest request) {
-        HttpSession session =request.getSession(false);
-        if(session==null) return "redirect:/";
+    public String member(Model model, HttpSession session) {
+
+        if(session.getAttribute("email")==null) return "redirect:/";
         else return "member";
     }
 
     @GetMapping("/customer")
-    public String customer(Model model, HttpServletRequest request) {
-        HttpSession session =request.getSession(false);
-        if(session==null) return "redirect:/";
+    public String customer(Model model, HttpSession session) {
+
+        if(session.getAttribute("email")==null) return "redirect:/";
         else return "customer";
     }
 
 
+
+    @ResponseBody
+    @RequestMapping(value = "/rscCheck.do")
+    public int rscCheck(MemberVo param) throws MessagingException {
+
+        List<MemberVo> list = homeService.rscCheck(param);
+
+        int retVal = list.size();
+
+        return retVal;
+
+    }
 
     @ResponseBody
     @RequestMapping(value = "/userRegister")
@@ -201,8 +219,8 @@ public class HomeController {
         String inputCode =  memberVo.getMfacode();
         //TOTPTokenValidation.
 
-        if (TOTPTokenValidation.validate(inputCode,userSecretKey)||memberVo.getEmail().equals("admin@igloosec.com")) {
-
+       // if (TOTPTokenValidation.validate(inputCode,userSecretKey)||memberVo.getEmail().equals("admin@igloosec.com")) {
+            if (TOTPTokenValidation.validate(inputCode,userSecretKey)) {
             MemberVo user = homeService.selectMember(memberVo.getEmail());
             System.out.println(user.getAuth());
             session.setAttribute("loginCheck",true);
@@ -210,6 +228,7 @@ public class HomeController {
             session.setAttribute("auth",user.getAuth());
             session.setAttribute("rscgrp",user.getRscGrp());
             session.setAttribute("step",user.getStep());
+            session.setAttribute("rowkey",user.getRowkey());
             return "success";
         }
         else {
@@ -224,6 +243,14 @@ public class HomeController {
         return userQrCord;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/grpChange.do")
+    public String grpChange(MemberVo memberVo, HttpSession session) {
+        session.setAttribute("rscgrp",memberVo.getRscGrp());
+        return "change";
+    }
+
+
 
     @ResponseBody
     @RequestMapping(value = "/getLogList.do")
@@ -232,6 +259,18 @@ public class HomeController {
         param.setEmailparam(emailStr);
 
         List<UsageVo>  list = homeService.selectLogList(param);
+        model.addAttribute("list",list);
+
+        return list;
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/getLeadsList.do")
+    public List<LeadsInfoVo> getLeadsList(Model model, HttpSession session ) {
+        String emailStr = (String) session.getAttribute("email");
+
+        List<LeadsInfoVo>  list = homeService.selectLeadsList(emailStr);
         model.addAttribute("list",list);
 
         return list;
@@ -333,6 +372,26 @@ public class HomeController {
         return "redirect:/main";
     }
 
+    @PostMapping("/leadsToProduct.do")
+    public String leadsToProduct(LeadsInfoVo vo,HttpSession session)  {
+        String emailStr = (String) session.getAttribute("email");
+        String uuid = UUID.randomUUID().toString().replace("-","");
+        uuid =emailStr+uuid;
+        vo.setEmailAddr(emailStr);
+        vo.setRowKey(uuid);
+
+        homeService.goNext(vo);
+        session.setAttribute("rowkey",uuid);
+        session.setAttribute("step","0");
+
+
+        homeService.leadsToProduct(vo);
+
+        return "redirect:/main";
+    }
+
+
+
     @PostMapping("/completeLog.do")
     public String completeLog(HttpSession session,MemberVo param) throws MessagingException, IOException {
         String emailStr = (String) session.getAttribute("email");
@@ -353,6 +412,19 @@ public class HomeController {
         session.setAttribute("step","0");
         return "redirect:/main";
     }
+
+    @PostMapping("/goChoice.do")
+    public String goChoice(HttpSession session) throws MessagingException, IOException {
+        String rowkey = (String) session.getAttribute("rowkey");
+        String emailStr = (String) session.getAttribute("email");
+
+        homeService.goChoice(emailStr);
+        homeService.deleteChoice1(rowkey);
+        homeService.deleteChoice2(rowkey);
+        session.setAttribute("step","100");
+        return "redirect:/main";
+    }
+
 
 
 
@@ -380,6 +452,14 @@ public class HomeController {
         result.setProduct(shellParam.getProduct());
         result.setVendor(shellParam.getVendor());
 
+        LeadsInfoVo parameter = new LeadsInfoVo();
+        parameter.setRowKey(emailStr);
+        parameter.setVendor(shellParam.getVendor());
+        parameter.setCustomerCountry(shellParam.getCountry());
+        parameter.setOfferDisplayName(shellParam.getProduct());
+        parameter.setEmailAddr(emailStr2);
+        parameter.setRscGrp(emailStr+"Rsg");
+        homeService.insertToProduct(parameter);
         try {
             shellVMcreate(result,emailStr2);
         } catch (IOException e) {

@@ -12,6 +12,11 @@ public class LeadsInfoVo {
     private String offerDisplayName;
     private String createdTime;
     private String description;
+    private String customerCountry;
+    private String vendor;
+    private String emailAddr;
+    private String rscGrp;
+
 
     /* customerInfo */
     private String FirstName;
@@ -179,5 +184,37 @@ public class LeadsInfoVo {
                 ", Company='" + Company + '\'' +
                 ", Title='" + Title + '\'' +
                 '}';
+    }
+
+    public String getCustomerCountry() {
+        return customerCountry;
+    }
+
+    public void setCustomerCountry(String customerCountry) {
+        this.customerCountry = customerCountry;
+    }
+
+    public String getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
+    }
+
+    public String getEmailAddr() {
+        return emailAddr;
+    }
+
+    public void setEmailAddr(String emailAddr) {
+        this.emailAddr = emailAddr;
+    }
+
+    public String getRscGrp() {
+        return rscGrp;
+    }
+
+    public void setRscGrp(String rscGrp) {
+        this.rscGrp = rscGrp;
     }
 }
