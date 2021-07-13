@@ -38,15 +38,24 @@
                         {data: "prod_name"},
                         {data: "vendor"},
                         {data: "version"},
-                        {data: "locale"}
+                        {data: "locale"},
+                        {data: "email",
+                            "render": function(data, type, row){
+                                if(type=='display'){
+                                    data = '<button class="mb-2 mr-2 btn btn-info btn-sm">제품 추가</button>';
+                                }
+                                return data;
+                            }
+                        }
                     ]
                 });
 
                 var table = $('#productList').DataTable();
 
-                $('#productList tbody').on('click', 'tr', function () {
+                $('#productList tbody').on('click', 'tr .btn', function () {
                     var tr = $(this).closest('tr');
-                    var dt = table.row(tr).data();
+                    var dt = table.row( tr ).data();
+
 
                     $(".modal-body #prod_name").val( dt.prod_name);
                     $(".modal-body #vendor").val( dt.vendor);
@@ -132,6 +141,7 @@
                                                 <th>Vendor</th>
                                                 <th>Version</th>
                                                 <th>Locale</th>
+                                                <th></th>
                                             </tr>
                                             </thead>
 
@@ -147,36 +157,6 @@
                             </div>
                         </div>
                     </div>
-<!--                    <div class="col-xl-3 col-lg-12">-->
-<!--                        <div class="card shadow mb-4">-->
-<!--                            <div class="card-body">-->
-<!--                                <img class="img-profile" src="https://store-images.s-microsoft.com/image/apps.683.aff18866-0593-4837-abfa-0fd4029dc808.dd9f6b52-7a04-4f55-93a9-c831374a2d1e.79189ad0-6bb8-4ff9-b2be-7539f278dce7"-->
-<!--                                     width="100px" >-->
-<!--                                <div class="form-group ml-3">-->
-<!--                                    <label for="product1">Product</label>-->
-<!--                                    <p type="text" class="form-control" id="product1"></p>-->
-<!--                                </div>-->
-<!--                                <div class="form-group ml-3">-->
-<!--                                    <label for="vendor1">Vendor</label>-->
-<!--                                    <p type="text" class="form-control" id="vendor1"></p>-->
-<!--                                </div>-->
-<!--                                <div class="form-group ml-3">-->
-<!--                                    <label for="version1">Version</label>-->
-<!--                                    <p type="text" class="form-control" id="version1"></p>-->
-<!--                                </div>-->
-<!--                                <div class="form-group ml-3">-->
-<!--                                    <label for="locale1">Locale</label>-->
-<!--                                    <p type="text" class="form-control" id="locale1"></p>-->
-<!--                                </div>-->
-
-
-<!--                            </div>-->
-
-
-<!--                        </div>-->
-
-
-<!--                    </div>-->
 
                 </div>
 
