@@ -29,7 +29,7 @@
     </update>
 
     <update id="completeLog2" parameterType="MemberVo">
-        update USER_LIST SET step = 2, vm_series_id = #{id} where email = #{email};
+        update product_apply SET pStep = 2, vm_series_id = #{id} where apply_id = #{email};
 
     </update>
 
