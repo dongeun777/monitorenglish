@@ -137,7 +137,7 @@ public class DeployController {
         param2.setUsageparam(param.getTotalParam());
         UsageVo result = deployService.selectCostTotal(param2);
         param.setEmail(emailStr);
-        sendtmmail(emailStr);
+        sendtmmail(emailStr, emailStr2);
         //server 업로드시 주석해제
         emailStr = emailStr.replace("@","");
         emailStr = emailStr.replace(".","");
@@ -886,7 +886,7 @@ public class DeployController {
     }
 
 
-    public void sendtmmail(String email)  throws MessagingException {
+    public void sendtmmail(String email, String emailStr2)  throws MessagingException {
 
 
 
@@ -916,7 +916,7 @@ public class DeployController {
         Message mimeMessage = new MimeMessage(session);
         mimeMessage.setFrom(new InternetAddress(from));
         mimeMessage.setRecipient(Message.RecipientType.TO,
-                new InternetAddress(email));
+                new InternetAddress(emailStr2));
         mimeMessage.setSubject("SPiDER TM Login Information");
 
 //        mimeMessage.setContent("<h1 style='font-size: 20px;'><a href='https://"+emailstr+".igloocld.com'>https://"+emailstr +".igloocld.com </a>에 접속하셔서, 로그인하시기 바랍니다.</h1>"+

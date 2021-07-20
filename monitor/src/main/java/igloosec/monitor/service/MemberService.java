@@ -143,11 +143,11 @@ public class MemberService implements UserDetailsService {
         JsonObject obj = new JsonParser().parse(param).getAsJsonObject();
         MemberVo memberVo = new MemberVo();
         memberVo.setEmail(obj.get("email").getAsString());
-        memberVo.setCompany(obj.get("company").getAsString());
+        //memberVo.setCompany(obj.get("company").getAsString());
 
         // update USER_LIST
         if(mapper.updateUserInfo(memberVo) == false) {
-            logger.error("user info update failed : {}, {}", memberVo.getEmail(), memberVo.getCompany());
+            logger.error("user info update failed : {}", memberVo.getEmail());
             return false;
         }
 
