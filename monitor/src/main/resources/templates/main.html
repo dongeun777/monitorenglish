@@ -531,6 +531,8 @@
         getMeterDetailList($("#grpSelcet2 option:selected").val());
         getUsageList($("#grpSelcet2 option:selected").val());
         getResourceUsage($("#grpSelcet2 option:selected").val());
+        console.log($("#grpSelcet2 option:selected").val());
+
     }
 
 
@@ -1318,6 +1320,14 @@
             <a class="nav-link" href="/resource">
                 <i class="fas fa-fw fa-chart-pie"></i>
                 <span th:text="#{label.resourcemanagement}"></span></a>
+        </li>
+
+
+
+        <li class="nav-item active" th:if="${session['rscgrp']} !=''">
+            <a class="nav-link" href="/productlist">
+                <i class="fas fa-fw fa-list"></i>
+                <span >보유리소스정보</span></a>
         </li>
 
 

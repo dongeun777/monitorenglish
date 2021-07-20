@@ -15,8 +15,9 @@
     let sessionRsc =  "";
 
     window.onload = function () {
-        sessionRsc = document.getElementById("rscgrp").innerText;
 
+        sessionRsc = document.getElementById("rscgrp").innerText;
+        console.log(sessionRsc);
         /*
         $("[id^='delBtn']").each(function() {$(this).hide();});
         $('#expansionBtn').hide();
@@ -488,11 +489,11 @@
                             <!-- Card Header - Dropdown -->
 
                             <!-- Card Body -->
-                            <div class="card-body">
+                            <div class="card-body" style="height: 350px">
                                 <div class="card shadow h-100 py-2" >
                                     <div class="table-responsive" style="overflow:auto; ">
                                         <table class="table table-bordered" id="userTable" cellspacing="0">
-                                            <thead style="text-align: center; position: sticky; top: 0px; ">
+                                            <thead style="text-align: center; position: sticky; top: 0px; background: white;">
                                             <tr>
                                                 <th  th:text="#{label.date}"></th>
                                                 <th  th:text="#{label.type}"></th>

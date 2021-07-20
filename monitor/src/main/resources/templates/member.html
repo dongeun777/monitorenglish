@@ -476,6 +476,75 @@
             <div th:insert="topmenu.html :: top_menu"></div>
 
 
+
+            <span id="userEmail" th:text="${session['email']}" hidden="true"> </span>
+            <!-- Page Heading -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-2 ml-4" >
+                <h1 class="h3 mb-0 text-gray-800" th:text="#{label.userinformation}"> </h1>
+            </div>
+
+            <div class="row mb-2 ml-2">
+                <!-- Area Chart -->
+                <div class="col-xl-6 col-lg-5">
+                    <div class="card shadow">
+
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <div class="card shadow h-100">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <table class="table-bordered col-xl-12 col-lg-10" cellspacing="0" id="userInfoTable">
+                                            <thead style="text-align: center; position: sticky; top: 0px; background-color: white;">
+                                            <tr>
+                                                <th th:text="#{label.company}" style="width:30%"></th>
+                                                <td>
+                                                    <input type="text" size="20" style="width:100%; border:0" id="companyInput">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th style="width:30%">Email</th>
+                                                <td>
+                                                    <input type="text" size="20" style="width:100%; border:0" id="emailInput" disabled>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th th:text="#{label.phonenumber}" style="width:30%"></th>
+                                                <td>
+                                                    <input type="text" size="20" style="width:100%; border:0" id="phoneInput">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th th:text="#{label.regdate}" style="width:30%"></th>
+                                                <td>
+                                                    <input type="text" size="20" style="width:100%; border:0" id="regdateInput" disabled>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th th:text="#{label.password}" style="width:30%"></th>
+                                                <td>
+                                                    <button style="color:#fff; background-color:#36b9cc; border-color:#36b9cc; float:left; font-size:small"
+                                                            th:text="#{label.passwordchange}" data-toggle="modal" data-target="#userPasswordModal" ></button>
+                                                </td>
+                                            </tr>
+                                            <!--
+                                            <tr>
+                                                <th th:text="#{label.payment}" style="width:30%"></th>
+                                                <td>
+                                                    <button style="color:#fff; background-color:#36b9cc; border-color:#36b9cc; float:left; font-size:small"
+                                                            th:text="#{label.payment}" data-toggle="modal" data-target="#paymentModal" ></button>
+                                                </td>
+                                            </tr>
+                                            -->
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
             <!-- Begin Page Content -->
             <div class="container-fluid"  th:if="${session['auth']} =='ROLE_ADMIN'">
 
@@ -516,11 +585,11 @@
                                 </li>
                             </div>
                             <!-- Card Body -->
-                            <div class="card-body">
+                            <div class="card-body" style="height: 450px">
                                 <div class="card shadow h-100 py-2">
                                     <div class="table-responsive" style="overflow:auto; height: 100%">
                                         <table class="table table-bordered" id="userTable" cellspacing="0">
-                                            <thead style="text-align: center; position: sticky; top: 0px; ">
+                                            <thead style="text-align: center; position: sticky; top: 0px; background: white; ">
                                             <tr>
 
                                                 <th th:text="#{label.company}"></th>
@@ -589,7 +658,7 @@
                                 <div class="card shadow h-100 py-2">
                                     <div class="table-responsive" style="overflow:auto; height: 100%">
                                         <table class="table table-bordered" id="manageTable" cellspacing="0">
-                                            <thead style="text-align: center; position: sticky; top: 0px; ">
+                                            <thead style="text-align: center; position: sticky; top: 0px; background: white; ">
                                             <tr>
 
                                                 <th th:text="#{label.company}"></th>
@@ -618,75 +687,8 @@
 
 
 
-            <div class="container-fluid"  th:if="${session['auth']} =='ROLE_USER'">
-                <span id="userEmail" th:text="${session['email']}" hidden="true"> </span>
-                <!-- Page Heading -->
-                <div class="d-sm-flex align-items-center justify-content-between mb-2">
-                    <h1 class="h3 mb-0 text-gray-800" th:text="#{label.userinformation}"> </h1>
-                </div>
+            <div class="container-fluid"  th:if="${session['auth']} =='ROLE_USER'" hidden="true">
 
-                <div class="row">
-                    <!-- Area Chart -->
-                    <div class="col-xl-6 col-lg-5">
-                        <div class="card shadow">
-
-                            <!-- Card Body -->
-                            <div class="card-body">
-                                <div class="card shadow h-100">
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <table class="table-bordered col-xl-12 col-lg-10" cellspacing="0" id="userInfoTable">
-                                                <thead style="text-align: center; position: sticky; top: 0px; background-color: white;">
-                                                <tr>
-                                                    <th th:text="#{label.company}" style="width:30%"></th>
-                                                    <td>
-                                                        <input type="text" size="20" style="width:100%; border:0" id="companyInput">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th style="width:30%">Email</th>
-                                                    <td>
-                                                        <input type="text" size="20" style="width:100%; border:0" id="emailInput" disabled>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th th:text="#{label.phonenumber}" style="width:30%"></th>
-                                                    <td>
-                                                        <input type="text" size="20" style="width:100%; border:0" id="phoneInput">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th th:text="#{label.regdate}" style="width:30%"></th>
-                                                    <td>
-                                                        <input type="text" size="20" style="width:100%; border:0" id="regdateInput" disabled>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <th th:text="#{label.password}" style="width:30%"></th>
-                                                    <td>
-                                                        <button style="color:#fff; background-color:#36b9cc; border-color:#36b9cc; float:left; font-size:small"
-                                                                th:text="#{label.passwordchange}" data-toggle="modal" data-target="#userPasswordModal" ></button>
-                                                    </td>
-                                                </tr>
-                                                <!--
-                                                <tr>
-                                                    <th th:text="#{label.payment}" style="width:30%"></th>
-                                                    <td>
-                                                        <button style="color:#fff; background-color:#36b9cc; border-color:#36b9cc; float:left; font-size:small"
-                                                                th:text="#{label.payment}" data-toggle="modal" data-target="#paymentModal" ></button>
-                                                    </td>
-                                                </tr>
-                                                -->
-                                                </thead>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mt-4 mb-2">

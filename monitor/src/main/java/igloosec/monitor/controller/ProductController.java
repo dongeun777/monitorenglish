@@ -45,6 +45,9 @@ public class ProductController {
         productVO.setEmail(emailStr);
         session.setAttribute("pStep",0);
         session.setAttribute("apply_id",productVO.getApply_id());
+        String rscgrp  = productVO.getApply_id().replace("@","");
+        rscgrp = rscgrp.replace(".","");
+
         int count = productService.countProduct(productVO);
 
         if(count == 0)
@@ -55,6 +58,7 @@ public class ProductController {
         String Count = Integer.toString(count);
         String pdName = productVO.getProd_id() + "_" + Count;
         productVO.setProductName(pdName);
+        productVO.setRscgrp(rscgrp);
         productService.productInsert(productVO);
 
 

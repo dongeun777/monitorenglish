@@ -1,0 +1,318 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns="http://www.w3.org/1999/html">
+
+<head th:replace="mainheader.html :: mainHead"></head>
+
+<script type="text/javascript">
+
+    let userEmail =  "";
+    const diskSizeMap = new Map();
+
+    // insert key-value-pair
+    diskSizeMap.set('1024','1,024 GiB');
+    diskSizeMap.set('2048','2,048 GiB');
+    diskSizeMap.set('4096','4,096 GiB');
+    diskSizeMap.set('8192','8,192 GiB');
+    diskSizeMap.set('16384', '16,384 GiB');
+    diskSizeMap.set('32767','32,767 GiB');
+
+
+    window.onload = function () {
+        userEmail = $('#userEmail').text();
+        getUserProductInfoList();
+        $("#userInfoSaveBtn").on("click", function(){ setUserInfoSave() });
+    }
+
+
+
+    function getUserProductInfoList() {
+        var selectBoxId = 0;
+        $.ajax({
+            url: "/getUserProductInfoList.do",
+            type: "POST",
+            data: {
+                email: userEmail
+            },
+            success: function (data) {
+                $('#resourceTable').dataTable({
+                    aaData: data,
+                    bPaginate: false,
+                    bLengthChange: true,
+                    bInfo: false,
+                    bAutoWidth: false,
+                    processing: true,
+                    ordering: false,
+                    serverSide: false,
+                    searching: false,
+                    columnDefs: [{
+                       targets:[0],
+                       searchable: false,
+                       visible: false
+                    }],
+                    columns: [
+                        {data: "applyId"},
+                        {data: "cloud_vendor"},
+                        {data: "product"},
+                        {data: "country"},
+                        {data: "autoscalingYN",
+                            "render": function(data, type, row) {
+                                //console.log('autoscalingYN : ' + data + ' / ' + type + ' / ' + row);
+                                if (row.autoscalingYN == 'Y') {
+                                    data = '<input type="checkbox" checked/>';
+                                } else {
+                                    data = '<input type="checkbox"/>';
+                                }
+                                return data;
+                            }
+                        },
+                        {data: "criticalValue",
+                            "render": function(data, type, row) {
+                                //console.log('criticalValue : ' + data + ' / ' + type + ' / ' + row);
+                                data = '<input type="number" min="0" max="100" style="width:100%; border:0; text-align:center;" value="' + row.criticalValue + '">';
+                                return data;
+                            }
+                        },
+                        {data: "disksize",
+                            "render": function(data, type, row, meta) {
+                                var data = '';
+
+                                if(row.autoscalingYN == 'Y') {
+                                    data += '<select class="form-control" style="font-size:0.5rem" name="selectDiskNm" id="diskCapacity' + selectBoxId + '">';
+                                } else {
+                                    data += '<select class="form-control" style="font-size:0.5rem;visibility:hidden" name="selectDiskNm" id="diskCapacity' + selectBoxId + '">';
+                                }
+
+                                for (let [key, value] of diskSizeMap) {
+                                    if(row.disksize == key) {
+                                        data += '   <option value="' + key + '" selected>' + value + '</option>';
+                                    } else {
+                                        data += '   <option value="' + key + '">' + value + '</option>';
+                                    }
+                                }
+                                data += '   </select>';
+                                return data;
+                            }
+                        }
+                    ]
+
+                });
+
+
+            }, error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+    }
+
+    function setUserInfoSave() {
+        var param = {};
+        param.email = userEmail;
+        var list = new Array();
+        var table = $('#resourceTable').DataTable();
+
+        var list = [];
+        //var index = 0;
+        var tableRetChk = true;
+        $("#resourceTable tbody").each(function() {
+            var tdLen = $(this).find("td").length;
+            var trLen = $(this).find("tr").length;
+
+            if(trLen == 0) {
+                return true;
+            }
+
+            var division = tdLen / trLen;
+
+            //console.log('trLen : ' + trLen);
+            //console.log('tdLen : ' + tdLen);
+            //console.log('division : ' + division);
+
+            for(var i=0; i < trLen; i++) {                                      // tr loop
+                var vo = new Object();                                          // vo to send to controller
+                var tr = $(this).find("tr").eq(i);                              // find tr value
+                vo.applyId = table.cells({ row: i, column: 0 }).data()[0];      // hidden value find, field[0]
+                //console.log(table.cells({ row: i, column: 0 }).data()[0]);
+                for(var j=0; j < division; j++) {                               // tr loop
+                    var child = tr.find("td").eq(j).children();                 // find td children value
+                    if(child.length != 0) {                                     // If children are present, search for child values
+                        var type = child[0].type;                               // type check
+                        if(type == 'checkbox') {
+                            vo.autoscalingYN = child.prop("checked");
+                            //console.log(child.prop("checked"));
+                        } else if(type == 'number') {
+                            if(child.val() == null || child.val() == '') {
+                                alert("임계치는 0 ~ 100 사이로 설정 가능합니다.");
+                                tableRetChk = false;
+                                return false;
+                            }
+                            var num = child.val() * 1;
+                            //console.log(num);
+                            vo.criticalValue = child.val()
+                            if(num < 0 || num > 100) {
+                                alert("임계치는 0 ~ 100 사이로 설정 가능합니다.");
+                                tableRetChk = false;
+                                return false;
+                            }
+                        } else if(type == 'select-one') {
+                            //console.log(child.val());
+                            vo.disksize = child.val()
+                        }
+                    } else {                                                   //  Find the current value if there are no children
+                        // vendor
+                        if(j == 0) {
+                            vo.cloud_vendor = $(this).find("td").eq(j).text(); // field[0] -> vendor
+                        // product
+                        } else if(j == 1) {
+                            vo.product = $(this).find("td").eq(j).text();      // field[1] -> product
+                        // country
+                        } else if(j == 2) {
+                            vo.country = $(this).find("td").eq(j).text();      // field[2] -> country
+                        }
+                    }
+                }
+                list.push(vo);
+            }
+        });
+
+        // resourceTable work result
+        if(tableRetChk == false) {
+            return;
+        }
+
+        param.list = list;
+        param.company = $('#companyInput').val();
+
+        $.ajax({
+            url: "/setUserInfoSave",
+            type: "POST",
+            dataType: 'json',
+            data: {
+                param: JSON.stringify(param)
+            },
+            success: function (data) {
+                if(data == true) {
+                    window.alert("업데이트에 성공했습니다.");
+                    location.reload();
+                } else {
+                    window.alert("업데이트에 실패했습니다.");
+                }
+
+            }, error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        })
+    }
+
+
+
+</script>
+
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <div th:insert="sidemenu.html :: side_menu"></div>
+
+
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+
+            <div th:insert="topmenu.html :: top_menu"></div>
+
+
+
+            <span id="userEmail" th:text="${session['email']}" hidden="true"> </span>
+            <!-- Page Heading -->
+            <!--<div class="d-sm-flex align-items-center justify-content-between mb-2">
+                <h1 class="h3 mb-0 text-gray-800" > 리소스 관리</h1>
+            </div>-->
+
+
+            <!-- Begin Page Content -->
+
+            <div class="container-fluid" >
+
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mt-4 mb-2">
+                    <h1 class="h3 mb-0 text-gray-800" th:text="#{label.resourceinfolist}"> </h1>
+                </div>
+
+                <div class="row">
+                    <!-- Area Chart -->
+                    <div class="col-xl-12 col-lg-10">
+                        <div class="card shadow mb-4">
+
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="card shadow h-100 py-2">
+                                    <!--<form method="post"  name ="modify" onsubmit="goData()">-->
+                                    <div class="modal-body">
+                                        <div class="row mb-3">
+                                            <div class="table-responsive" style="overflow:auto;">
+                                                <table class="table table-bordered" id="resourceTable" cellspacing="0">
+                                                    <thead style="text-align: center; position: sticky; top: 0px; ">
+                                                    <tr>
+                                                        <th rowspan="2" style="vertical-align : middle;text-align:center;">applyId</th>
+                                                        <th rowspan="2" style="vertical-align : middle;text-align:center;">Vendor</th>
+                                                        <th rowspan="2" style="vertical-align : middle;text-align:center;" th:text="#{label.product}"></th>
+                                                        <th rowspan="2" style="vertical-align : middle;text-align:center;" th:text="#{label.country}"></th>
+                                                        <th colspan="3" th:text="#{label.diskautoscaling}"></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th th:text="#{label.autoscaling}"></th>
+                                                        <th th:text="#{label.criticalvalue}"></th>
+                                                        <th th:text="#{label.extendedsize}"></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody style="text-align: center">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button class="btn btn-primary"  id ="userInfoSaveBtn" th:text="#{label.save}"></button>
+            </div>
+
+        </div>
+
+        <footer th:replace="mainfooter.html :: footer"></footer>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+</body>
+
+
+</html>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $(document).on('click', "#resourceTable input[type=checkbox]", function (){
+            var el = $(this).closest("tr").find("select");
+            //el.css("display", $(this).prop("checked") ? "" : "none");
+            el.css("visibility", $(this).prop("checked") ? "visible" : "hidden");
+        });
+    });
+</script>

@@ -38,6 +38,12 @@
                 <span  th:text="#{label.resourcemanagement}"></span></a>
         </li>
 
+        <li class="nav-item active" th:if="${session['rscgrp']} !=''">
+            <a class="nav-link" href="/productlist">
+                <i class="fas fa-fw fa-list"></i>
+                <span >보유리소스정보</span></a>
+        </li>
+
 
         <!-- Nav Item - Utilities Collapse Menu -->
         <li class="nav-item active">

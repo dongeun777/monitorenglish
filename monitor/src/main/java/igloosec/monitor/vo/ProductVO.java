@@ -15,6 +15,8 @@ public class ProductVO {
     private String region;
     private String regDate;
     private String productName;
+    private String rscgrp;
+
 
     public String getProd_id() {
         return prod_id;
@@ -102,5 +104,13 @@ public class ProductVO {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public String getRscgrp() {
+        return rscgrp;
+    }
+
+    public void setRscgrp(String rscgrp) {
+        this.rscgrp = rscgrp;
     }
 }

@@ -52,7 +52,7 @@
             (
                 SELECT cpu, ram
                 FROM azurecost a,(
-                    SELECT distinct vm_series_id FROM USER_LIST WHERE rscGrp = #{rscparam}
+                    SELECT distinct vm_series_id FROM product_apply WHERE rscgrp = #{rscparam}
                 ) b
                 WHERE a.id = b.vm_series_id
             ) b
@@ -65,8 +65,8 @@
     </select>
 
     <select id="selectUserVmIp" resultType="String" parameterType="String">
-        SELECT ipAddr FROM USER_LIST
-        WHERE rscGrp = #{rscGrp}
+        SELECT ipAddr FROM product_apply
+        WHERE rscgrp = #{rscGrp}
     </select>
 
     <insert id="insertDiskName" parameterType="ResourceVo">

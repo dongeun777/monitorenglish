@@ -123,6 +123,14 @@ public class HomeController {
         else return "deploy";
     }
 
+
+    @GetMapping("/productlist")
+    public String productlist(Model model, HttpSession session) {
+
+        if(session.getAttribute("email")==null) return "redirect:/";
+        else return "productlist";
+    }
+
     @GetMapping("/product")
     public String product(Model model, HttpSession session) {
 
