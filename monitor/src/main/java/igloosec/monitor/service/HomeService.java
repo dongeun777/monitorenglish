@@ -151,4 +151,12 @@ public class HomeService {
 
     public void insertToProduct(LeadsInfoVo parameter) { mapper.leadsToProduct(parameter);
     }
+
+    public void completeApplyLog(MemberVo param) {
+        mapper.completeApplyLog(param);
+    }
+
+    public void completeApplyLog2(MemberVo param) {
+        mapper.completeApplyLog2(param);
+    }
 }

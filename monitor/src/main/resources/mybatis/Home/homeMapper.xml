@@ -97,6 +97,16 @@
 
     </update>
 
+
+    <update id="completeApplyLog" parameterType="MemberVo">
+        update product_apply SET cost_type =#{costParam}  where email = #{email};
+
+    </update>
+
+    <update id="completeApplyLog2" parameterType="MemberVo">
+        update product_apply SET vm_series_id = #{id} where email = #{email};
+    </update>
+
     <update id="goBack" parameterType="String">
         update USER_LIST SET step = 0 where email = #{email};
 
@@ -185,7 +195,7 @@
         ,#{offerDisplayName}
         ,#{customerCountry}
         ,#{vendor}
-        ,(SELECT DATE_FORMAT(now(),'%Y%m%d%H%i%S'))
+        ,now()
         ,#{offerDisplayName}
         ,#{rscGrp}
         )

@@ -423,6 +423,7 @@ public class HomeController {
         param.setEmail(emailStr);
 
         homeService.completeLog(param);
+        homeService.completeApplyLog(param);
         session.setAttribute("step","1");
         return "redirect:/main";
     }
@@ -493,6 +494,7 @@ public class HomeController {
 
         param.setId(result.getId());
         homeService.completeLog2(param);
+        homeService.completeApplyLog2(param);
         session.setAttribute("step","2");
         return "redirect:/main";
     }

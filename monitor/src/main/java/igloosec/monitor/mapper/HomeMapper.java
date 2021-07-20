@@ -32,6 +32,9 @@ public interface HomeMapper {
 
     void completeLog(MemberVo memberVo);
     void completeLog2(MemberVo memberVo);
+    void completeApplyLog(MemberVo memberVo);
+    void completeApplyLog2(MemberVo memberVo);
+
     void goBack(String email);
     String selectSecretKey(MemberVo memberVo);
     String selectQrCord(MemberVo memberVo);
