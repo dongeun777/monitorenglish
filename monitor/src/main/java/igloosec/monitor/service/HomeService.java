@@ -95,6 +95,7 @@ public class HomeService {
     }
     public void goBack(String email) {
         mapper.goBack(email);
+        mapper.deleteChoice2(email);
     }
 
 

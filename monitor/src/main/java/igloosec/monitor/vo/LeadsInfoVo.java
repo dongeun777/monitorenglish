@@ -16,6 +16,8 @@ public class LeadsInfoVo {
     private String vendor;
     private String emailAddr;
     private String rscGrp;
+    private String vmId;
+    private String costType;
 
 
     /* customerInfo */
@@ -216,5 +218,21 @@ public class LeadsInfoVo {
 
     public void setRscGrp(String rscGrp) {
         this.rscGrp = rscGrp;
+    }
+
+    public String getVmId() {
+        return vmId;
+    }
+
+    public void setVmId(String vmId) {
+        this.vmId = vmId;
+    }
+
+    public String getCostType() {
+        return costType;
+    }
+
+    public void setCostType(String costType) {
+        this.costType = costType;
     }
 }

@@ -419,11 +419,28 @@ public class HomeController {
     public String completeLog(HttpSession session,MemberVo param) throws MessagingException, IOException {
         String emailStr = (String) session.getAttribute("email");
 
-
         param.setEmail(emailStr);
 
+        UsageVo shellParam = homeService.selectShellParam(emailStr);
+
+
+        String emailStr2 = emailStr.replace("@","");
+        emailStr2 = emailStr2.replace(".","");
+
+
+        LeadsInfoVo parameter = new LeadsInfoVo();
+        parameter.setRowKey(emailStr2);
+        parameter.setVendor(shellParam.getVendor());
+        parameter.setCustomerCountry(shellParam.getCountry());
+        parameter.setOfferDisplayName(shellParam.getProduct());
+        parameter.setEmailAddr(emailStr);
+        parameter.setRscGrp(emailStr2+"Rsg");
+
+        homeService.insertToProduct(parameter);
+
+
         homeService.completeLog(param);
-        homeService.completeApplyLog(param);
+        //homeService.completeApplyLog(param);
         session.setAttribute("step","1");
         return "redirect:/main";
     }
@@ -476,14 +493,6 @@ public class HomeController {
         result.setProduct(shellParam.getProduct());
         result.setVendor(shellParam.getVendor());
 
-        LeadsInfoVo parameter = new LeadsInfoVo();
-        parameter.setRowKey(emailStr);
-        parameter.setVendor(shellParam.getVendor());
-        parameter.setCustomerCountry(shellParam.getCountry());
-        parameter.setOfferDisplayName(shellParam.getProduct());
-        parameter.setEmailAddr(emailStr2);
-        parameter.setRscGrp(emailStr+"Rsg");
-        homeService.insertToProduct(parameter);
         try {
             shellVMcreate(result,emailStr2);
         } catch (IOException e) {
@@ -493,8 +502,9 @@ public class HomeController {
         }
 
         param.setId(result.getId());
+        //session.setAttribute("vmId",result.getId());
         homeService.completeLog2(param);
-        homeService.completeApplyLog2(param);
+        //homeService.completeApplyLog2(param);
         session.setAttribute("step","2");
         return "redirect:/main";
     }
