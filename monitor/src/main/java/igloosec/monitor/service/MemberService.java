@@ -146,10 +146,12 @@ public class MemberService implements UserDetailsService {
         //memberVo.setCompany(obj.get("company").getAsString());
 
         // update USER_LIST
+/*
         if(mapper.updateUserInfo(memberVo) == false) {
             logger.error("user info update failed : {}", memberVo.getEmail());
             return false;
         }
+*/
 
         // update disk_autoscaling
         JsonArray jsonArr = (JsonArray)obj.get("list");

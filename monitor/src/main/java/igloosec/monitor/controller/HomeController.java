@@ -198,7 +198,7 @@ public class HomeController {
             String secretKey = generateSecretKey();
             memberVo.setSecretkey(secretKey);
 
-            String email = "IGLOOSECURITY";
+            String email = "IGLOOSECURITY"+"("+memberVo.getEmail()+")";
             String barcodeUrl = getGoogleAuthenticatorBarCode(secretKey, email);
             memberVo.setQrcord(barcodeUrl);
 
@@ -440,7 +440,7 @@ public class HomeController {
 
 
         homeService.completeLog(param);
-        //homeService.completeApplyLog(param);
+        homeService.completeApplyLog(param);
         session.setAttribute("step","1");
         return "redirect:/main";
     }
@@ -504,7 +504,7 @@ public class HomeController {
         param.setId(result.getId());
         //session.setAttribute("vmId",result.getId());
         homeService.completeLog2(param);
-        //homeService.completeApplyLog2(param);
+        homeService.completeApplyLog2(param);
         session.setAttribute("step","2");
         return "redirect:/main";
     }
