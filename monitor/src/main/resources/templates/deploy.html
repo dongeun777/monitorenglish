@@ -277,8 +277,6 @@
     function completeLog() {
 
 
-        console.log($('input[name="costTotal"]:checked').val());
-
 
         $.ajax({
             url: "/completeLogP.do",
@@ -413,7 +411,7 @@
             url: "/getPeriod2.do",
             type: "GET",
             success: function (data) {
-                console.log(data.result);
+
                 if (data == 'Re3') {
                     document.getElementById("period").innerText = "3년 예약제 (~50% 할인)\n";
                     document.getElementById("costTotalBox2").hidden = true;
@@ -441,14 +439,14 @@
     }
 
     function getLogList() {
-        console.log("성공성공");
+
 
         //$('#logListTable').dataTable().ajax.reload();
         $.ajax({
             url: "/getLogList2.do",
             type: "GET",
             success: function (data) {
-                console.log("성공성공");
+
                 logtable = $('#logListTable').dataTable({
                     aaData: data,
                     destroy: true,
@@ -489,7 +487,6 @@
                     var dt = table.row(tr).data();
 
 
-                    console.log("del:" + dt.logid);
                     deleteLog(dt.logid);
                     //document.getElementById("emailChk").innerHTML=dt.email;
 
@@ -685,9 +682,9 @@
 
                     <li class="nav-item dropdown no-arrow">
 
-                        <span id="email" th:text="${session['email']}" hidden="false"> </span>
-                        <span id="pStep" hidden="false" th:text="${session['pStep']}"> </span>
-                        <span id="apply_id" hidden="flase" th:text="${session['apply_id']}"> </span>
+                        <span id="email" th:text="${session['email']}" hidden="true"> </span>
+                        <span id="pStep" hidden="true" th:text="${session['pStep']}"> </span>
+                        <span id="apply_id" hidden="true" th:text="${session['apply_id']}"> </span>
 
 
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"
