@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Controller
@@ -40,8 +43,15 @@ public class ProductController {
     @RequestMapping(value = "/InsertProduct")
     public String InsertProduct(ProductVO productVO, HttpSession session) {
 
+        Date today = new Date();
+        Locale currentLocale = new Locale("KOREAN", "KOREA");
+        String pattern = "yyyyMMddHHmm";
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern,
+                currentLocale);
+
+
         String emailStr = (String) session.getAttribute("email");
-        productVO.setApply_id(emailStr + UUID.randomUUID().toString().replace("-",""));
+        productVO.setApply_id(emailStr + formatter.format(today));
         productVO.setEmail(emailStr);
         session.setAttribute("pStep",0);
         session.setAttribute("apply_id",productVO.getApply_id());
