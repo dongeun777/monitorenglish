@@ -35,4 +35,6 @@ public interface MemberMapper {
     boolean updateUserInfo(MemberVo memberVo);
 
     boolean updateUserDiskAutoscaling(MemberVo updateList);
+
+    List<MemberVo> selectProductList();
 }

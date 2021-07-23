@@ -152,7 +152,9 @@ public class ScheduleService {
     public void getResourceInfo() {
         //logger.info("[DISK PULLING] Start getting disk information");
         // 전체 유저 리소스그룹 조회
-        List<MemberVo> list = memberMapper.selectMemberList();
+        //List<MemberVo> list = memberMapper.selectMemberList();
+        List<MemberVo> list = memberMapper.selectProductList();
+
 
         HttpRequest request = new HttpRequest();
 

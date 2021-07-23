@@ -45,7 +45,7 @@ public class ProductController {
 
         Date today = new Date();
         Locale currentLocale = new Locale("KOREAN", "KOREA");
-        String pattern = "yyyyMMddHHmm";
+        String pattern = "yyyyMMddHHmmss";
         SimpleDateFormat formatter = new SimpleDateFormat(pattern,
                 currentLocale);
 

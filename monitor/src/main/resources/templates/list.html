@@ -77,7 +77,7 @@
                 $('#boardTable tbody').on('click', 'tr', function () {
                     var tr = $(this).closest('tr');
                     var dt = table.row(tr).data();
-                    console.log(dt);
+
 
                     location.href='/detail?bno=' + dt.bno;
 

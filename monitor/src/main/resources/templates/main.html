@@ -54,12 +54,18 @@
         //console.log();
 
         sessionRsc = document.getElementById("rscgrp").innerText;
+        sessionAuth = document.getElementById("auth").innerText;
         sessionStep = document.getElementById("step").innerText * 1;
 
         document.getElementById("div_load_image").hidden = true;
 
 
         if (sessionRsc != "") {
+
+            if (sessionAuth == "ROLE_ADMIN" ||sessionAuth == "ROLE_MANAGER" ){
+
+                $('#grpSelcet option[value=' + sessionRsc + ']').attr('selected', 'selected');
+            }
 
             document.getElementById("dashboard").hidden = false;
 
@@ -197,10 +203,6 @@
     let tempVal = 0;
     let logSumVal = 0;
 
-    function test() {
-
-        console.log("kor");
-    }
 
     function grpChange() {
 
@@ -470,7 +472,7 @@
     function completeLog() {
 
 
-        console.log($('input[name="costTotal"]:checked').val());
+
 
 
         $.ajax({
@@ -514,7 +516,7 @@
 
 
     function selectData() {
-        //console.log($("#grpSelcet option:selected").val());
+
         clearChart();
         getChatdata($("#grpSelcet option:selected").val());
         getMeterSum($("#grpSelcet option:selected").val());
@@ -524,14 +526,14 @@
     }
 
     function selectData2() {
-        //console.log($("#grpSelcet option:selected").val());
+
         clearChart();
         getChatdata($("#grpSelcet2 option:selected").val());
         getMeterSum($("#grpSelcet2 option:selected").val());
         getMeterDetailList($("#grpSelcet2 option:selected").val());
         getUsageList($("#grpSelcet2 option:selected").val());
         getResourceUsage($("#grpSelcet2 option:selected").val());
-        console.log($("#grpSelcet2 option:selected").val());
+
 
     }
 
@@ -628,7 +630,7 @@
             url: "/getPeriod.do",
             type: "GET",
             success: function (data) {
-                console.log(data.result);
+
                 if (data == 'Re3') {
                     document.getElementById("period").innerText = "3년 예약제 (~50% 할인)\n";
                     document.getElementById("costTotalBox2").hidden = true;
@@ -704,7 +706,7 @@
                     var dt = table.row(tr).data();
 
 
-                    console.log("del:" + dt.logid);
+
                     deleteLog(dt.logid);
                     //document.getElementById("emailChk").innerHTML=dt.email;
 
@@ -1389,7 +1391,7 @@
                 <!-- Topbar Navbar -->
                 <ul class="navbar-nav ml-auto">
                     <!-- Nav Item - User Information -->
-                    <li class="nav-item" style="margin-top: 3px;" onclick="test()">
+                    <li class="nav-item" style="margin-top: 3px;" >
                         <a href="/main?lang=ko-kr" class="text-gray-400" data-th-text="#{label.lang.ko}"></a>
                     </li>
                     <div class="topbar-divider d-none d-sm-block" style="height: calc(4.375rem - 3rem);"></div>
@@ -1401,6 +1403,7 @@
 
                         <span id="email" th:text="${session['email']}" hidden="true"> </span>
                         <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
+                        <span id="auth" hidden="true" th:text="${session['auth']}"> </span>
                         <span id="step" hidden="true" th:text="${session['step']}"> </span>
                         <span id="lang" hidden="true" th:text="${session['lang']}"> </span>
 
@@ -1439,7 +1442,7 @@
                                 id="grpSelcet" onchange="grpChange()"
                                 style="border-top-right-radius: .35rem;border-bottom-right-radius: .35rem;">
 
-                            <option value="tm5SArsg" th:text="#{label.customerchoice}"></option>
+                            <option value="" th:text="#{label.customerchoice}"></option>
 
                             <option th:each="itemData : ${grpList}" th:value="${itemData.rscGrp}"
                                     th:text="${itemData.email}"></option>

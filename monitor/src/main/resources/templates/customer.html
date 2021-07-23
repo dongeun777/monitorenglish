@@ -13,7 +13,7 @@
 
         if(month <10) month= '0'+month;
 
-        console.log(month);
+
         getCustomerList();
 
 
@@ -70,7 +70,7 @@
                 $('#userTable tbody').on('click', 'tr', function () {
                     var tr = $(this).closest('tr');
                     var dt = table.row(tr).data();
-                    console.log("rscGrp:" + dt.rscGrp);
+
 
 
                     $.ajax({
@@ -88,6 +88,21 @@
                     });
 
 
+
+                });
+
+
+                $('#userTable tbody').on('mouseenter', 'tr', function () {
+
+                    $(this).closest('tr').css('color','blue');
+                    $(this).closest('tr').css('cursor','pointer');
+
+
+                });
+
+                $('#userTable tbody').on('mouseleave', 'tr', function () {
+
+                    $(this).closest('tr').css('color','black');
 
                 });
 

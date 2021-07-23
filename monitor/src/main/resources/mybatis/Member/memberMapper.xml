@@ -46,6 +46,12 @@
     </select>
 
 
+    <select id="selectProductList" resultType="MemberVo">
+        SELECT rscgrp as rscGrp,ipAddr
+        FROM product_apply
+    </select>
+
+
     <update id="updatePw" parameterType="MemberVo">
         update USER_LIST SET passwd = #{passwd} where email = #{email};
 
