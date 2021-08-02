@@ -136,6 +136,7 @@
     <select id="getGrpList"  resultType="MemberVo">
         SELECT rscGrp,company,email
         FROM USER_LIST
+        where rscGrp !=''
 
     </select>
 

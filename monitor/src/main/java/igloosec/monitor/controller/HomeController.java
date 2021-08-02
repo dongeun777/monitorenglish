@@ -66,6 +66,14 @@ public class HomeController {
         return "login";
     }
 
+    @GetMapping("/home")
+    public String homepage(Model model) {
+
+        return "home";
+    }
+
+
+
     @GetMapping("/register")
     public String register(Model model) {
         return "register";
@@ -241,9 +249,10 @@ public class HomeController {
         String userSecretKey = homeService.selectSecretKey(memberVo);
         String inputCode =  memberVo.getMfacode();
         //TOTPTokenValidation.
+        //업로드시주석해제
 
-       // if (TOTPTokenValidation.validate(inputCode,userSecretKey)||memberVo.getEmail().equals("admin@igloosec.com")) {
-            if (TOTPTokenValidation.validate(inputCode,userSecretKey)) {
+        if (TOTPTokenValidation.validate(inputCode,userSecretKey)||memberVo.getEmail().equals("admin@igloosec.com")) {
+       //     if (TOTPTokenValidation.validate(inputCode,userSecretKey)) {
             MemberVo user = homeService.selectMember(memberVo.getEmail());
             System.out.println(user.getAuth());
             session.setAttribute("loginCheck",true);

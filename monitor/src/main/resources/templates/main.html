@@ -1317,8 +1317,22 @@
                 <span th:text="#{label.costmanagement}"></span></a>
         </li>
 
-
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+               aria-expanded="true" aria-controls="collapseUtilities">
+                <i class="fas fa-fw fa-wrench"></i>
+                <span th:text="#{label.resourcemanagement}"></span>
+            </a>
+            <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="/resource" th:text="#{label.resourcemanagement}"></a>
+                    <a class="collapse-item" href="/productlist">보유리소스관리</a>
+                </div>
+            </div>
+        </li>
+
+  <!--      <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/resource">
                 <i class="fas fa-fw fa-chart-pie"></i>
                 <span th:text="#{label.resourcemanagement}"></span></a>
@@ -1330,7 +1344,7 @@
             <a class="nav-link" href="/productlist">
                 <i class="fas fa-fw fa-list"></i>
                 <span >보유리소스정보</span></a>
-        </li>
+        </li>-->
 
 
         <!-- Nav Item - Utilities Collapse Menu -->
