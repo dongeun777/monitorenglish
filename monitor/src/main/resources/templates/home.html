@@ -1,108 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>IGLOO SECURITY CLOUD</title>
-        <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        <!-- Bootstrap icons-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="css/styles.css" rel="stylesheet" />
-    </head>
-    <body class="d-flex flex-column">
-        <main class="flex-shrink-0">
-            <!-- Navigation-->
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <div class="container px-5">
-                    <a class="navbar-brand" href="index.html"  style="background: url(image/homelogo.png) no-repeat;  background-position: center; background-size: contain; width: 270px; height: 70px;" ></a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">소개</a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
-                                    <li><a class="dropdown-item" href="/home">회사소개</a></li>
-                                    <li><a class="dropdown-item" href="#">제품소개</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item"><a class="nav-link" href="#">솔루션</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Q&A</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">가이드센터</a></li>
 
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-            <!-- Page Content-->
-            <section class="py-5">
-                <div class="container px-5">
-                    <h1 class="fw-bolder fs-5 mb-4">Contents</h1>
-                    <div class="card border-0 shadow rounded-3 overflow-hidden">
+<div th:insert="homeheader.html :: homeHeader"></div>
 
-                    </div>
-                </div>
-            </section>
-            <section class="py-5 bg-light">
-                <div class="container px-5">
-                    <div class="row gx-5">
-                        <div class="col-xl-8">
-                            <h2 class="fw-bolder fs-5 mb-4">News</h2>
-                            <!-- News item-->
+<body class="d-flex flex-column">
+<main class="flex-shrink-0">
+    <!-- Navigation-->
+    <div th:insert="homemenu.html :: homeMenu"></div>
 
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-            <!-- Blog preview section-->
-            <section class="py-5">
-                <div class="container px-5">
-                    <h2 class="fw-bolder fs-5 mb-4">제품정보</h2>
-                    <div class="row gx-5">
-                        <div class="col-lg-4 mb-5">
-                            <div class="card h-100 shadow border-0">
-                                <img class="card-img-top" src="image/spidertm.PNG" alt="..." style="width:50%; margin-left: 20px;" />
-                                <div class="card-body p-4">
-
-                                    <a class="text-decoration-none link-dark stretched-link" target="_blank" href="https://azuremarketplace.microsoft.com/en-us/marketplace/apps/1592878437854.igloosec_tm5?tab=Overview"><div class="h5 card-title mb-3">SPiDER TM V5.5 for Azure</div></a>
-                                    <p class="card-text mb-0">SPiDER TM is a SIEM(Security Information & Event Management) solution with 20 years of experience of Managed Security Services and Big data capabilities from IGLOO SECURITY.</p>
-                                </div>
-
-                            </div>
-                        </div>
-
-
-                    </div>
-<!--                    <div class="text-end mb-5 mb-xl-0">
-                        <a class="text-decoration-none" href="#!">
-                            More stories
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>-->
-                </div>
-            </section>
-        </main>
-        <!-- Footer-->
-        <footer class="bg-dark py-4 mt-auto">
-            <div class="container px-5">
-                <div class="row align-items-center justify-content-between flex-column flex-sm-row">
-                    <div class="col-auto"><div class="small m-0 text-white">Copyright &copy; IGLOO SECURITY 2021</div></div>
-                    <div class="col-auto">
-                        <a class="link-light small" href="/policy">Privacy</a>
-                        <span class="text-white mx-1">&middot;</span>
-                        <a class="link-light small" href="#">Contact</a>
+    <!-- Page Content-->
+    <header class="py-5">
+        <div class="container px-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xxl-6">
+                    <div class="text-center my-5">
+                        <h1 class="fw-bolder mb-3" style="font-size: 70px">One Step Ahead</h1>
+                        <p class="lead fw-normal text-muted mb-10">IGLOO Cloud는 한번의 클릭으로 솔루션 배포/구축/운영을 자동화시스템으로 제공합니다.
+                            또한 Cloud의 장점을 살려 안정적이고 체계적인 클라우드 환경에 최적화된 Sass형 서비스를 제공합니다.</p>
+                        <div><img class="img-fluid rounded mb-5 mb-lg-0"
+                                  src="http://www.igloosec.co.kr/images/intro/bg_overview.jpg" alt="..."/></div>
+                        <a class="btn btn-primary btn-lg" style="margin-top: 20px" href="#scroll-target">Read our
+                            story</a>
                     </div>
                 </div>
             </div>
-        </footer>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
-    </body>
+        </div>
+    </header>
+    <!-- About section one-->
+    <section class="py-5 bg-light" id="scroll-target">
+        <div class="container px-5 my-5">
+            <div class="row gx-5 align-items-center">
+                <div class="col-lg-6"><img class="img-fluid rounded mb-5 mb-lg-0"
+                                           src="https://dummyimage.com/600x400/343a40/6c757d" alt="..."/></div>
+                <div class="col-lg-6">
+                    <h2 class="fw-bolder">클라우드 환경에 최적화된 솔루션</h2>
+                    <p class="lead fw-normal text-muted mb-0"> 클라우드 환경에 최적화된 형태로 설계되어 필요 시 수분 내 시스템 처리량을 증가시킬 수 있는 확장성과
+                        서비스 장애에 대비한 가용성을 보장합니다. 또한 Cloud를 통해 고객은 원하는 만큼만 솔루션을 사용하고 손쉽게 관리하며, 온프레미스 및 클라우드 침해 위협에 맞설 수
+                        있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- About section two-->
+    <section class="py-5">
+        <div class="container px-5 my-5">
+            <div class="row gx-5 align-items-center">
+                <div class="col-lg-6 order-first order-lg-last"><img class="img-fluid rounded mb-5 mb-lg-0"
+                                                                     src="https://dummyimage.com/600x400/343a40/6c757d"
+                                                                     alt="..."/></div>
+                <div class="col-lg-6">
+                    <h2 class="fw-bolder">자동 배포 및 간단한 설치</h2>
+                    <p class="lead fw-normal text-muted mb-0">별도의 설치 과정 필요 없이 자동 배포로 솔루션을 배포하고 있으며, 멀티테넌시 기능을 통해 여러 고객들이
+                        리소스 자원을 공유하여 효율적으로 비용을 관리하는 방법을 제공할 뿐만 아니라 구독 모델을 통해 별도의 설치과정 없이 낮은 비용으로 솔루션을 사용할 수 있습니다. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Team members section-->
+    <!--            <section class="py-5 bg-light">-->
+    <!--                <div class="container px-5 my-5">-->
+    <!--                    <div class="text-center">-->
+    <!--                        <h2 class="fw-bolder">Our team</h2>-->
+    <!--                        <p class="lead fw-normal text-muted mb-5">Dedicated to quality and your success</p>-->
+    <!--                    </div>-->
+    <!--                    <div class="row gx-5 row-cols-1 row-cols-sm-2 row-cols-xl-4 justify-content-center">-->
+    <!--                        <div class="col mb-5 mb-5 mb-xl-0">-->
+    <!--                            <div class="text-center">-->
+    <!--                                <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />-->
+    <!--                                <h5 class="fw-bolder">Ibbie Eckart</h5>-->
+    <!--                                <div class="fst-italic text-muted">Founder &amp; CEO</div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                        <div class="col mb-5 mb-5 mb-xl-0">-->
+    <!--                            <div class="text-center">-->
+    <!--                                <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />-->
+    <!--                                <h5 class="fw-bolder">Arden Vasek</h5>-->
+    <!--                                <div class="fst-italic text-muted">CFO</div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                        <div class="col mb-5 mb-5 mb-sm-0">-->
+    <!--                            <div class="text-center">-->
+    <!--                                <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />-->
+    <!--                                <h5 class="fw-bolder">Toribio Nerthus</h5>-->
+    <!--                                <div class="fst-italic text-muted">Operations Manager</div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                        <div class="col mb-5">-->
+    <!--                            <div class="text-center">-->
+    <!--                                <img class="img-fluid rounded-circle mb-4 px-4" src="https://dummyimage.com/150x150/ced4da/6c757d" alt="..." />-->
+    <!--                                <h5 class="fw-bolder">Malvina Cilla</h5>-->
+    <!--                                <div class="fst-italic text-muted">CTO</div>-->
+    <!--                            </div>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </section>-->
+</main>
+<!-- Footer-->
+<div th:insert="homefooter.html :: homeFooter"></div>
+</body>
 </html>
