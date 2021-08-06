@@ -3,23 +3,30 @@ package igloosec.monitor.controller;
 import com.google.gson.Gson;
 import com.sun.mail.smtp.SMTPSaslAuthenticator;
 import igloosec.monitor.CommonUtil;
+import igloosec.monitor.ImportPay;
 import igloosec.monitor.TOTPTokenValidation;
 import igloosec.monitor.service.HomeService;
 import igloosec.monitor.service.MemberService;
 import igloosec.monitor.service.ResourceService;
+import igloosec.monitor.vo.GetTokenVO;
 import igloosec.monitor.vo.LeadsInfoVo;
 import igloosec.monitor.vo.MemberVo;
 import igloosec.monitor.vo.UsageVo;
 import org.apache.commons.codec.binary.Base32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.mail.*;
 import javax.mail.Transport;
@@ -37,6 +44,8 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+
+
 
 
 @Controller
@@ -70,6 +79,25 @@ public class HomeController {
     public String homepage(Model model) {
 
         return "home";
+    }
+
+
+    @GetMapping("/homefaq")
+    public String homefaq(Model model) {
+
+        return "homefaq";
+    }
+
+
+    @GetMapping("/homesolution")
+    public String homesolution(Model model) {
+
+        return "homesolution";
+    }
+    @GetMapping("/payment")
+    public String payment(Model model) {
+
+        return "payment";
     }
 
 
@@ -273,6 +301,46 @@ public class HomeController {
     public String googleUrl(MemberVo memberVo) {
         String userQrCord = homeService.selectQrCord(memberVo);
         return userQrCord;
+    }
+
+
+
+    private ImportPay pay;
+
+    @ResponseBody
+    @RequestMapping(value = "/paymentTest.do")
+    public String paymentTest() {
+
+//
+//        String token = pay.getToken();
+//        Gson str = new Gson();
+//        token = token.substring(token.indexOf("response") + 10);
+//        token = token.substring(0, token.length() - 1);
+//
+//        GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
+//
+//        String access_token = vo.getAccess_token();
+//        System.out.println(access_token);
+
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth("ff7f4967b20b877d7872d11f470fc66b072509d9");
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("customer_uid", "seungyongshiniglooseccom222222");
+        map.put("merchant_uid", "please1111111");
+        map.put("amount", "1");
+        map.put("name", "test");
+
+        Gson var = new Gson();
+        String json = var.toJson(map);
+        System.out.println(json);
+        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+
+        return restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/again", entity, String.class);
     }
 
     @ResponseBody
@@ -962,7 +1030,6 @@ public class HomeController {
 
     }
     public void sendregistermail(String email,String firstPasswd)  throws MessagingException {
-
 
 
         String host = "outlook.office365.com";
