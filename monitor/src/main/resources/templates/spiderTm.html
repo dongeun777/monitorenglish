@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<div th:insert="homeheader.html :: homeHeader"></div>
+
+
+<body class="d-flex flex-column">
+<main class="flex-shrink-0">
+    <!-- Navigation-->
+    <div th:insert="homemenu.html :: homeMenu"></div>
+
+    <!-- Page Content-->
+    <body class="d-flex flex-column h-100">
+    <main class="flex-shrink-0">
+        <!-- Navigation-->
+
+        <header class="bg-dark py-5">
+            <div class="container px-5">
+                <div class="row gx-5 align-items-center justify-content-center">
+                    <div class="col-lg-8 col-xl-7 col-xxl-6">
+                        <div class="my-5 text-center text-xl-start">
+                            <h1 class="display-5 fw-bolder text-white mb-2">비즈니스에 즉시 적용 가능한 솔루션</h1>
+                            <p class="lead fw-normal text-white-50 mb-4">SPiDER TM on Cloud은 최초 탐지부터 로그/네트워크 패킷 분석까지 일원화된 관제 환경 구성을 통해 관제업무의 기민성과 효율성을 높이는 동시에 인프라 전반에 대한 완벽한 가시성을 확보합니다.</p>
+                            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+                                <a class="btn btn-primary btn-lg px-4 me-sm-3" href="https://azuremarketplace.microsoft.com/en-us/marketplace/apps/1592878437854.igloosec_tm5?tab=Overview">Get Started</a>
+                                <a class="btn btn-outline-light btn-lg px-4" href="#features">자세히</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img class="img-fluid rounded-3 my-5" src="/image/SPIDERTM2.png" alt="..." /></div>
+                </div>
+            </div>
+        </header>
+        <!-- Features section-->
+        <section class="py-5" id="features">
+            <div class="container px-10 my-5">
+                <div class="row gx-5">
+                    <div class="col-lg-6 mb-5 mb-lg-0">
+                        <h2 class="fw-bolder mb-0">클라우드 환경에 최적화된 SIEM</h2>
+                        <img class="img-fluid rounded-3 my-5" src="image/tmSIEM.png" alt="..." />
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row gx-5 row-cols-1 row-cols-md-2">
+                            <div class="col mb-5 h-100">
+                                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
+                                <h2 class="h5">가용성</h2>
+                                <p class="mb-0">클라우드 환경에 최적화된 형태로 설계되어 필요 시 수분 내 시스템 처리량을 증가시킬 수 있는 확장성과 서비스 장애에 대비한 가용성을 보장</p>
+                            </div>
+                            <div class="col mb-5 h-100">
+                                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
+                                <h2 class="h5">멀티테넌시 기능 지원</h2>
+                                <p class="mb-0">여러 고객들이 리소스 자원을 공유하여 효율적으로 비용을 관리하는 방법을 제공</p>
+                            </div>
+                            <div class="col mb-5 mb-md-0 h-100">
+                                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                                <h2 class="h5">관리</h2>
+                                <p class="mb-0">구독 모델을 통해 별도의 설치과정 없이 낮은 비용으로 고객이 원하는 만큼만  솔루션을 효울적으로 사용하고 손쉽게 관리가능</p>
+                            </div>
+                            <div class="col h-100">
+                                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                                <h2 class="h5">보안</h2>
+                                <p class="mb-0">온 프레미스 및 클라우드 침해 위협에 대응 가능 ++내용 추가</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-5 bg-light" id="features2">
+            <div class="container px-10 my-5">
+                <div class="row gx-5">
+                    <div class="col-lg-6 mb-5 mb-lg-0 order-first order-lg-last">
+                        <h2 class="fw-bolder mb-0">SPiDER TM DASHBOARD</h2>
+                        <img class="img-fluid rounded-3 my-5" src="image/TMdashboard.png" alt="..." />
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row gx-5 row-cols-1 row-cols-md-2">
+                            <div class="col mb-5 h-100">
+                                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
+                                <h2 class="h5">보안 관제</h2>
+                                <p class="mb-0">최초 탐지부터 로그/네트워크 패킷 분석까지 일원화된 관제 환경 구성</p>
+                            </div>
+                            <div class="col mb-5 h-100">
+                                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
+                                <h2 class="h5">가시성</h2>
+                                <p class="mb-0">관제업무의 기민성과 효율성을 높이는 동시에 인프라 전반에 대한 완벽한 가시성을 확보</p>
+                            </div>
+                            <div class="col mb-5 mb-md-0 h-100">
+                                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                                <h2 class="h5">로그 수집 및 분석</h2>
+                                <p class="mb-0">모든 로그 및 네트워크 패킷 데이터를 실시간으로 수집, 저장하고 이를 유해 IP, 악성 URL 등의 최신 외부 위협정보와 연계 분석</p>
+                            </div>
+                            <div class="col h-100">
+                                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                                <h2 class="h5">위협 차단 및 예방</h2>
+                                <p class="mb-0">각종 위협요소들을 보다 빠르고 효과적으로 탐지, 차단하고 예방</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog preview section-->
+        <section class="py-5">
+            <div class="container px-5 my-5">
+                <div class="row gx-5 justify-content-center">
+                    <div class="col-lg-8 col-xl-6">
+                        <div class="text-center">
+                            <h2 class="fw-bolder">From our blog</h2>
+                            <p class="lead fw-normal text-muted mb-5">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque fugit ratione dicta mollitia. Officiis ad.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row gx-5">
+                    <div class="col-lg-4 mb-5">
+                        <div class="card h-100 shadow border-0">
+                            <img class="card-img-top" src="https://dummyimage.com/600x350/ced4da/6c757d" alt="..." />
+                            <div class="card-body p-4">
+                                <div class="badge bg-primary bg-gradient rounded-pill mb-2">News</div>
+                                <a class="text-decoration-none link-dark stretched-link" href="#!"><h5 class="card-title mb-3">Blog post title</h5></a>
+                                <p class="card-text mb-0">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            </div>
+                            <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                <div class="d-flex align-items-end justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
+                                        <div class="small">
+                                            <div class="fw-bold">Kelly Rowan</div>
+                                            <div class="text-muted">March 12, 2021 &middot; 6 min read</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-5">
+                        <div class="card h-100 shadow border-0">
+                            <img class="card-img-top" src="https://dummyimage.com/600x350/adb5bd/495057" alt="..." />
+                            <div class="card-body p-4">
+                                <div class="badge bg-primary bg-gradient rounded-pill mb-2">Media</div>
+                                <a class="text-decoration-none link-dark stretched-link" href="#!"><h5 class="card-title mb-3">Another blog post title</h5></a>
+                                <p class="card-text mb-0">This text is a bit longer to illustrate the adaptive height of each card. Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            </div>
+                            <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                <div class="d-flex align-items-end justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
+                                        <div class="small">
+                                            <div class="fw-bold">Josiah Barclay</div>
+                                            <div class="text-muted">March 23, 2021 &middot; 4 min read</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-5">
+                        <div class="card h-100 shadow border-0">
+                            <img class="card-img-top" src="https://dummyimage.com/600x350/6c757d/343a40" alt="..." />
+                            <div class="card-body p-4">
+                                <div class="badge bg-primary bg-gradient rounded-pill mb-2">News</div>
+                                <a class="text-decoration-none link-dark stretched-link" href="#!"><h5 class="card-title mb-3">The last blog post title is a little bit longer than the others</h5></a>
+                                <p class="card-text mb-0">Some more quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            </div>
+                            <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                <div class="d-flex align-items-end justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
+                                        <div class="small">
+                                            <div class="fw-bold">Evelyn Martinez</div>
+                                            <div class="text-muted">April 2, 2021 &middot; 10 min read</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <div th:insert="homefooter.html :: homeFooter"></div>
+    </body>
+</html>
