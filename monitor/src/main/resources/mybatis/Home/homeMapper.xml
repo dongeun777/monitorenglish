@@ -221,6 +221,10 @@
         delete from product_apply where email = #{email};
     </delete>
 
+    <select id="getPaymentGroup" resultType="MemberVo" >
+        select rscGrp,email from product_apply
+        where payment_id ='Y'
+    </select>
 
 
 </mapper>

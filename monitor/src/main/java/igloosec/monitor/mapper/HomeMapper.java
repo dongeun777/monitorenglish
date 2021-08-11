@@ -67,4 +67,6 @@ public interface HomeMapper {
     void deleteChoice1(String email);
 
     void deleteChoice2(String email);
+
+    List<MemberVo> getPaymentGroup();
 }

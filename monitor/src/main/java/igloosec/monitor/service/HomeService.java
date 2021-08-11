@@ -160,4 +160,7 @@ public class HomeService {
     public void completeApplyLog2(MemberVo param) {
         mapper.completeApplyLog2(param);
     }
+
+    public List<MemberVo> getPaymentGroup() { return mapper.getPaymentGroup();
+    }
 }

@@ -40,6 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -98,6 +99,12 @@ public class HomeController {
     public String payment(Model model) {
 
         return "payment";
+    }
+
+    @GetMapping("/spiderTm")
+    public String spiderTm(Model model) {
+
+        return "spiderTm";
     }
 
 
@@ -279,7 +286,7 @@ public class HomeController {
         //TOTPTokenValidation.
         //업로드시주석해제
 
-        if (TOTPTokenValidation.validate(inputCode,userSecretKey)||memberVo.getEmail().equals("admin@igloosec.com")) {
+        if (TOTPTokenValidation.validate(inputCode,userSecretKey)||memberVo.getEmail().equals("dongeun.kim@igloosec.com")) {
        //     if (TOTPTokenValidation.validate(inputCode,userSecretKey)) {
             MemberVo user = homeService.selectMember(memberVo.getEmail());
             System.out.println(user.getAuth());
@@ -311,36 +318,74 @@ public class HomeController {
     @RequestMapping(value = "/paymentTest.do")
     public String paymentTest() {
 
-//
-//        String token = pay.getToken();
-//        Gson str = new Gson();
-//        token = token.substring(token.indexOf("response") + 10);
-//        token = token.substring(0, token.length() - 1);
-//
-//        GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
-//
-//        String access_token = vo.getAccess_token();
-//        System.out.println(access_token);
 
 
+        //token 생성
         RestTemplate restTemplate = new RestTemplate();
 
+        //서버로 요청할 Header
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth("ff7f4967b20b877d7872d11f470fc66b072509d9");
+
 
         Map<String, Object> map = new HashMap<>();
-        map.put("customer_uid", "seungyongshiniglooseccom222222");
-        map.put("merchant_uid", "please1111111");
-        map.put("amount", "1");
-        map.put("name", "test");
+        map.put("imp_key", "1117314894269411");
+        map.put("imp_secret", "4MVoXXO470Ns6eh1JwDE0MPLmAVGQ10VOVkMT9Q19DtgRLiAhVfhI434FYLw0LsPHMBAWrB645mWQFx7");
+
 
         Gson var = new Gson();
-        String json = var.toJson(map);
-        System.out.println(json);
-        HttpEntity<String> entity = new HttpEntity<>(json, headers);
+        String json=var.toJson(map);
+        //서버로 요청할 Body
 
-        return restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/again", entity, String.class);
+        HttpEntity<String> entity = new HttpEntity<>(json,headers);
+        String token = restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
+
+        //String token = pay.getToken();
+        Gson str = new Gson();
+        token = token.substring(token.indexOf("response") + 10);
+        token = token.substring(0, token.length() - 1);
+
+        GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
+
+        String access_token = vo.getAccess_token();
+        System.out.println(access_token);
+
+
+        //결제 정보 가져오기
+        List<MemberVo> list = homeService.getPaymentGroup();
+        System.out.println(list.get(0).getRscGrp());
+
+
+
+        RestTemplate restTemplate2 = new RestTemplate();
+
+        HttpHeaders headers2 = new HttpHeaders();
+        headers2.setContentType(MediaType.APPLICATION_JSON);
+        headers2.setBearerAuth(access_token);
+
+
+        Date date_now = new Date(System.currentTimeMillis());
+        SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
+
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("customer_uid", "test123");
+        //map2.put("merchant_uid", fourteen_format.format(date_now).toString());
+        map2.put("merchant_uid", "11111");
+        map2.put("amount", "5000");
+        map2.put("name", "test");
+
+
+
+        Gson var2 = new Gson();
+        String json2 = var2.toJson(map2);
+        System.out.println(json2);
+        HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
+        //return restTemplate.postForObject("https://api.iamport.kr/subscribe/customers/ssy001", entity, String.class);
+
+        //System.out.println(restTemplate.getForObject("https://api.iamport.kr/subscribe/customers/ssy001", String.class));
+
+        //return restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity, String.class);
+        return restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
     }
 
     @ResponseBody
