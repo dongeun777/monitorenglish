@@ -222,8 +222,10 @@
     </delete>
 
     <select id="getPaymentGroup" resultType="MemberVo" >
-        select rscGrp,email from product_apply
-        where payment_id ='Y'
+        SELECT  b.email as email, round(SUM(costInBillingCurrency),0) as costInBillingCurrency FROM USED_AMOUNT a,product_apply b
+        WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING(now(),6,2)AND substring(DATE,7,10) =SUBSTRING(now(),1,4)
+          and resourceGroupName in ( select rscGrp from product_apply pa where payment_id ='Y')
+        GROUP BY resourceGroupName;
     </select>
 
 

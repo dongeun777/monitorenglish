@@ -333,6 +333,9 @@ public class HomeController {
         map.put("imp_secret", "4MVoXXO470Ns6eh1JwDE0MPLmAVGQ10VOVkMT9Q19DtgRLiAhVfhI434FYLw0LsPHMBAWrB645mWQFx7");
 
 
+        //map.put("imp_key", "8526978586250291");
+        //map.put("imp_secret", "EONJZvKP4Xs3KjACZSa0847VJ86Oyjuc7hV6MGWRDoUoHv1HnbHwfOsYXyNwRiIYzE5ml2dYq8n8DoP0");
+
         Gson var = new Gson();
         String json=var.toJson(map);
         //서버로 요청할 Body
@@ -353,7 +356,7 @@ public class HomeController {
 
         //결제 정보 가져오기
         List<MemberVo> list = homeService.getPaymentGroup();
-        System.out.println(list.get(0).getRscGrp());
+        System.out.println(list.get(0).getCostInBillingCurrency());
 
 
 
@@ -362,17 +365,24 @@ public class HomeController {
         HttpHeaders headers2 = new HttpHeaders();
         headers2.setContentType(MediaType.APPLICATION_JSON);
         headers2.setBearerAuth(access_token);
+        //headers2.setBearerAuth("dd8c18caf6cb16e058f90683e62e8258f2684b23");
 
 
         Date date_now = new Date(System.currentTimeMillis());
         SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
 
         Map<String, Object> map2 = new HashMap<>();
-        map2.put("customer_uid", "test123");
-        //map2.put("merchant_uid", fourteen_format.format(date_now).toString());
-        map2.put("merchant_uid", "11111");
-        map2.put("amount", "5000");
+        map2.put("customer_uid",list.get(0).getEmail());
+        map2.put("merchant_uid", fourteen_format.format(date_now).toString());
+        //map2.put("merchant_uid", "why");
+        //map2.put("amount", list.get(0).getCostInBillingCurrency());
+
+        map2.put("amount",  list.get(0).getCostInBillingCurrency());
         map2.put("name", "test");
+
+//        map2.put("card_number", "6258-0403-0426-9048");
+//        map2.put("expiry", "2023-03");
+//        map2.put("birth", "900104");
 
 
 
@@ -380,11 +390,7 @@ public class HomeController {
         String json2 = var2.toJson(map2);
         System.out.println(json2);
         HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
-        //return restTemplate.postForObject("https://api.iamport.kr/subscribe/customers/ssy001", entity, String.class);
-
-        //System.out.println(restTemplate.getForObject("https://api.iamport.kr/subscribe/customers/ssy001", String.class));
-
-        //return restTemplate.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity, String.class);
+       //return restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity2, String.class);
         return restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
     }
 

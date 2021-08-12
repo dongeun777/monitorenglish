@@ -24,14 +24,16 @@
         let IMP = window.IMP;
         IMP.init("imp75713203");
 
+       //IMP.init("imp76010426");
+
         IMP.request_pay({
-            pg : 'kcp', //KCP일반결제는 kcp이며, KCP빌링결제는 kcp_billing 으로 구분됩니다.
+            pg : 'kcp_billing', //KCP일반결제는 kcp이며, KCP빌링결제는 kcp_billing 으로 구분됩니다.
             pay_method : 'card', // 'card'만 지원됩니다.
             merchant_uid : new Date().getTime(),
             name : 'test',
             amount : 1000, // 결제창에 표시될 금액. 실제 승인이 이뤄지지는 않습니다. (PC에서는 가격이 표시되지 않음)
-            customer_uid : 'test123', //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다.
-            buyer_email : 'dongeun.kim@igloosec.com',
+            customer_uid : 'dongsilver1@gmail.com', //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다.
+            buyer_email : 'dongsilver1@gmail.com',
             buyer_name : '이글루시큐리티',
             buyer_tel : '02-1234-1234'
         }, function(rsp) {
