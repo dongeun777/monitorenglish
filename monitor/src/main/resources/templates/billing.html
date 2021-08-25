@@ -6,7 +6,7 @@
 
 
 <script type="text/javascript">
-    let sessionRsc =  "";
+    let sessionRsc = "";
 
 
     window.onload = function () {
@@ -25,27 +25,29 @@
 
         $('#datePicker').datepicker('setDate', 'today');
 
-        getCostList();
+        getBillingList();
 
     }
 
 
-    function getCostList() {
+    function getBillingList() {
 
         $.ajax({
-            url: "/getCostList.do",
+            url: "/getBillingList.do",
             type: "GET",
-            data: { rscparam: sessionRsc,
-                idate: $('#datePicker').val()
+            data: {
+                paydate: $('#datePicker').val()
             },
             success: function (data) {
                 tablelength = data.length;
                 var table = $('#userTable').dataTable({
                     aaData: data,
-                    dom : 'Bfrtip',
+                    dom: 'Bfrtip',
+                    pageLength: 12,
                     destroy: true,
-                    bPaginate: false,
+                    bPaginate: true,
                     bLengthChange: true,
+
                     bInfo: false,
                     bAutoWidth: false,
                     processing: true,
@@ -53,35 +55,20 @@
                     serverSide: false,
                     searching: false,
                     columns: [
-                        {data: "idate"},
-                        {data: "usage_data"},
-                        {data: "usage_cost"}
+                        {data: "email"},
+                        {data: "paydate"},
+                        {data: "resource"},
+                        {data: "log"},
+                        {data: "billingsum"}
+
                     ],
-                        columnDefs: [{
-                            targets: [1, 2], render: $.fn.dataTable.render.number(',')
-                        }],
+                    columnDefs: [{
+                        targets: [2, 3, 4], render: $.fn.dataTable.render.number(',')
+                    }],
                     buttons: [
                         'excel'
                     ]
                 });
-
-                console.log(tablelength);
-                var rows = document.getElementById("userTable").getElementsByTagName("tr");
-                sumUsage = 0;
-                sumMoney = 0;
-                for (var r = 1; r < tablelength + 1; r++) {
-                    var cells = rows[r].getElementsByTagName("td");
-
-                    var usage_cell = cells[1].innerText;
-                    console.log(usage_cell);
-                    usage_cell = usage_cell.replace(",","");
-                    sumUsage += usage_cell * 1;
-                    sumMoney += usage_cell * 1 ;
-
-
-                }
-
-                document.getElementById("usage").innerText = sumUsage / 1000 + "GB";
 
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -89,8 +76,6 @@
         });
 
     }
-
-
 
 
 </script>
@@ -113,53 +98,49 @@
             <div th:insert="topmenu.html :: top_menu"></div>
 
 
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
 
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800" >log처리량조회</h1>
+                    <h1 class="h3 mb-0 text-gray-800">청구금액조회</h1>
                     <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                 </div>
 
                 <div class="row">
-                    <div class="col-xl-12" style="background: left;">
-                        <div class="card  border-left-primary  shadow mb-1">
+                    <div class="col-xl-12 col-lg-10">
+                        <div class="card shadow mb-1">
                             <div class="input-group mt-2 ml-2 mb-2" style="width: 215px;">
                                 <span class="m-1 font-size-115 ml-1 mr-2">월별조회</span>
                                 <input type="text" id="datePicker" class="form-control"
                                        style="width:95px; height: 31px; border-top-left-radius: 0.3em; border-bottom-left-radius: 0.3em;">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button" onclick='getCostList()'>
+                                    <button class="btn btn-primary" type="button" onclick='getBillingList()'>
                                         <i class="fas fa-search fa-sm"></i>
                                     </button>
                                 </div>
                             </div>
-
-
-                            <div class="input-group mt-2 ml-2 mb-2" style="width: 250px;">
-                                <span class="h5 mb-0 font-weight-bold text-gray-800 ml-1">총 LOG처리량: </span>
-                                <div class="h5 mb-0  font-weight-bold text-gray-800 ml-1" id="usage"></div>
-                            </div>
                         </div>
                     </div>
+
                     <!-- Area Chart -->
-                    <div class="col-xl-12">
+                    <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
 
                             <!-- Card Body -->
-                            <div class="card-body"  style="height: 450px">
-                                <div class="card shadow h-100 py-2" >
-                                    <div class="table-responsive" style="overflow:auto;height: 100%">
-                                        <table class="table table-bordered" id="userTable" cellspacing="0" >
-                                            <thead style="text-align: center; position: sticky; top: 0px; background: white;">
+                            <div class="card-body">
+                                <div class="card shadow h-100 py-2">
+                                    <div class="table-responsive" style="overflow:auto; ">
+                                        <table class="table table-bordered" id="userTable" cellspacing="0">
+                                            <thead style="text-align: center; position: sticky; top: 0px; ">
                                             <tr>
 
-                                                <th th:text="#{label.date}"></th>
-                                                <th th:text="#{label.tmlog}"></th>
-                                                <th th:text="#{label.amount}"></th>
+                                                <th>email</th>
+                                                <th>청구월</th>
+                                                <th>리소스사용금액(원)</th>
+                                                <th>Log 사용금액(원)</th>
+                                                <th>합계(원)</th>
 
                                             </tr>
                                             </thead>
@@ -183,15 +164,19 @@
         </div>
 
         <footer th:replace="mainfooter.html :: footer"></footer>
+
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-        <script type="text/javascript"  src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
-        <script type="text/javascript"  src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script type="text/javascript"
+                src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
         <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
-        <style type= "text/css">
-            .buttons-excel  { color: #fff;
+
+
+        <style type="text/css">
+            .buttons-excel {
+                color: #fff;
                 background-color: #2e59d9;
                 border-color: #2653d4;
                 border: 1px solid transparent;
@@ -202,6 +187,7 @@
                 margin-left: 15px;
                 margin-right: 15px;
                 margin-top: 2px;
+                margin-bottom: 5px;
             }
 
 

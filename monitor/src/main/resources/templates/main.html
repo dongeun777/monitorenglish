@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
+
 <head th:replace="mainheader.html :: mainHead"></head>
 
 
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 <script type="text/javascript">
     //$.noConflict();
     // chart colors
@@ -46,7 +48,7 @@
     let parameterMonth = "";
     let sessionRsc = "";
     let sessionStep = 0;
-
+    let sessionEmail = "";
 
     window.onload = function () {
 
@@ -56,6 +58,8 @@
         sessionRsc = document.getElementById("rscgrp").innerText;
         sessionAuth = document.getElementById("auth").innerText;
         sessionStep = document.getElementById("step").innerText * 1;
+
+        sessionEmail = document.getElementById("email").innerText;
 
         document.getElementById("div_load_image").hidden = true;
 
@@ -203,6 +207,68 @@
     let tempVal = 0;
     let logSumVal = 0;
 
+    function billingReg(){
+
+        console.log("ttttttt");
+
+
+        console.log(sessionEmail);
+
+        let IMP = window.IMP;
+        IMP.init("imp75713203");
+
+        //IMP.init("imp76010426");
+
+        IMP.request_pay({
+            pg : 'kcp_billing', //KCP일반결제는 kcp이며, KCP빌링결제는 kcp_billing 으로 구분됩니다.
+            pay_method : 'card', // 'card'만 지원됩니다.
+            merchant_uid : new Date().getTime(),
+            name : 'Cloud Register',
+            amount : 0, // 결제창에 표시될 금액. 실제 승인이 이뤄지지는 않습니다. (PC에서는 가격이 표시되지 않음)
+            customer_uid : sessionEmail, //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다.
+            buyer_email :sessionEmail
+        }, function(rsp) {
+            if ( rsp.success ) {
+
+                var msg = '등록이 완료되었습니다.';
+                document.getElementById("paymentChk").innerText ="true";
+                msg += 'PG사: ' + rsp.customer_uid;
+
+                /*$.ajax({
+                    url: "/billingKey.do",
+                    type: "POST",
+                    contentType : "application/json",
+                    data: {
+                        customer_uid:"customer-test-id-0001"
+                    },
+
+                    success: function (data) {
+                        window.alert("완료되었습니다.");
+
+
+                    }
+                })*/
+
+
+                $.ajax({
+                    url: "/monthlyBilling.do",
+                    type: "POST",
+                    success: function (data) {
+                        alert("정기결제 완료");
+                    }, error: function (request, status, error) {
+                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                    }
+                });
+
+
+            } else {
+                //alert('빌링키 발급 실패');
+            }
+        });
+
+
+        console.log("ssssssssssss");
+    }
 
     function grpChange() {
 
@@ -270,8 +336,15 @@
     }
 
     function goAgreement() {
+
+        if(document.getElementById("paymentChk").innerText !="true") {
+            alert("결제정보를 입력하셔야 진행이 가능합니다.")
+            return;
+        }
         if ($('input:checkbox[id="agreement"]').is(":checked") == true) $('#checkDeploy').modal("show");
         else alert("동의하셔야 배포가 가능합니다.");
+        //document.getElementById("rscgrp").innerText;
+
 
     }
 
@@ -435,6 +508,36 @@
             type: "POST",
             success: function (data) {
                 location.reload();
+            }, error: function (request, status, error) {
+                console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+
+    }
+
+    function billingRegister() {
+
+        $.ajax({
+            url: "/billingRegister.do",
+            type: "POST",
+            data: {
+                card: document.getElementById("card").value,
+                expiry: document.getElementById("expiry").value,
+                birth: document.getElementById("birth").value
+            },
+            success: function (data) {
+                alert("등록이 완료되었습니다.")
+                document.getElementById("paymentChk").innerText ="true";
+                $.ajax({
+                    url: "/monthlyBilling.do",
+                    type: "POST",
+                    success: function (data) {
+                        alert("정기결제 테스트");
+                    }, error: function (request, status, error) {
+                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                    }
+                });
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -1276,6 +1379,10 @@
         });
 
     }
+
+
+
+
 </script>
 <body id="page-top">
 
@@ -1311,11 +1418,23 @@
         </li>
 
 
+
+
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
-            <a class="nav-link" href="/cost">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities2"
+               aria-expanded="true" aria-controls="collapseUtilities2">
                 <i class="fas fa-fw fa-money-check"></i>
-                <span th:text="#{label.costmanagement}"></span></a>
+                <span th:text="#{label.costmanagement}"></span>
+            </a>
+            <div id="collapseUtilities2" class="collapse" aria-labelledby="headingUtilities"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="/cost" >log처리량조회</a>
+                    <a class="collapse-item" href="/billing">청구금액조회</a>
+                </div>
+            </div>
         </li>
+
 
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
@@ -1420,6 +1539,8 @@
                         <span id="auth" hidden="true" th:text="${session['auth']}"> </span>
                         <span id="step" hidden="true" th:text="${session['step']}"> </span>
                         <span id="lang" hidden="true" th:text="${session['lang']}"> </span>
+
+                        <span id="paymentChk" hidden="true" >false</span>
 
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"
                            style="margin-right: -20px">
@@ -2120,11 +2241,18 @@
                         </div>
 
                         <div class="col-xl-4 col-lg-12 col-md-12" style="margin-left: -20px;" id="registerLog4">
+
+
+
+
+
                             <div class="card shadow h-100 py-2">
                                 <div class="card-header"><span class="text-dark ml-4"
                                                                style="color: black; font-size: 20px; font-weight: bold; "> TM 배포 동의</span>
 
                                 </div>
+
+
 
                                 <div class="card-body">
                                     <div class="card shadow py-2" style="height: 80%;">
@@ -2152,6 +2280,8 @@
 
 
                                     <div>
+
+                                        <button class="btn btn-primary mt-1" onclick='billingReg()'>결제정보입력</button>
 
 
                                         <button class="btn btn-primary mt-1"
@@ -2246,6 +2376,51 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="billingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="billingModalLabel">결제정보를 입력해주세요</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <!--<div class="modal-body">LOGOUT 하시겠습니까?</div>-->
+
+                <div class="modal-body">
+
+
+                    <div>
+                        <label for="card">카드 번호 </label>
+                        <input class="form-control" id="card" type="text" name="card_number" placeholder="XXXX-XXXX-XXXX-XXXX">
+                    </div>
+                    <div>
+                        <label for="expiry">카드 유효기간 </label>
+                        <input class="form-control" id="expiry" type="text" name="expiry"  placeholder="YYYY-MM">
+                    </div>
+                    <div>
+                        <label for="birth">생년월일 </label>
+                        <input class="form-control"  id="birth" type="text" name="birth" placeholder="YYMMDD">
+                    </div>
+
+
+
+                </div>
+
+
+                <div class="modal-footer">
+                    <a class="btn btn-primary" onclick="billingRegister()">등록</a>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
 
     <div class="modal fade" id="checkDeploy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">

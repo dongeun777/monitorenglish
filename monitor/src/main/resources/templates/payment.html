@@ -30,14 +30,38 @@
             pg : 'kcp_billing', //KCP일반결제는 kcp이며, KCP빌링결제는 kcp_billing 으로 구분됩니다.
             pay_method : 'card', // 'card'만 지원됩니다.
             merchant_uid : new Date().getTime(),
-            name : 'test',
-            amount : 1000, // 결제창에 표시될 금액. 실제 승인이 이뤄지지는 않습니다. (PC에서는 가격이 표시되지 않음)
-            customer_uid : 'dongsilver1@gmail.com', //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다.
-            buyer_email : 'dongsilver1@gmail.com',
+            name : 'Cloud Register',
+            amount : 0, // 결제창에 표시될 금액. 실제 승인이 이뤄지지는 않습니다. (PC에서는 가격이 표시되지 않음)
+            customer_uid : 'osbiz@igloosec.com', //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다.
+            buyer_email : 'osbiz@igloosec.com',
             buyer_name : '이글루시큐리티',
             buyer_tel : '02-1234-1234'
         }, function(rsp) {
             if ( rsp.success ) {
+
+                var msg = '결제가 완료되었습니다.';
+                msg += 'PG사: ' + rsp.pg_provider;
+
+                console.log(rsp);
+
+
+
+
+                /*$.ajax({
+                    url: "/billingKey.do",
+                    type: "POST",
+                    contentType : "application/json",
+                    data: {
+                        customer_uid:"customer-test-id-0001"
+                    },
+
+                    success: function (data) {
+                        window.alert("완료되었습니다.");
+
+
+                    }
+                })*/
+
 
             } else {
                 //alert('빌링키 발급 실패');
@@ -127,11 +151,8 @@ function test(){
                                             <label for="birth">생년월일 YYMMDD</label>
                                             <input id="birth" type="text" name="birth">
                                         </div>
-                                        <div>
-                                            <label for="pwd_2digit">카드 비밀번호 앞 두자리 XX</label>
-                                            <input id="pwd_2digit" type="text" name="pwd_2digit">
-                                        </div>
-                                        <input hidden type="text" value="gildong_0001_1234" name="customer_uid">
+
+
                                         <input type="submit" value="결제하기">
                                     </form>
 

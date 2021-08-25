@@ -25,10 +25,20 @@
 
 
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
-            <a class="nav-link" href="/cost">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities2"
+               aria-expanded="true" aria-controls="collapseUtilities2">
                 <i class="fas fa-fw fa-money-check"></i>
-                <span th:text="#{label.costmanagement}"> </span></a>
+                <span th:text="#{label.costmanagement}"></span>
+            </a>
+            <div id="collapseUtilities2" class="collapse" aria-labelledby="headingUtilities"
+                 data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="/cost" >log처리량조회</a>
+                    <a class="collapse-item" href="/billing">청구금액조회</a>
+                </div>
+            </div>
         </li>
+
 
 
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
@@ -72,6 +82,7 @@
                 <i class="fas fa-fw fa-search"></i>
                 <span th:text="#{label.customerinfo}"></span></a>
         </li>
+
 
         <li class="nav-item active">
             <a class="nav-link" href="/list">

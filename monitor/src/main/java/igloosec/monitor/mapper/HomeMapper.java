@@ -1,9 +1,6 @@
 package igloosec.monitor.mapper;
 
-import igloosec.monitor.vo.ConfigVo;
-import igloosec.monitor.vo.LeadsInfoVo;
-import igloosec.monitor.vo.MemberVo;
-import igloosec.monitor.vo.UsageVo;
+import igloosec.monitor.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -69,4 +66,8 @@ public interface HomeMapper {
     void deleteChoice2(String email);
 
     List<MemberVo> getPaymentGroup();
+
+    List<BillingVo> getBillingList(BillingVo param);
+
+    void insertBilling(BillingVo temp);
 }

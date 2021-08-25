@@ -1,9 +1,7 @@
 package igloosec.monitor.service;
 
 import igloosec.monitor.mapper.HomeMapper;
-import igloosec.monitor.vo.LeadsInfoVo;
-import igloosec.monitor.vo.MemberVo;
-import igloosec.monitor.vo.UsageVo;
+import igloosec.monitor.vo.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -162,5 +160,11 @@ public class HomeService {
     }
 
     public List<MemberVo> getPaymentGroup() { return mapper.getPaymentGroup();
+    }
+
+    public List<BillingVo> getBillingList(BillingVo param) { return mapper.getBillingList(param);
+    }
+
+    public void insertBilling(BillingVo temp) { mapper.insertBilling(temp);
     }
 }

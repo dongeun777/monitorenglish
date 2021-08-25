@@ -223,10 +223,37 @@
 
     <select id="getPaymentGroup" resultType="MemberVo" >
         SELECT  b.email as email, round(SUM(costInBillingCurrency),0) as costInBillingCurrency FROM USED_AMOUNT a,product_apply b
-        WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING(now(),6,2)AND substring(DATE,7,10) =SUBSTRING(now(),1,4)
+        WHERE a.resourceGroupName = b.rscGrp
           and resourceGroupName in ( select rscGrp from product_apply pa where payment_id ='Y')
         GROUP BY resourceGroupName;
     </select>
+
+    <select id="getBillingList" resultType="BillingVo"  parameterType="BillingVo" >
+        select email, paydate, resource, log, billingsum
+        from billing
+        where paydate = #{paydate}
+    </select>
+
+
+    <insert id="insertBilling" parameterType="BillingVo">
+        INSERT INTO billing(
+                                  email
+                                 ,paydate
+                                 ,resource
+                                 ,log
+                                 ,billingsum
+        )
+        VALUES
+        (
+            #{email}
+        ,#{paydate}
+        ,#{resource}
+        ,#{log}
+        ,#{billingsum}
+        )
+
+    </insert>
+
 
 
 </mapper>
