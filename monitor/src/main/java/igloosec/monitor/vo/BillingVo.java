@@ -4,12 +4,16 @@ public class BillingVo {
     private String card;
     private String expiry;
     private String birth;
+    private String pg;
+    private String billingtype;
+
 
     private String email;
     private String paydate;
     private String resource;
     private String log;
     private String billingsum;
+
 
 
     public String getCard() {
@@ -76,5 +80,21 @@ public class BillingVo {
 
     public void setBillingsum(String billingsum) {
         this.billingsum = billingsum;
+    }
+
+    public String getPg() {
+        return pg;
+    }
+
+    public void setPg(String pg) {
+        this.pg = pg;
+    }
+
+    public String getBillingtype() {
+        return billingtype;
+    }
+
+    public void setBillingtype(String billingtype) {
+        this.billingtype = billingtype;
     }
 }

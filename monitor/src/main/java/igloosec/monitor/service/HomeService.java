@@ -167,4 +167,7 @@ public class HomeService {
 
     public void insertBilling(BillingVo temp) { mapper.insertBilling(temp);
     }
+
+    public void updateUserPg(BillingVo param) { mapper.updateUserPg(param);
+    }
 }

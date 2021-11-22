@@ -403,73 +403,28 @@ public class HomeController {
     }
 
 
-    @ResponseBody
-    @RequestMapping(value = "/billingKey.do")
-    public String billingKey(BillingVo param, HttpSession session) {
 
-
-
-        //token 생성
-        RestTemplate restTemplate = new RestTemplate();
-
-        //서버로 요청할 Header
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("imp_key", "1117314894269411");
-        map.put("imp_secret", "4MVoXXO470Ns6eh1JwDE0MPLmAVGQ10VOVkMT9Q19DtgRLiAhVfhI434FYLw0LsPHMBAWrB645mWQFx7");
-
-
-        Gson var = new Gson();
-        String json=var.toJson(map);
-        //서버로 요청할 Body
-
-        HttpEntity<String> entity = new HttpEntity<>(json,headers);
-        String token = restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
-
-        //String token = pay.getToken();
-        Gson str = new Gson();
-        token = token.substring(token.indexOf("response") + 10);
-        token = token.substring(0, token.length() - 1);
-
-        GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
-
-        String access_token = vo.getAccess_token();
-        System.out.println(access_token);
-
-
-
-
-        RestTemplate restTemplate2 = new RestTemplate();
-
-        HttpHeaders headers2 = new HttpHeaders();
-        headers2.setContentType(MediaType.APPLICATION_JSON);
-        headers2.setBearerAuth(access_token);
-
-
+    @PostMapping("/billingKey.do")
+    public String billingKey(BillingVo param) {
+        homeService.updateUserPg(param);
 
         Date date_now = new Date(System.currentTimeMillis());
         SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
+        String paydate = fourteen_format.format(date_now).toString();
 
-        Map<String, Object> map2 = new HashMap<>();
-        map2.put("customer_uid","dongsilver1@gmail.com");
-
-
-        //map2.put("amount",  list.get(0).getCostInBillingCurrency());
-        map2.put("customer_email", "dongsilver1@gmail.com");
-        map2.put("card_number", "6258-0403-0426-9048");
-        map2.put("expiry", "2023-03");
-        map2.put("birth", "900104");
-
+        BillingVo temp = new BillingVo();
+        temp.setEmail(param.getEmail());
+        temp.setResource("0");
+        temp.setLog("0");
+        temp.setBillingsum("0");
+        temp.setPaydate(paydate.substring(0, 4) + "-" + paydate.substring(4, 6));
+        temp.setBillingtype("등록");
 
 
-        Gson var2 = new Gson();
-        String json2 = var2.toJson(map2);
-        System.out.println(json2);
-        HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
-        return restTemplate2.postForObject("https://api.iamport.kr/subscribe/customers/dongsilver1@gmail.com", entity2, String.class);
+        homeService.insertBilling(temp);
+
+        System.out.println("updateUserPg "+ param.getPg()+" "+ param.getEmail());
+        return "redirect:/main";
 
     }
 
@@ -558,6 +513,7 @@ public class HomeController {
                 temp.setLog("0");
                 temp.setBillingsum(Integer.toString((Integer.parseInt(list.get(i).getCostInBillingCurrency()) + Integer.parseInt("0"))));
                 temp.setPaydate(paydate.substring(0, 4) + "-" + paydate.substring(4, 6));
+                temp.setBillingtype("정기결제");
 
                 homeService.insertBilling(temp);
 

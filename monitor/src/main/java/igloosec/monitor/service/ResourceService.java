@@ -3,7 +3,6 @@ package igloosec.monitor.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.sun.jdi.VirtualMachine;
 import igloosec.monitor.CommonUtil;
 import igloosec.monitor.ConfigUtils;
 import igloosec.monitor.HttpRequest;

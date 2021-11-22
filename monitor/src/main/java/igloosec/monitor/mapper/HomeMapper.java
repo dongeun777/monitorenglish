@@ -70,4 +70,6 @@ public interface HomeMapper {
     List<BillingVo> getBillingList(BillingVo param);
 
     void insertBilling(BillingVo temp);
+
+    void updateUserPg(BillingVo param);
 }

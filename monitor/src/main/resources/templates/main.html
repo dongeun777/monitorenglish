@@ -232,33 +232,33 @@
 
                 var msg = '등록이 완료되었습니다.';
                 document.getElementById("paymentChk").innerText ="true";
-                msg += 'PG사: ' + rsp.customer_uid;
+                alert(msg);
 
-                /*$.ajax({
+                $.ajax({
                     url: "/billingKey.do",
                     type: "POST",
-                    contentType : "application/json",
                     data: {
-                        customer_uid:"customer-test-id-0001"
+                        pg:"test",
+                        email: sessionEmail
                     },
 
                     success: function (data) {
-                        window.alert("완료되었습니다.");
 
 
-                    }
-                })*/
 
-
-                $.ajax({
-                    url: "/monthlyBilling.do",
-                    type: "POST",
-                    success: function (data) {
-                        alert("정기결제 완료");
-                    }, error: function (request, status, error) {
-                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
                     }
                 });
+
+                /*
+                                $.ajax({
+                                    url: "/monthlyBilling.do",
+                                    type: "POST",
+                                    success: function (data) {
+                                        alert("정기결제 완료");
+                                    }, error: function (request, status, error) {
+                                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                                    }
+                                });*/
 
 
             } else {
@@ -266,7 +266,20 @@
             }
         });
 
+        $.ajax({
+            url: "/billingKey.do",
+            type: "POST",
+            data: {
+                pg:"test",
+                email: sessionEmail
+            },
 
+            success: function (data) {
+                    console.log("test"+sessionEmail)
+
+
+            }
+        });
         console.log("ssssssssssss");
     }
 
@@ -1429,7 +1442,7 @@
             <div id="collapseUtilities2" class="collapse" aria-labelledby="headingUtilities"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="/cost" >log처리량조회</a>
+                    <a class="collapse-item" href="/cost" hidden ="true">log처리량조회</a>
                     <a class="collapse-item" href="/billing">청구금액조회</a>
                 </div>
             </div>
@@ -2134,8 +2147,8 @@
 
                                             <div class="text-dark ml-4 mr-4 "
                                                  style="font-size: 15px; font-weight: normal; ">TM License
-                                                비용을 제외한 Azure사용에
-                                                대한 월별 금액이며, 사용량이나 환율에 따라 변경될 수 있습니다.
+                                                비용을 포함한 Azure사용에
+                                                대한 월별 금액이며, 환율에 따라 변경될 수 있습니다.
                                             </div>
                                         </div>
 

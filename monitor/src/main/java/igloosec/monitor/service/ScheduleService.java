@@ -20,13 +20,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Component
 public class ScheduleService {
@@ -38,13 +44,16 @@ public class ScheduleService {
     public final HomeMapper homeMapper;
     public final ResourceMapper resourceMapper;
     public final ResourceService resourceService;
+    public final HomeService homeService;
 
-    public ScheduleService(ScheduleMapper mapper, MemberMapper memberMapper, HomeMapper homeMapper, ResourceMapper resourceMapper, ResourceService resourceService) {
+
+    public ScheduleService(ScheduleMapper mapper, MemberMapper memberMapper, HomeMapper homeMapper, ResourceMapper resourceMapper, ResourceService resourceService, HomeService homeService) {
         this.mapper = mapper;
         this.memberMapper = memberMapper;
         this.homeMapper = homeMapper;
         this.resourceMapper = resourceMapper;
         this.resourceService = resourceService;
+        this.homeService = homeService;
     }
 
     @Value("${azure.marketplace.account.name}")
@@ -208,6 +217,98 @@ public class ScheduleService {
         ConfigUtils.setConfig(list);
 
         logger.info("[SET CONFIG] config settings [{}]", list.size());
+    }
+
+
+    @Scheduled(cron = "0 0/5 * * * *")
+    //@Scheduled(cron = "0 5 1 * * *")
+    public void payment() {
+
+
+
+        //token 생성
+        RestTemplate restTemplate = new RestTemplate();
+
+        //서버로 요청할 Header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("imp_key", "1117314894269411");
+        map.put("imp_secret", "4MVoXXO470Ns6eh1JwDE0MPLmAVGQ10VOVkMT9Q19DtgRLiAhVfhI434FYLw0LsPHMBAWrB645mWQFx7");
+
+
+        //map.put("imp_key", "8526978586250291");
+        //map.put("imp_secret", "EONJZvKP4Xs3KjACZSa0847VJ86Oyjuc7hV6MGWRDoUoHv1HnbHwfOsYXyNwRiIYzE5ml2dYq8n8DoP0");
+
+        Gson var = new Gson();
+        String json=var.toJson(map);
+        //서버로 요청할 Body
+
+        HttpEntity<String> entity = new HttpEntity<>(json,headers);
+        String token = restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
+
+        //String token = pay.getToken();
+        Gson str = new Gson();
+        token = token.substring(token.indexOf("response") + 10);
+        token = token.substring(0, token.length() - 1);
+
+        GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
+
+        String access_token = vo.getAccess_token();
+        System.out.println(access_token);
+
+
+        //결제 정보 가져오기
+        List<MemberVo> list = homeService.getPaymentGroup();
+        RestTemplate restTemplate2 =null;
+
+        if (list != null) {
+
+            for (int i = 0 ; i < list.size(); i++) {
+
+                restTemplate2 = new RestTemplate();
+
+                HttpHeaders headers2 = new HttpHeaders();
+                headers2.setContentType(MediaType.APPLICATION_JSON);
+                headers2.setBearerAuth(access_token);
+                //headers2.setBearerAuth("dd8c18caf6cb16e058f90683e62e8258f2684b23");
+
+
+                Date date_now = new Date(System.currentTimeMillis());
+                SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
+                String paydate = fourteen_format.format(date_now).toString();
+                Map<String, Object> map2 = new HashMap<>();
+                map2.put("customer_uid", list.get(i).getEmail());
+                map2.put("merchant_uid", list.get(i).getEmail()+fourteen_format.format(date_now).toString());
+                //map2.put("merchant_uid", "why")map2.put("amount", 100);
+                map2.put("amount", Integer.parseInt(list.get(i).getCostInBillingCurrency()));
+                map2.put("name", "Monthly Billing");
+
+                map2.put("buyer_email", list.get(i).getEmail());
+                BillingVo temp = new BillingVo();
+                temp.setEmail(list.get(i).getEmail());
+                temp.setResource(list.get(i).getCostInBillingCurrency());
+                temp.setLog("0");
+                temp.setBillingsum(Integer.toString((Integer.parseInt(list.get(i).getCostInBillingCurrency()) + Integer.parseInt("0"))));
+                temp.setPaydate(paydate.substring(0, 4) + "-" + paydate.substring(4, 6));
+                temp.setBillingtype("정기결제");
+                homeService.insertBilling(temp);
+
+
+                Gson var2 = new Gson();
+                String json2 = var2.toJson(map2);
+                System.out.println(json2);
+                HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
+                //return restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity2, String.class);
+                restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
+
+            }
+
+        }
+        logger.info("[Monthly Billing] End");
+
     }
 
 
