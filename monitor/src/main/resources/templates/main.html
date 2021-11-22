@@ -349,11 +349,11 @@
     }
 
     function goAgreement() {
-
+/*
         if(document.getElementById("paymentChk").innerText !="true") {
             alert("결제정보를 입력하셔야 진행이 가능합니다.")
             return;
-        }
+        }*/
         if ($('input:checkbox[id="agreement"]').is(":checked") == true) $('#checkDeploy').modal("show");
         else alert("동의하셔야 배포가 가능합니다.");
         //document.getElementById("rscgrp").innerText;
