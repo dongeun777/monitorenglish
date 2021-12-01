@@ -56,7 +56,8 @@ public class MemberService implements UserDetailsService {
         mapper.deleteUserDiskUsage(memberVo);
         mapper.deleteMember(memberVo);
         mapper.deleteEquipList(memberVo);
-        //mapper.deleteFedTable(memberVo);
+        mapper.deleteProductApplyList(memberVo);
+        mapper.deleteFedTable(memberVo);
     }
 
     public UsageVo setDeletePath(){

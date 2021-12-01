@@ -72,6 +72,10 @@
     <delete id="deleteFedTable" parameterType="MemberVo">
         drop table is_stats_${rscGrp};
     </delete>
+    <delete id="deleteProductApplyList" parameterType="MemberVo">
+        delete from product_apply where apply_id = #{rscGrp};
+    </delete>
+
 
     <select id="selectDeletePath" resultType="UsageVo">
         SELECT  pathStr, shellDeletecom

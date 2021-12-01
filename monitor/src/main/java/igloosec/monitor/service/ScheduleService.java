@@ -80,13 +80,13 @@ public class ScheduleService {
         if (os.contains("win")) {
             return;
         }
-
+        /*
         String ip = CommonUtil.getIp();
         //logger.info(ip + "/" + ConfigUtils.getConf("monitoringIp"));
         if(ip == null || ConfigUtils.getConf("monitoringIp") == null || ip.equals(ConfigUtils.getConf("monitoringIp")) == false) {
             return;
         }
-
+        */
         //logger.info("[LEADS PULLING] Start getting leads information");
 
         // Configure your storage connection string

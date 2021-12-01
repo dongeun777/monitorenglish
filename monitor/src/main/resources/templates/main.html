@@ -604,7 +604,7 @@
 
                 location.reload();
             }, error: function (request, status, error) {
-                resultChk--;
+                //resultChk--;
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
@@ -903,6 +903,7 @@
             }, error: function (request, status, error) {
                 //getUsageList();
                 location.reload();
+
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
