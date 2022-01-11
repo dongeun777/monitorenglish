@@ -5,15 +5,17 @@
 <mapper namespace="igloosec.monitor.mapper.CustomerMapper">
 
     <select id="selectMemberList" parameterType="UsageVo" resultType="MemberVo">
-        SELECT cloud_vendor,company, email,substring(auth,6,10) AS auth,substring(A.regDate,1,10) AS regDate,rscGrp,ipAddr,round(SUM(costInBillingCurrency),0) as costInBillingCurrency,
-                (select vmseries from azurecost where id =A.vm_series_id) as vmseries, (select totalSize from azurecost where id =A.vm_series_id) as disksize,
-            (SELECT sum(round(event_volume/1024/1024)) FROM ERD.tm_stats WHERE event_date LIKE  CONCAT('${paraYear}','-','${paraMonth}%') AND rscgrp =A.rscGrp group by rscgrp) as usage_data
-        FROM USER_LIST A, USED_AMOUNT B where A.rscGrp=B.resourceGroupName and substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' GROUP BY B.resourceGroupName;
+        SELECT (select cloud_vendor from USER_LIST ul where ul.email =A.email) as cloud_vendor,(select company from USER_LIST ul where ul.email =A.email) as company, email,(select substring(auth,6,10) from USER_LIST ul where ul.email =A.email) AS auth,substring(A.regDate,1,10) AS regDate,rscGrp,ipAddr,round(SUM(costInBillingCurrency),0) as costInBillingCurrency,
+               (select vmseries from azurecost where id =A.vm_series_id) as vmseries, (select totalSize from azurecost where id =A.vm_series_id) as disksize,
+               (SELECT sum(round(event_volume/1024/1024)) FROM ERD.tm_stats WHERE event_date LIKE  CONCAT('${paraYear}','-','${paraMonth}%') AND rscgrp =A.rscGrp group by rscgrp) as usage_data
+        FROM product_apply A, USED_AMOUNT B where A.rscGrp=B.resourceGroupName and substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' GROUP BY B.resourceGroupName;
+
 
     </select>
 
 
 
 </mapper>
+
 
 

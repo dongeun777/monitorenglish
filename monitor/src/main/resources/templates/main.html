@@ -118,11 +118,14 @@
             lastLabel = monthValLast + '월';
 
 
+
+            console.log(sessionRsc);
             getMeterSum(sessionRsc);
             getMeterDetailList(sessionRsc);
             getUsageList(sessionRsc);
-            setTimeout(getChatdata(sessionRsc), 1500);
             getResourceUsage(sessionRsc);
+            setTimeout(getChatdata(sessionRsc), 1500);
+
         } else {
 
 
@@ -1374,6 +1377,8 @@
     }
 
     function getResourceUsage(rscparam) {
+        $("#diskValue").text("0%");
+        $("#diskProgress").css({"width": "0%"});
         $.ajax({
             url: "/getResourceUsage.do",
             type: "GET",
@@ -1500,7 +1505,7 @@
                 <span>Q&A</span></a>
         </li>
 
-        <li class="nav-item active" th:if="${session['rscgrp']} !=''">
+        <li class="nav-item active" hidden="true" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/product">
                 <i class="fas fa-fw fa-plus"></i>
                 <span>제품추가</span></a>

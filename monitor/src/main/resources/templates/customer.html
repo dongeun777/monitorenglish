@@ -3,6 +3,8 @@
 
 <head th:replace="mainheader.html :: mainHead"></head>
 
+
+
 <script type="text/javascript">
     let year;
     let month;
@@ -14,7 +16,46 @@
         if(month <10) month= '0'+month;
 
 
-        getCustomerList();
+        $(function () {
+            // 실제로 보여지는 날짜를 정의.
+            $('#txt-work-month').text(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) );
+            // monthpicker 에서 사용할 초기 날짜 정의
+            $('#monthpicker').val(new Date().getFullYear() + '-' + (new Date().getMonth() + 1));
+            getCustomerList();
+            // monthpicker 적용
+            $('#monthpicker').bootstrapMonthpicker({
+                // from: '2014-05',
+                // to: '2014-10',
+                // 달을 선택한 다음의 이벤트 정의
+                onSelect: function(value) {
+                    var workMonthStr = '';
+                    /*
+                    * monthpicker 라이브러리에서 기본으로 "-" 를 사용
+                    **************************************/
+                    var splitDate = $.trim(value).split("-");
+
+                    // 표한하고 싶으신 포맷으로 알아서 정의하시면 됩니다.
+                    $.each(splitDate, function (_idx, _date) {
+                        if (_idx == 0)
+                            workMonthStr += _date + '-';
+                        if (_idx == 1)
+                            workMonthStr += _date ;
+                    });
+
+                    // 표시
+                    $('#txt-work-month').text(workMonthStr);
+                    getCustomerList();
+
+                }
+            });
+            // #choice-work-month 에 monthpicker 이벤트 정의
+            $('#choice-work-month').click(function () {
+                $('#monthpicker').click();
+            });
+        });
+
+
+        //getCustomerList();
 
 
     }
@@ -22,12 +63,14 @@
 
     function getCustomerList() {
 
+        let strArray = $('#monthpicker').val().split('-');
+
         $.ajax({
             url: "/getCustomerList.do",
             type: "GET",
             data: {
-                paraYear: year,
-                paraMonth: month
+                paraYear: strArray[0],
+                paraMonth: strArray[1]
             },
             success: function (data) {
 
@@ -37,6 +80,7 @@
                     bPaginate: false,
                     bLengthChange: true,
                     bInfo: false,
+                    destroy: true,
                     bAutoWidth: false,
                     processing: true,
                     ordering: true,
@@ -146,6 +190,23 @@
 
                 <div class="row">
 
+                    <div class="col-xl-12 col-lg-10">
+                        <div class="card shadow mb-1">
+                            <div class="input-group mt-2 ml-2 mb-2" style="width: 215px;" >
+                                <span class="m-1 font-size-115 ml-1 mr-2">월별조회</span>
+                                <span hidden="true" id ="txt-work-month"> </span>
+                                <input type="text" id="monthpicker" class="form-control"
+                                       style="width:95px; height: 31px; border-top-left-radius: 0.3em; border-bottom-left-radius: 0.3em;">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="button" onclick='getCustomerList()'>
+                                        <i class="fas fa-search fa-sm "></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <!-- Area Chart -->
                     <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-4">
@@ -196,6 +257,9 @@
 
 
             <footer th:replace="mainfooter.html :: footer"></footer>
+
+            <link href="css/bootstrap-monthpicker.css" rel="stylesheet">
+            <script type="text/javascript" src="js/bootstrap-monthpicker.js"></script>
 
         </div>
 
