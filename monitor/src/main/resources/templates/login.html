@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-
 <head th:replace="mainheader.html :: mainHead"></head>
 
 <script type="text/javascript">
 
+    let idcheck = "";
+    let code = "";
+
+    window.onload = function () {
+        let email = $('#email').text();
+        let pw = $('#pw').text();
+
+        let inputEle = document.getElementById('email2');
+        inputEle.placeholder = email;
+
+        let inputEle2 = document.getElementById('pw2');
+        inputEle2.placeholder = pw;
+    }
 
     function loginCheck() {
+        idcheck = $('#idcheck').text();
+
         $.ajax({
             url: "/login.do",
             type: "GET",
@@ -18,36 +32,26 @@
             },
             success: function (data) {
                 if(data == "idNull")
-                    window.alert("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.")
-
+                    window.alert(idcheck)
                 else{
                     if(data == "pwCheck") {
                         document.getElementById('pw2').value = "";
-                        window.alert("가입하지 않은 아이디이거나, 잘못된 비밀번호입니다.")
+                        window.alert(idcheck)
                     }
                     else if(data == "Success"){
-
                         getImage()
-
                         // $("#imgID").attr("src", data);
                         //
                         // document.getElementById("login").hidden = true;
                         // document.getElementById("mfa").hidden = false;
-
-
-
                     }
-
                 }
-
             }
         });
     }
 
-
     function getImage() {
         //console.log(document.getElementById('email2').value);
-
         $.ajax({
             url: "/getImage.do",
             type: "GET",
@@ -58,22 +62,15 @@
             success: function (data) {
                 $("#imgID").attr("src", data);
                 //console.log(data);
-
                 document.getElementById("login").hidden = true;
                 document.getElementById("mfa").hidden = false;
-
                 document.getElementById("mfaId").focus();
-
-
             }
         });
-
-
     }
 
-
-
     function googleVerify() {
+        code = $('#code').text();
 
         $.ajax({
             url: "/googleVerify.do",
@@ -84,32 +81,18 @@
             },
             success: function (data) {
                 if(data=='success' ) location.href="/main";
-                else window.alert("코드가 일치하지 않습니다.")
-
+                else window.alert(code)
             }
         });
     }
 
-
-
-
-
-
 </script>
 
-
-
-
 <body class="bg-gradient-primary">
-
-
 <div class="container">
-
     <!-- Outer Row -->
     <div class="row justify-content-center">
-
         <div class="col-xl-10 col-lg-12 col-md-9" id="login">
-
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-0">
                     <!-- Nested Row within Card Body -->
@@ -132,139 +115,98 @@
                                                id="pw2" placeholder="Password" onKeyPress="if (event.keyCode==13){loginCheck();}">
                                     </div>
                                     <div class="form-group">
-
                                     </div>
                                     <button class="btn btn-primary btn-user btn-block" id="button" onclick="loginCheck()">
                                         Login
                                     </button>
-
                                     <input name="${_csrf.parameterName}" type="hidden" value="${_csrf.token}">
-
+                                    <span id="idcheck" hidden="true" th:text="#{label.idcheck}"> </span>
+                                    <span id="email" hidden="true" th:text="#{label.email}"> </span>
+                                    <span id="pw" hidden="true" th:text="#{label.pw}"> </span>
                                 <a class="float-right mr-1" href="/reset" style="cursor: pointer" >Forgot password?</a>
                                 <div class="form-group" >
                                     <img src="/image/azure.png" style="height: 70px;">
                                 </div>
-                                
-
-
-
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
-
         </div>
 
-
-
         <div class="col-xl-5 col-lg-12 col-md-9" id="mfa" hidden="true">
-
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-3">
                     <!-- Nested Row within Card Body -->
-
-
                     <div class="row"  >
-
-
                         <div class="col-lg-12">
                             <div >
-
                                 <div class="mt-1">
                                     <h1 class="h4 text-gray-900 mb-2 font-weight-bold"  >Google OTP Code</h1>
                                 </div>
-
                                 <input  class="form-control form-control-user"
                                        id="mfaId"
                                        placeholder="Enter 6 codes..."  onKeyPress="if (event.keyCode==13){googleVerify();}">
-
                                 <button class="btn btn-primary btn-user btn-block" id="button2" onclick="googleVerify()">
                                     Verify
                                 </button>
-
                                 <div class="mt-4">
-
-                                    <h5 class="text-gray-900 mb-2"><i class="fas fa-qrcode"></i>OTP 설정방법</h5>
+                                    <h5 class="text-gray-900 mb-2" th:text="#{label.otp}"><i class="fas fa-qrcode" ></i></h5>
                                 </div>
-
-                                <span>1.Android: Google OTP 앱을 다운로드합니다.<br></span>
-                                <span> &nbsp;&nbsp;  iPhone: Google Authenticator 앱을 다운로드합니다.<br></span>
-                                <span>2.앱에서 계정설정을 선택합니다. <br></span>
-                                <span>3.바코드 스캔을 선택합니다. <br><br></span>
-                                <span>재가입한 회원의 경우, Google otp앱에 등록된 정보   <br></span>
-                                <span>삭제후 qrcode를 재등록하시기 바랍니다. <br></span>
-
+                                <span th:text="#{label.otp1}"></span><br>
+                                &nbsp;&nbsp;  <span th:text="#{label.otp2}"></span><br>
+                                <span th:text="#{label.otp3}"></span><br>
+                                <span th:text="#{label.otp4}"></span><br><br>
+                                <span th:text="#{label.otp5}"></span><br>
+                                <span th:text="#{label.otp6}"></span><br>
+                                <span id="code" hidden="true" th:text="#{label.code}"></span>
                                 <div class="text-center">
                                     <img  id="imgID" src="https://www.google.com/chart?chs=100x100&chld=M|0&cht=qr&chl=otpauth://totp/IGLOOSECURITY?secret=TRAAK43PKVDK2Y5IO7HLABG2J244RFTQ&issuer=IGLOOSECURITY">
                                 </div>
-
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
 
         <div class="col-xl-5 col-lg-12 col-md-9" id="reset" hidden="true">
-
             <div class="card o-hidden border-0 shadow-lg my-5">
                 <div class="card-body p-3">
                     <!-- Nested Row within Card Body -->
-
-
                     <div class="row"  >
-
-
                         <div class="col-lg-12">
                             <div >
-
                                 <div class="mt-1">
                                     <h1 class="h4 text-gray-900 mb-2 font-weight-bold"  >Forgot password?</h1>
                                 </div>
-
                                 <input  class="form-control form-control-user mb-1"
                                         id="nameID"
                                         placeholder="Name">
                                 <input  class="form-control form-control-user mb-3"
                                         id="emailID"
                                         placeholder="Email Address"  onKeyPress="if (event.keyCode==13){pwReset();}">
-
-
-
                                 <button class="btn btn-primary btn-user btn-block" id="button3" onclick="pwReset()">
                                     Password Reset
                                 </button>
-
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 </div>
 
 <!-- Bootstrap core JavaScript-->
 <script src="vendor/jquery/jquery.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 <!-- Core plugin JavaScript-->
 <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.min.js"></script>
 
 </body>
-
 
 <footer th:replace="mainfooter.html :: footer" ></footer>
 

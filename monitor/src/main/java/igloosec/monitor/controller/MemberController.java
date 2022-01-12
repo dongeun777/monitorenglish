@@ -76,7 +76,7 @@ public class MemberController {
         session.setAttribute("rscgrp",null);
         session.setAttribute("auth",null);*/
 
-        return "redirect:/";
+        return "redirect:/login";
     }
 
 
@@ -125,6 +125,11 @@ public class MemberController {
         } catch (InterruptedException e) {
 
         }
+
+        String emailStr = memberVo.getEmail();
+        String emailStr2 = emailStr.replace("@","");
+        emailStr2 = emailStr2.replace(".","");
+        memberVo.setApplyId(emailStr2);
 
         memberService.deleteUser(memberVo);
 

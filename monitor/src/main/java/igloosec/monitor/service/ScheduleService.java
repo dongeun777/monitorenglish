@@ -46,7 +46,6 @@ public class ScheduleService {
     public final ResourceService resourceService;
     public final HomeService homeService;
 
-
     public ScheduleService(ScheduleMapper mapper, MemberMapper memberMapper, HomeMapper homeMapper, ResourceMapper resourceMapper, ResourceService resourceService, HomeService homeService) {
         this.mapper = mapper;
         this.memberMapper = memberMapper;
@@ -154,6 +153,7 @@ public class ScheduleService {
         }
     }
 
+
     /**
      * resource data
      */
@@ -163,7 +163,6 @@ public class ScheduleService {
         // 전체 유저 리소스그룹 조회
         //List<MemberVo> list = memberMapper.selectMemberList();
         List<MemberVo> list = memberMapper.selectProductList();
-
 
         HttpRequest request = new HttpRequest();
 
@@ -198,11 +197,14 @@ public class ScheduleService {
         }
 
         // db update
-        mapper.insertResourceInfo(insertList);
+        if(insertList.size() != 0) { //
+            mapper.insertResourceInfo(insertList);
+        }
 
         //logger.info("[DISK PULLING] db update success");
         logger.info("[DISK PULLING] End getting disk information");
     }
+
 
     /**
      * config set
@@ -220,11 +222,10 @@ public class ScheduleService {
     }
 
 
-    @Scheduled(cron = "0 0/5 * * * *")
-    //@Scheduled(cron = "0 5 1 * * *")
+    //@Scheduled(cron = "0 0/5 * * * *")
+    //@Scheduled(cron = "0 5 1 * * *") // TCLOUD-54
+    @Scheduled(cron = "0 0 5 1  * *") // TCLOUD-54
     public void payment() {
-
-
 
         //token 생성
         RestTemplate restTemplate = new RestTemplate();
@@ -233,11 +234,9 @@ public class ScheduleService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-
         Map<String, Object> map = new HashMap<>();
         map.put("imp_key", "1117314894269411");
         map.put("imp_secret", "4MVoXXO470Ns6eh1JwDE0MPLmAVGQ10VOVkMT9Q19DtgRLiAhVfhI434FYLw0LsPHMBAWrB645mWQFx7");
-
 
         //map.put("imp_key", "8526978586250291");
         //map.put("imp_secret", "EONJZvKP4Xs3KjACZSa0847VJ86Oyjuc7hV6MGWRDoUoHv1HnbHwfOsYXyNwRiIYzE5ml2dYq8n8DoP0");
@@ -259,7 +258,6 @@ public class ScheduleService {
         String access_token = vo.getAccess_token();
         System.out.println(access_token);
 
-
         //결제 정보 가져오기
         List<MemberVo> list = homeService.getPaymentGroup();
         RestTemplate restTemplate2 =null;
@@ -274,7 +272,6 @@ public class ScheduleService {
                 headers2.setContentType(MediaType.APPLICATION_JSON);
                 headers2.setBearerAuth(access_token);
                 //headers2.setBearerAuth("dd8c18caf6cb16e058f90683e62e8258f2684b23");
-
 
                 Date date_now = new Date(System.currentTimeMillis());
                 SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -296,22 +293,16 @@ public class ScheduleService {
                 temp.setBillingtype("정기결제");
                 homeService.insertBilling(temp);
 
-
                 Gson var2 = new Gson();
                 String json2 = var2.toJson(map2);
                 System.out.println(json2);
                 HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
                 //return restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity2, String.class);
                 restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
-
             }
-
         }
         logger.info("[Monthly Billing] End");
-
     }
-
-
 
 
     /**

@@ -2,12 +2,7 @@
 
 <head th:replace="mainheader.html :: mainHead">
 
-
 </head>
-
-
-
-
 
 <script type="text/javascript">
     const map = {};
@@ -15,6 +10,9 @@
     let sessionRsc =  "";
 
     window.onload = function () {
+        let additional = $('#additional').text();
+        let estaddamount = $('#estaddamount').text();
+        let krw = $('#krw').text();
 
         sessionRsc = document.getElementById("rscgrp").innerText;
 
@@ -38,8 +36,8 @@
         checkDiskWork();
         $("#diskCapacity").change( function() {
             if($("#diskCapacity option:selected").val() != "none") {
-                var text = "디스크 확장 시 추가 요금이 발생 됩니다.\n" +
-                    $("#diskCapacity option:selected").text() + " 기준 추가 예상 금액 약 " + comma(map[this.value]) + "원 입니다.";
+                var text = additional +
+                    $("#diskCapacity option:selected").text() + " " + estaddamount + " " + comma(map[this.value]) + krw;
                 $("#estimatedAmount").text(text);
             } else {
                 $("#estimatedAmount").text("");
@@ -84,16 +82,15 @@
                          'excel'
                     ]
                 });
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
     }
 
     function getDiskUsage() {
         var btnId = 0;
+
         $.ajax({
             url: "/getDiskUsageList.do",
             type: "GET",
@@ -143,7 +140,6 @@
                             }
                         }
                     ]
-
                 });
 
                 var table = $('#diskTable').DataTable();
@@ -158,15 +154,14 @@
                         $('#deleteDiskModal').modal("show");
                     }
                 });
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
     }
 
     function getResourceUsage() {
+
         $.ajax({
             url: "/getResourceUsage.do",
             type: "GET",
@@ -185,7 +180,6 @@
                 if(data.usageDiskPer) {
                     $('#diskVal').text(data.total + "GB / " + data.usageDiskPer);
                 }
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -193,6 +187,7 @@
     }
 
     function getDiskPrice() {
+
         $.ajax({
             url: "/getDiskPrice.do",
             type: "GET",
@@ -207,10 +202,12 @@
     }
 
     function diskExpansion() {
+        let seldiskcapacity = $('#seldiskcapacity').text();
+
         var diskSize = $("#diskCapacity option:selected").val();
 
         if(diskSize == 'none') {
-            window.alert('디스크 용량을 선택해 주세요.');
+            window.alert(seldiskcapacity);
             return;
         } else {
             $('#checkExpansion').modal("hide");
@@ -234,6 +231,7 @@
         stateChange(true);
 
         var retVal;
+
         $.ajax({
             url: "/requestExpansionShell",
             type: "POST",
@@ -248,11 +246,11 @@
                 console.log("requestExpansionShell code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
         return retVal;
     }
 
     function waitDiskExpansionComplete(retVal) {
+
         $.ajax({
             url: "/waitDiskExpansionComplete",
             type: "POST",
@@ -271,6 +269,7 @@
     }
 
     function diskRemove() {
+
         $('#deleteDiskModal').modal("hide");
         // disk expansion shell request
         var retVal = requestRemoveShell();
@@ -285,13 +284,13 @@
                 location.reload();
             }
         }, 1000);
-
     }
 
     function requestRemoveShell() {
         stateChange(true);
 
         var retVal;
+
         $.ajax({
             url: "/requestRemoveShell",
             type: "POST",
@@ -308,11 +307,11 @@
                 console.log("requestRemoveShell code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
         return retVal;
     }
 
     function waitDiskRemoveComplete(retVal) {
+
         $.ajax({
             url: "/waitDiskRemoveComplete",
             type: "POST",
@@ -343,13 +342,12 @@
             str += num.substring(point, point + 3);
             point += 3;
         }
-
         return str;
-
     }
 
     function checkDiskWork() {
         var retVal;
+
         $.ajax({
             url: "/checkDiskWork",
             type: "POST",
@@ -362,12 +360,10 @@
                 // false - not working, true - working
                 stateChange(data);
                 retVal = data;
-
             }, error: function (request, status, error) {
                 console.log("checkDiskWork code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
         return retVal;
     }
 
@@ -393,10 +389,9 @@
             $('#expansionBtn').hide();
             $('#progressWork').show();
         }
-
     }
-</script>
 
+</script>
 
 <body id="page-top">
 <!-- Page Wrapper -->
@@ -404,33 +399,28 @@
     <div th:insert="sidemenu.html :: side_menu"></div>
     <span id="diskNameChk"  hidden="true"></span>
     <span id="partitionNameChk"  hidden="true"></span>
-
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
-
             <div th:insert="topmenu.html :: top_menu"></div>
-
-
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800" th:text="#{label.resourcemanagement}"></h1>
                     <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                     <span id="disk" hidden="true" th:text="#{label.disk}"/>
                     <span id="diskUpdateTm" hidden="true" th:text="#{label.diskUpdateTm}"/>
+                    <span id="additional" hidden="true" th:text="#{label.additional}"/>
+                    <span id="estaddamount" hidden="true" th:text="#{label.estaddamount}"/>
+                    <span id="krw" hidden="true" th:text="#{label.krw}"/>
+                    <span id="seldiskcapacity" hidden="true" th:text="#{label.seldiskcapacity}"/>
                 </div>
 
                 <div class="row">
                     <div class="col-xl-10 col-lg-12">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-
                             <!-- Card Body -->
                             <div class="card-body">
                                 <table class="table table-bordered mb-3" cellspacing="0" id="resourceTable">
@@ -447,7 +437,7 @@
                                     </tr>
                                     </thead>
                                 </table>
-                                <h6 class="m-0 font-weight-bold text-gray-800" style="float:top" id="diskUsage">디스크 사용량</h6>
+                                <h6 class="m-0 font-weight-bold text-gray-800" style="float:top" id="diskUsage" th:text="#{label.disk}"></h6>
                                 <div class="card shadow h-100 py-2 mb-4" >
                                     <div class="table-responsive" style="overflow:auto;">
                                         <table class="table table-bordered" id="diskTable" cellspacing="0">
@@ -462,21 +452,18 @@
                                             </tr>
                                             </thead>
                                             <tbody style="text-align: center">
-
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
-                                <div class="m-0 font-weight-bold text-danger">
-                                    * 디스크는 최대 7개까지 확장 가능합니다.
+
+                                <div class="m-0 font-weight-bold text-danger" th:text="#{label.diskupto7}">
                                 </div>
                                 <button class="btn btn-danger mt-1 float-right" data-toggle="modal"
                                         data-target="#checkExpansion" id="expansionBtn" th:if="${session['auth']} =='ROLE_USER'" style="display: none;">
-                                    <i class="fa fa-plus"></i>디스크 확장
+                                    <i class="fa fa-plus"></i><label th:text="#{label.diskexpansion}"></label>
                                 </button>
-                                <div class="m-0 font-weight-bold text-gray-800 float-right" id="progressWork" style="display: none;">
-                                    현재 디스크 작업 진행 중 입니다.
+                                <div class="m-0 font-weight-bold text-gray-800 float-right" id="progressWork" style="display: none;" th:text="#{label.diskoperation}">
                                     <i class="fas fa-sync-alt" style="cursor: pointer" id="refreshBtn"></i>
                                 </div>
                             </div>
@@ -487,7 +474,6 @@
                     <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-
                             <!-- Card Body -->
                             <div class="card-body" style="height: 350px">
                                 <div class="card shadow h-100 py-2" >
@@ -503,22 +489,15 @@
                                             </tr>
                                             </thead>
                                             <tbody style="text-align: center">
-
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
         <footer th:replace="mainfooter.html :: footer"></footer>
@@ -539,12 +518,8 @@
                 margin-right: 15px;
                 margin-top: 2px;
             }
-
-
         </style>
     </div>
-
-
 </div>
 
 <!--
@@ -559,7 +534,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="checkExpansionLabel">디스크를 확장하시겠습니까?</h5>
+                <h5 class="modal-title" id="checkExpansionLabel" th:text="#{label.douwantexpand}"></h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -567,36 +542,35 @@
             <div class="modal-content">
                 <ul>
                     <li style="list-style:none;">
-                <div style="width:40%;float: left;height: 100%">
-                    <select class="form-control mt-3" name="fire" id="diskCapacity">
-                        <option value="none">디스크 용량 선택</option>
-                        <option value="1024">1,024 GiB</option>
-                        <option value="2048">2,048 GiB</option>
-                        <option value="4096">4,096 GiB</option>
-                        <option value="8192">8,192 GiB</option>
-                        <option value="16384">16,384 GiB</option>
-                        <option value="32767">32,767 GiB</option>
-                    </select>
-                </div>
+                        <div style="width:40%;float: left;height: 100%">
+                            <select class="form-control mt-3" name="fire" id="diskCapacity">
+                                <option value="none" th:text="#{label.selectdisksize}"></option>
+                                <option value="1024">1,024 GiB</option>
+                                <option value="2048">2,048 GiB</option>
+                                <option value="4096">4,096 GiB</option>
+                                <option value="8192">8,192 GiB</option>
+                                <option value="16384">16,384 GiB</option>
+                                <option value="32767">32,767 GiB</option>
+                            </select>
+                        </div>
                     </li>
                     <li style="list-style:none;">
-                <div style="width:60%;float: right;">
-                    <div class="text-dark ml-4 mr-4 "
-                         style="font-size: 15px; font-weight: normal; " id="estimatedAmount">
-                    </div>
-                </div>
+                        <div style="width:60%;float: right;">
+                            <div class="text-dark ml-4 mr-4 "
+                                 style="font-size: 15px; font-weight: normal; " id="estimatedAmount">
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
             <div>
                 <div class="modal-footer">
-                    <button id="diskExpBtn" class="btn btn-primary" type="button">확인</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+                    <button id="diskExpBtn" class="btn btn-primary" type="button" th:text="#{label.confirm}"></button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{label.cancel}"></button>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 <div class="modal fade" id="deleteDiskModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -604,26 +578,21 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteDiskModalLabel">삭제하시겠습니까?</h5>
+                <h5 class="modal-title" id="deleteDiskModalLabel" th:text="#{label.wantdelete}"></h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div>
-
-            <div class="modal-footer">
-                <button id="diskDelBtn" class="btn btn-primary" type="button">삭제</button>
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
-
-            </div>
-
+                <div class="modal-footer">
+                    <button id="diskDelBtn" class="btn btn-primary" type="button" th:text="#{label.delete}"></button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{label.cancel}"></button>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 
 </body>
-
 
 </html>

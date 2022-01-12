@@ -6,6 +6,9 @@
 <script type="text/javascript">
 
     let userEmail =  "";
+    let threshold =  "";
+    let usuccess =  "";
+    let ufail =  "";
     const diskSizeMap = new Map();
 
     // insert key-value-pair
@@ -16,14 +19,11 @@
     diskSizeMap.set('16384', '16,384 GiB');
     diskSizeMap.set('32767','32,767 GiB');
 
-
     window.onload = function () {
         userEmail = $('#userEmail').text();
         getUserProductInfoList();
         $("#userInfoSaveBtn").on("click", function(){ setUserInfoSave() });
     }
-
-
 
     function getUserProductInfoList() {
         var selectBoxId = 0;
@@ -94,10 +94,7 @@
                             }
                         }
                     ]
-
                 });
-
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -109,6 +106,8 @@
         param.email = userEmail;
         var list = new Array();
         var table = $('#resourceTable').DataTable();
+
+        threshold = $('#threshold').text();
 
         var list = [];
         //var index = 0;
@@ -141,7 +140,7 @@
                             //console.log(child.prop("checked"));
                         } else if(type == 'number') {
                             if(child.val() == null || child.val() == '') {
-                                alert("임계치는 0 ~ 100 사이로 설정 가능합니다.");
+                                alert(threshold);
                                 tableRetChk = false;
                                 return false;
                             }
@@ -149,7 +148,7 @@
                             //console.log(num);
                             vo.criticalValue = child.val()
                             if(num < 0 || num > 100) {
-                                alert("임계치는 0 ~ 100 사이로 설정 가능합니다.");
+                                alert(threshold);
                                 tableRetChk = false;
                                 return false;
                             }
@@ -179,6 +178,8 @@
             return;
         }
 
+        usuccess = $('#usuccess').text();
+        ufail = $('#ufail').text();
         param.list = list;
         // param.company = $('#companyInput').val();
 
@@ -191,10 +192,10 @@
             },
             success: function (data) {
                 if(data == true) {
-                    window.alert("업데이트에 성공했습니다.");
+                    window.alert(usuccess);
                     location.reload();
                 } else {
-                    window.alert("업데이트에 실패했습니다.");
+                    window.alert(ufail);
                 }
 
             }, error: function (request, status, error) {
@@ -203,41 +204,27 @@
         })
     }
 
-
-
 </script>
 
-
 <body id="page-top">
-
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:insert="sidemenu.html :: side_menu"></div>
-
-
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
-
             <div th:insert="topmenu.html :: top_menu"></div>
-
-
-
             <span id="userEmail" th:text="${session['email']}" hidden="true"> </span>
+            <span id="threshold" th:text="#{label.threshold}" hidden="true"> </span>
+            <span id="usuccess" th:text="#{label.usuccess}" hidden="true"> </span>
+            <span id="ufail" th:text="#{label.ufail}" hidden="true"> </span>
             <!-- Page Heading -->
             <!--<div class="d-sm-flex align-items-center justify-content-between mb-2">
                 <h1 class="h3 mb-0 text-gray-800" > 리소스 관리</h1>
             </div>-->
 
-
             <!-- Begin Page Content -->
-
             <div class="container-fluid" >
-
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mt-4 mb-2">
                     <h1 class="h3 mb-0 text-gray-800" th:text="#{label.resourceinfolist}"> </h1>
@@ -247,7 +234,6 @@
                     <!-- Area Chart -->
                     <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-4">
-
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="card shadow h-100 py-2">
@@ -280,35 +266,20 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-
                 <button class="btn btn-primary"  id ="userInfoSaveBtn" th:text="#{label.save}"></button>
             </div>
-
         </div>
-
         <footer th:replace="mainfooter.html :: footer"></footer>
-
     </div>
-
-
 </div>
 
-
-
-
-
-
-
 </body>
-
 
 </html>
 
 <script type="text/javascript">
     $(document).ready(function(){
-
         $(document).on('click', "#resourceTable input[type=checkbox]", function (){
             var el = $(this).closest("tr").find("select");
             //el.css("display", $(this).prop("checked") ? "" : "none");

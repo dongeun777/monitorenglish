@@ -4,18 +4,22 @@
 </head>
 
 <script type="text/javascript">
+    let under100 = $('#under100').text();
+    let messagemax = $('#messagemax').text();
+    let messagebyte = $('#messagebyte').text();
 
     function checkSize(input) {
+
         if (input.files && input.files[0].size > (100 * 1024 * 1024)) {
-            window.alert("100MB이하의 파일만 가능합니다.");
+            window.alert(under100);
             input.value = null;
         }
     }
 
     function fnChkByte(obj, maxByte) {
+        window.alert("bbb : " + messagemax + ", " + messagebyte);
         var str = obj.value;
         var str_len = str.length;
-
 
         var rbyte = 0;
         var rlen = 0;
@@ -37,7 +41,7 @@
         }
 
         if(rbyte > maxByte) {
-            window.alert("메세지는 최대 " + maxByte + "byte를 초과할 수 없습니다.")
+            window.alert(messagemax + maxByte + messagebyte)
             str2 = str.substr(0,rlen);                                  //문자열 자르기
             obj.value = str2;
             fnChkByte(obj, maxByte);
@@ -48,95 +52,67 @@
     }
 </script>
 
-
 <body id="page-top">
-
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:insert="sidemenu.html :: side_menu"></div>
-
-
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
-
             <div th:insert="topmenu.html :: top_menu"></div>
-
-
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">게시글 작성</h1>
-
+                    <h1 class="h3 mb-0 text-gray-800" th:text="#{label.writepost}"></h1>
                 </div>
                 <div class="row">
-
                     <!-- Area Chart -->
                     <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="card shadow h-100 py-2" >
                                     <div class="table-responsive" style="overflow:auto; ">
-
                                         <form action="/insertProc" method="post" enctype="multipart/form-data"> <!-- 추가 -->
                                             <div class="form-group ml-3">
-                                                <label for="subject">제목</label>
-                                                <input type="text" class="form-control" id="subject" name="subject" placeholder="제목을 입력하세요.">
+                                                <label for="subject" th:text="#{label.subject}"></label>
+                                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter Subject.">
                                             </div>
                                             <div class="form-group ml-3">
-                                                <label for="writer">작성자</label>
+                                                <label for="writer" th:text="#{label.writer}"></label>
                                                 <input type="text" class="form-control" id="writer" name="writer" th:value="${session['email']}" readonly style="background-color: white">
                                             </div>
                                             <div class="form-group ml-3">
-                                                <label for="content">내용</label>
-                                                <textarea class="form-control" id="content" name="content" rows="5" placeholder="내용을 입력하세요." onkeyup="fnChkByte(this, '3000')"></textarea>
+                                                <label for="content" th:text="#{label.content}"></label>
+                                                <textarea class="form-control" id="content" name="content" rows="5" placeholder="Enter Content." onkeyup="fnChkByte(this, '3000')"></textarea>
                                                 <div id="byteInfo">(0 / 3000bytes)</div>
                                             </div>
 
                                             <div class="form-group ml-3">
-                                                <input type="file" id="files" name="files" value="file1" onchange="checkSize(this)">
-                                                <p style="font-size: 14px">100MB이하의 파일만 가능합니다.<br></p>
+                                                <input type="file" id="files" name="files" value="file1" onchange="checkSize(this)" th:label="#{label.write}">
+                                                <p style="font-size: 14px" th:text="#{label.under100}"><br></p>
                                             </div>
 
-                                            <button type="button" class="btn btn-primary ml-3 mb-1" onclick="location.href='/list'">목록</button>
-                                            <button type="submit" class="btn btn-primary mr-3 mb-1 float-right">작성</button>
+                                            <button type="button" class="btn btn-primary ml-3 mb-1" onclick="location.href='/list'" th:text="#{label.list}"></button>
+                                            <button type="submit" class="btn btn-primary mr-3 mb-1 float-right" th:text="#{label.write}"></button>
+                                            <span id="under100" hidden="true" th:text="#{label.under100}"> </span>
+                                            <span id="messagemax" hidden="true" th:text="#{label.messagemax}"> </span>
+                                            <span id="messagebyte" hidden="true" th:text="#{label.messagebyte}"> </span>
                                         </form>
-
                                     </div>
-
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
         <footer th:replace="mainfooter.html :: footer"></footer>
     </div>
-
-
 </div>
 
 </body>
-
-
-
-
-
 
 </html>

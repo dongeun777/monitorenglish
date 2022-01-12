@@ -1,18 +1,14 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
-
-
-
 <head th:replace="mainheader.html :: mainHead">
 </head>
 
 <script type="text/javascript">
-
     window.onload = function () {
         productList();
     }
 
     function productList() {
+        let addproduct = $('#addproduct').text();
 
         $.ajax({
             url: "/getProductList.do",
@@ -42,7 +38,7 @@
                         {data: "email",
                             "render": function(data, type, row){
                                 if(type=='display'){
-                                    data = '<button class="mb-2 mr-2 btn btn-info btn-sm">제품 추가</button>';
+                                    data = '<button class="mb-2 mr-2 btn btn-info btn-sm">'+addproduct+'</button>';
                                 }
                                 return data;
                             }
@@ -56,20 +52,16 @@
                     var tr = $(this).closest('tr');
                     var dt = table.row( tr ).data();
 
-
                     $(".modal-body #prod_name").val( dt.prod_name);
                     $(".modal-body #vendor").val( dt.vendor);
                     $(".modal-body #version").val( dt.version);
                     $(".modal-body #locale").val( dt.locale);
                     $('#InsertProduct').modal("show");
-
                 });
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
     }
 
     function InsertProduct(){
@@ -81,10 +73,8 @@
                 vendor: document.getElementById('vendor').value,
                 region: document.getElementById('locale').value
             },
-
             success: function (data) {
                 location.href="/deploy";
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -93,43 +83,28 @@
 
 </script>
 
-
 <body id="page-top">
-
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:insert="sidemenu.html :: side_menu"></div>
-
-
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
-
             <div th:insert="topmenu.html :: top_menu"></div>
-
-
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800">제품 추가</h1>
+                    <h1 class="h3 mb-0 text-gray-800" th:text="#{label.addproduct}">제품 추가</h1>
                     <span id="auth1" th:text="${session['auth']}" hidden="true"> </span>
                     <span id="email" th:text="${session['email']}" hidden="true"> </span>
-
+                    <span id="addproduct" th:text="#{label.addproduct}" hidden="true"> </span>
                 </div>
-
                 <div class="row">
-
                     <!-- Area Chart -->
                     <div class="col-xl-10 col-lg-12">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="card shadow h-100 py-2" >
@@ -144,30 +119,19 @@
                                                 <th></th>
                                             </tr>
                                             </thead>
-
                                             <tbody style="text-align: center">
-
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
         <footer th:replace="mainfooter.html :: footer"></footer>
     </div>
-
-
 </div>
 
 <div class="modal fade" id="InsertProduct" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -175,21 +139,18 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel2">제품 추가</h5>
+                <h5 class="modal-title" id="exampleModalLabel2" th:text="#{label.addproduct}">제품 추가</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
 <!--            <form th:action="@{/InsertProduct}" method="post">-->
                 <div class="modal-body">
-
                     <div class="row mt-1 mb-3">
                         <div class="col-xl-3 col-lg-6">
                             <span class="text-dark"> Product: </span>
                         </div>
-
                         <input type="text" name="prod_name" id="prod_name" disabled>
-
                     </div>
 
                     <div class="row mb-3">
@@ -212,25 +173,15 @@
                         </div>
                         <input type="text" name="locale" id="locale" disabled>
                     </div>
-
-
-
-
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit" onclick="InsertProduct()">추가</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
-
+                    <button class="btn btn-primary" type="submit" onclick="InsertProduct()" th:text="#{label.add}">추가</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{label.cancel}">취소</button>
                 </div>
-
 <!--            </form>-->
         </div>
     </div>
-
 </div>
-
 </body>
-
-
 
 </html>

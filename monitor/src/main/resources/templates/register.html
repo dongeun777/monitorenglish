@@ -5,22 +5,32 @@
 
 <script type="text/javascript">
 
+    let entercompany = "";
+    let enteremail = "";
+    let registered = "";
+    let checkemail = "";
+    let already = "";
 
     function check(){
+        entercompany = $('#entercompany').text();
+        enteremail = $('#enteremail').text();
+
         if ( document.getElementById('company').value =='') {
-            window.alert('회사명을 입력해주세요.');
+            window.alert(entercompany);
         }
         else if(document.getElementById('email1').value ==''){
-            window.alert('이메일을 입력해주세요.');
+            window.alert(enteremail);
         }
         else{
             modify();
         }
     }
 
-
     function modify(){
 
+        registered = $('#registered').text();
+        checkemail = $('#checkemail').text();
+        already = $('#already').text();
 
         $('#registerBtn').hide();
         $.ajax({
@@ -30,25 +40,20 @@
                 email: document.getElementById('email1').value,
                 company: document.getElementById('company').value
             },
-
             success: function (data) {
                 if(data == "Success"){
-                    window.alert("등록되었습니다.\n메일을 확인해주세요.")
+                    window.alert(registered + '\n' + checkemail)
                     location.href="/"
                 }
                 else{
-                    window.alert("이미 등록된 회원입니다.")
+                    window.alert(already)
                     document.getElementById('company').value="";
                     document.getElementById('email1').value="";
                     $('#registerBtn').show();
-
                 }
-
-
             }
         })
     }
-
 
 </script>
 
@@ -56,45 +61,26 @@
 
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <!--<div th:insert="sidemenu.html :: side_menu"></div>-->
-
-
-
     <!--    <th:block layout:fragment="side_menu"></th:block>-->
-
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/main">
-
             <div class="sidebar-brand-text mx-3">Monitoring System</div>
         </a>
-
-
     </ul>
     <!-- End of Sidebar -->
 
     <!-- Content Wrapper -->
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
             <!-- Topbar -->
             <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-
-
-
             </nav>
             <!-- End of Topbar -->
 
-
-
             <!--<div class="container-fluid" >
-
-
                 <div class="modal-body">
                     <div class="row mt-1 mb-3">
                         <div class="col-xl-12 col-lg-6">
@@ -102,40 +88,28 @@
                         </div>
                     </div>
 
-
                     <div class="row mt-1 mb-3">
-
                         <div class="col-xl-12 col-lg-6">
                             <span style="color: black; font-size: 25px; font-weight: bold; ">아래 정보를 입력해주세요. </span>
-
                         </div>
-
-
                     </div>
 
                     <div class="row mt-1 mb-3">
                         <div>
                             <input class="form-control" type="text" name="company" id="company" placeholder="회사명을 입력해주세요">
                             <input class="form-control"  type="text" name="email" id="email1" placeholder="이메일을 입력해주세요" onKeyPress="if (event.keyCode==13){check();}">
-
                             <button class="form-control"   onclick="check()" id="registerBtn">등록</button>
                         </div>
-
                     </div>
                 </div>
-
-
-
             </div>-->
 
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <h1 class="h3 mb-2 text-gray-800">Member Register</h1>
-                <p class="mb-4"> 아래 정보를 입력하여 등록해 주세요.</p>
+                <p class="mb-4" th:text="#{label.registerinfo}"></p>
 
                 <!-- DataTales Example -->
-
                 <div class="col-xl-8">
                     <!-- Account details card-->
                     <div class="card mb-4">
@@ -144,12 +118,12 @@
                             Account Details
                         </div>
                         <div class="card-body">
-
                                 <!-- Form Group (email address)-->
                                 <div class="mb-3">
                                     <label class="small mb-1" for="email1">Email address</label>
                                     <input class="form-control" id="email1" type="email" placeholder="name@example.com" >
                                 </div>
+
                                 <!-- Form Group (username)-->
                                 <div class="mb-3">
                                     <label class="small mb-1" for="company">Companyname</label>
@@ -160,30 +134,25 @@
                                 <!-- Save changes button-->
                                 <button class="btn btn-primary"onclick="check()" type="button" id="registerBtn">
                                     <i class="fas fa-edit"></i> Save Info</button>
-
-
+                                <span id="entercompany" hidden="true" th:text="#{label.entercompany}"> </span>
+                                <span id="enteremail" hidden="true" th:text="#{label.enteremail}"> </span>
+                                <span id="registered" hidden="true" th:text="#{label.registered}"> </span>
+                                <span id="checkemail" hidden="true" th:text="#{label.checkemail}"> </span>
+                                <span id="already" hidden="true" th:text="#{label.already}"> </span>
                         </div>
                     </div>
                 </div>
-
             </div>
-
-
         </div>
         <!-- End of Main Content -->
 
         <!-- Footer -->
         <footer th:replace="mainfooter.html :: footer"></footer>
         <!-- End of Footer -->
-
     </div>
     <!-- End of Content Wrapper -->
-
 </div>
 <!-- End of Page Wrapper -->
-
-
-
 
 </body>
 

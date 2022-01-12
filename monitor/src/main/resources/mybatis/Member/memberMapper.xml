@@ -73,7 +73,7 @@
         drop table is_stats_${rscGrp};
     </delete>
     <delete id="deleteProductApplyList" parameterType="MemberVo">
-        delete from product_apply where apply_id = #{rscGrp};
+        delete from product_apply where apply_id = #{applyId};
     </delete>
 
 

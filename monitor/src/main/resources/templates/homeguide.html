@@ -13,41 +13,24 @@
     <header class="py-5">
         <div class="container px-5 my-5">
             <div class="text-center mb-5">
-                <h1 class="fw-bolder" style="font-size: 70px">가이드 센터</h1>
-                <p class="lead fw-normal text-muted mb-0" style="font-size: 45px">사용자 가이드</p>
+                <h1 class="fw-bolder" style="font-size: 70px" th:text="#{label.homeguide1}"></h1>
+                <p class="lead fw-normal text-muted mb-0" style="font-size: 45px" th:text="#{label.homeguide2}"></p>
             </div>
         </div>
     </header>
 
-    <section class="py-3 bg-light">
-        <div class="container px-5">
-            <div class="row gx-5">
-                <h2 class="fw-bolder mb-3" style="font-size: 50px">솔루션 가입 절차</h2>
-            </div>
-        </div>
+
+
+    <section class="py-1">
         <div class="container px-5 my-5">
             <div class="row gx-5 align-items-center">
                 <h3 class="fw-bolder mb-3">Step1</h3>
                 <div class="col-lg-7"><img class="img-fluid rounded mb-5 mb-lg-0"
-                                           src="image/guide1.png" alt="..."/></div>
-                <div class="col-lg-5">
-                    <h2 class="fw-bolder">1. Get Started 클릭</h2>
-                    <p class="lead fw-normal text-muted mb-0">○ 버튼을 클릭하면 Microsoft Azure Marketplace로 이동</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-1">
-        <div class="container px-5 my-5">
-            <div class="row gx-5 align-items-center">
-                <h3 class="fw-bolder mb-3">Step2</h3>
-                <div class="col-lg-7"><img class="img-fluid rounded mb-5 mb-lg-0"
                                            src="image/guide2.png" alt="..."/></div>
                 <div class="col-lg-5">
-                    <h2 class="fw-bolder">2. Contact Me 클릭</h2>
-                    <p class="lead fw-normal text-muted mb-0"> ○ 정보 입력 : Name, Email, Job Title, Company, Country, Phone Number</p>
-                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px"> ※ Azure Marketplace 계정 필요</p>
+                    <h2 class="fw-bolder" th:text="#{label.homeguide6}"></h2>
+                    <p class="lead fw-normal text-muted mb-0" th:text="#{label.homeguide7}"></p>
+                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px" th:text="#{label.homeguide8}"></p>
                 </div>
             </div>
         </div>
@@ -56,15 +39,15 @@
     <section class="py-1 bg-light">
         <div class="container px-5 my-5 bg-light">
             <div class="row gx-5 align-items-center">
-                <h3 class="fw-bolder mb-3">Step3</h3>
+                <h3 class="fw-bolder mb-3">Step2</h3>
 
                 <div class="col-lg-7"><img class="img-fluid rounded mb-5 mb-lg-0"
                                            src="image/guide3.png" alt="..."/></div>
                 <div class="col-lg-5">
-                    <h2 class="fw-bolder">3. 이글루 시스템 접속 안내 메일 수신</h2>
-                    <p class="lead fw-normal text-muted mb-0"> ○ Step2에서 입력한 Eamil 계정으로 시스템 접속 안내 메일 수신(최대 5분 소요)</p>
-                    <p class="lead fw-normal text-muted mb-0"> ○ URL 접속 후 이글루 시스템 로그인</p>
-                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px"> ※ 발급된 Password는 임시용 이므로 로그인 후 변경</p>
+                    <h2 class="fw-bolder" th:text="#{label.homeguide9}"></h2>
+                    <p class="lead fw-normal text-muted mb-0" th:text="#{label.homeguide10}"> </p>
+                    <p class="lead fw-normal text-muted mb-0" th:text="#{label.homeguide11}"> </p>
+                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px" th:text="#{label.homeguide12}"> </p>
                 </div>
             </div>
         </div>
@@ -74,16 +57,16 @@
     <section class="py-1">
         <div class="container px-5 my-5">
             <div class="row gx-5 align-items-center">
-                <h3 class="fw-bolder mb-3">Step4</h3>
+                <h3 class="fw-bolder mb-3">Step3</h3>
 
                 <div class="col-lg-7"><img class="img-fluid rounded mb-5 mb-lg-0"
                                            src="image/guide4.png" alt="..."/></div>
                 <div class="col-lg-5">
-                    <h2 class="fw-bolder">4. 고객 시스템 정보 등록</h2>
-                    <p class="lead fw-normal text-muted mb-0"> ○ 장비 정보 : 장비 - 일일 로그량(GB) 등록</p>
-                    <p class="lead fw-normal text-muted mb-0"> ○ 기간 옵션 : 종량제, 예약제(1년, 3년) 선택</p>
-                    <p class="lead fw-normal text-muted mb-0"> ○ 정보 등록 후 VM 배포 시작(약 5분 소요)</p>
-                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px"> ※ 배포가 완료되면 자동으로 모니터링 시스템으로 화면 전환(모니터링 시스템 이용 가능)</p>
+                    <h2 class="fw-bolder" th:text="#{label.homeguide13}"></h2>
+                    <p class="lead fw-normal text-muted mb-0" th:text="#{label.homeguide14}"> </p>
+                    <p class="lead fw-normal text-muted mb-0" th:text="#{label.homeguide15}"> </p>
+                    <p class="lead fw-normal text-muted mb-0" th:text="#{label.homeguide16}"> </p>
+                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px" th:text="#{label.homeguide17}"> </p>
                 </div>
             </div>
         </div>
@@ -93,35 +76,37 @@
     <section class="py-1 bg-light">
         <div class="container px-5 my-5 bg-light">
             <div class="row gx-5 align-items-center">
-                <h3 class="fw-bolder mb-3">Step5</h3>
+                <h3 class="fw-bolder mb-3">Step4</h3>
 
                 <div class="col-lg-7"><img class="img-fluid rounded mb-5 mb-lg-0"
                                            src="image/guide5.png" alt="..."/></div>
                 <div class="col-lg-5">
-                    <h2 class="fw-bolder">5. 솔루션 배포완료 안내 메일 수신</h2>
-                    <p class="lead fw-normal text-muted mb-0"> ○ Step2에서 입력한 Eamil 계정으로 시스템 접속 안내 메일 수신</p>
-                    <p class="lead fw-normal text-muted mb-0"> ○ 배포가 완료되면 TM URL로 접속 및 로그인</p>
-                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px"> ※ 발급된 Password는 임시용 이므로 로그인 후 변경</p>
+                    <h2 class="fw-bolder" th:text="#{label.homeguide18}"></h2>
+                    <p class="lead fw-normal text-muted mb-0" th:text="#{label.homeguide19}"> </p>
+                    <p class="lead fw-normal text-muted mb-0" th:text="#{label.homeguide20}"> </p>
+                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px" th:text="#{label.homeguide21}"> </p>
                 </div>
             </div>
         </div>
     </section>
 
+<!--
     <section class="py-1">
         <div class="container px-5 my-5">
             <div class="row gx-5 align-items-center">
-                <h3 class="fw-bolder mb-3">Step6</h3>
+                <h3 class="fw-bolder mb-3">Step5</h3>
 
                 <div class="col-lg-7"><img class="img-fluid rounded mb-5 mb-lg-0"
                                            src="image/guide6.png" alt="..."/></div>
                 <div class="col-lg-5">
-                    <h2 class="fw-bolder">6. 고객장비 에이전트 설치 및 로그 소스 등록</h2>
-                    <p class="lead fw-normal text-muted mb-0"> ○ TM 가이드를 참고하여 로그 소스 등록 완료</p>
-                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px"> ※ TM 가이드 : 사용자 메뉴 > 프로그램 정보 > 메뉴얼 다운로드</p>
+                    <h2 class="fw-bolder" th:text="#{label.homeguide22}"></h2>
+                    <p class="lead fw-normal text-muted mb-0" th:text="#{label.homeguide23}"> </p>
+                    <p class="lead fw-normal text-muted mb-0" style="margin-top: 20px" th:text="#{label.homeguide24}"> </p>
                 </div>
             </div>
         </div>
     </section>
+-->
 
 </main>
 <!-- Footer-->

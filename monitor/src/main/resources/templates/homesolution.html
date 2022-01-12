@@ -3,12 +3,10 @@
 
 <div th:insert="homeheader.html :: homeHeader"></div>
 
-
 <body class="d-flex flex-column">
 <main class="flex-shrink-0">
     <!-- Navigation-->
     <div th:insert="homemenu.html :: homeMenu"></div>
-
 
     <header class="py-5">
         <div class="container px-5">
@@ -27,15 +25,13 @@
         <div class="container px-5">
             <h2 class="fw-bolder mb-4" style="font-size: 40px">Solutions</h2>
             <div class="row gx-5">
-
                 <div class="col-lg-4 mb-5">
                     <div class="card h-100 shadow border-0">
                         <img class="card-img-top" src="image/SPIDERTM2.png" alt="..." />
                         <div class="card-body p-4">
                             <div class="badge bg-primary bg-gradient rounded-pill mb-2">Azure</div>
                             <a class="text-decoration-none link-dark stretched-link" href="/spiderTm"><div class="h5 card-title mb-3">SPiDER TM V5.5 for Azure</div></a>
-                            <p class="card-text mb-0"> SPiDER TM은 이글루시큐리티 20년 보안 관제 경험과 빅데이터 활용 역량이 집약된 통합보안관리 솔루션으로 최초 탐지부터 로그/네트워크 패킷 분석까지
-                                일원화된 관제 환경 구성을 통해 관제업무의 기민성과 효율성을 높이는 동시에 인프라 전반에 대한 완벽한 가시성을 확보합니다.</p>
+                            <p class="card-text mb-0" th:text="#{label.homesolution1}"></p>
                             <a class="stretched-link text-decoration-none" href="/spiderTm" style="float: right">
                                 More Information
                                 <i class="bi bi-arrow-right"></i>
@@ -50,13 +46,12 @@
                         <div class="card-body p-4">
                             <div class="badge bg-primary bg-gradient rounded-pill mb-2">AWS</div>
                             <a class="text-decoration-none link-dark stretched-link" href="#"><div class="h5 card-title mb-3">SPiDER TM V5.5 for AWS</div></a>
-                            <p class="card-text mb-0">SPiDER TM is a SIEM(Security Information & Event Management) solution with 20 years of experience of Managed Security Services and Big data capabilities from IGLOO SECURITY.</p>
+                            <p class="card-text mb-0" th:text="#{label.homesolution1}"></p>
                             <a class="stretched-link text-decoration-none" href="#" style="font-size: 22px; float: right">
                                 Coming Soon
                             </a>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="col-lg-4 mb-5">
@@ -65,12 +60,11 @@
                         <div class="card-body p-4">
                             <div class="badge bg-primary bg-gradient rounded-pill mb-2">Azure</div>
                             <a class="text-decoration-none link-dark stretched-link" href="#"><div class="h5 card-title mb-3">SPiDER Logbox For Azure</div></a>
-                            <p class="card-text mb-0">모든 시스템에서 원본로그의 저장과 분석, 관리, 모니터링까지 일원화된 로그관리 환경을 제공하는 빅데이터 기반의 통합로그관리솔루션</p>
+                            <p class="card-text mb-0" th:text="#{label.homesolution2}"></p>
                             <a class="stretched-link text-decoration-none" href="#" style="font-size: 22px; float: right">
                                 Coming Soon
                             </a>
                         </div>
-
                     </div>
                 </div>
 
@@ -80,12 +74,11 @@
                         <div class="card-body p-4">
                             <div class="badge bg-primary bg-gradient rounded-pill mb-2">AWS</div>
                             <a class="text-decoration-none link-dark stretched-link" href="#"><div class="h5 card-title mb-3">SPiDER Logbox For AWS</div></a>
-                            <p class="card-text mb-0">모든 시스템에서 원본로그의 저장과 분석, 관리, 모니터링까지 일원화된 로그관리 환경을 제공하는 빅데이터 기반의 통합로그관리솔루션</p>
+                            <p class="card-text mb-0" th:text="#{label.homesolution2}"></p>
                             <a class="stretched-link text-decoration-none" href="#" style="font-size: 22px; float: right" >
                                 Coming Soon
                             </a>
                         </div>
-
                     </div>
                 </div>
             </div>

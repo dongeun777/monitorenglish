@@ -8,24 +8,20 @@
 
 <script type="text/javascript">
     let sessionRsc =  "";
-
+    let igloosec =  "";
+    let done =  "";
 
     window.onload = function () {
         sessionRsc = document.getElementById("rscgrp").innerText;
-
-
     }
 
-
-
     function test2(){
-
-
         let IMP = window.IMP;
+        igloosec = $('#igloosec').text();
+
         IMP.init("imp75713203");
 
        //IMP.init("imp76010426");
-
         IMP.request_pay({
             pg : 'kcp_billing', //KCP일반결제는 kcp이며, KCP빌링결제는 kcp_billing 으로 구분됩니다.
             pay_method : 'card', // 'card'만 지원됩니다.
@@ -34,19 +30,14 @@
             amount : 0, // 결제창에 표시될 금액. 실제 승인이 이뤄지지는 않습니다. (PC에서는 가격이 표시되지 않음)
             customer_uid : 'osbiz@igloosec.com', //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다.
             buyer_email : 'osbiz@igloosec.com',
-            buyer_name : '이글루시큐리티',
+            buyer_name : igloosec,
             buyer_tel : '02-1234-1234'
         }, function(rsp) {
             if ( rsp.success ) {
-
-                var msg = '결제가 완료되었습니다.';
+                var msg = $('#paymentcomp').text();
                 msg += 'PG사: ' + rsp.pg_provider;
 
                 console.log(rsp);
-
-
-
-
                 /*$.ajax({
                     url: "/billingKey.do",
                     type: "POST",
@@ -54,25 +45,18 @@
                     data: {
                         customer_uid:"customer-test-id-0001"
                     },
-
                     success: function (data) {
                         window.alert("완료되었습니다.");
-
-
                     }
                 })*/
-
-
             } else {
                 //alert('빌링키 발급 실패');
             }
         });
     }
 
-function test(){
-
-
-
+    function test(){
+        done = $('#paymentcomp').text();
 
         $.ajax({
             url: "/paymentTest.do",
@@ -83,103 +67,72 @@ function test(){
                 merchant_uid:"merchant_1628050394529",
                 amount:3000
             },
-
             success: function (data) {
-                window.alert("완료되었습니다.");
-
-
+                window.alert(done);
             }
         })
-
-
-
-
-}
-
-
+    }
 
 </script>
-
 
 <body id="page-top">
 
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:insert="sidemenu.html :: side_menu"></div>
 
-
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
-
             <div th:insert="topmenu.html :: top_menu"></div>
-
-
 
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800" th:text="#{label.costmanagement}"></h1>
                     <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
+                    <span id="done" hidden="true" th:text="#{label.done}"> </span>
+                    <span id="paymentcomp" hidden="true" th:text="#{label.paymentcomp}"> </span>
+                    <span id="igloosec" hidden="true" th:text="#{label.igloosec}"> </span>
                 </div>
 
                 <div class="row">
-
                     <!-- Area Chart -->
                     <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="card shadow h-100 py-2" >
                                     <form action="/subscription/issue-billing" method="post">
                                         <div>
-                                            <label for="card_number">카드 번호 XXXX-XXXX-XXXX-XXXX</label>
+                                            <label for="card_number" th:text="#{label.cardnum}"></label>
                                             <input id="card_number" type="text" name="card_number">
                                         </div>
                                         <div>
-                                            <label for="expiry">카드 유효기간 YYYY-MM</label>
+                                            <label for="expiry" th:text="#{label.cardval}"></label>
                                             <input id="expiry" type="text" name="expiry">
                                         </div>
                                         <div>
-                                            <label for="birth">생년월일 YYMMDD</label>
+                                            <label for="birth" th:text="#{label.birthdate}"></label>
                                             <input id="birth" type="text" name="birth">
                                         </div>
-
-
-                                        <input type="submit" value="결제하기">
+                                        <input type="submit" th:text="#{label.payment}">
                                     </form>
-
                                 </div>
-
-
-
                                 <button onclick="test()">test</button>
-                                <button onclick="test2()">결제정보입력</button>
+                                <button onclick="test2()" th:text="#{label.paymentinfo}"></button>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
         <footer th:replace="mainfooter.html :: footer"></footer>
-
     </div>
-
-
 </div>
 
 </body>
-
 
 </html>

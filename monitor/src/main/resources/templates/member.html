@@ -16,12 +16,10 @@
     diskSizeMap.set('16384', '16,384 GiB');
     diskSizeMap.set('32767','32,767 GiB');
 
-
     window.onload = function () {
         userEmail = $('#userEmail').text();
         getMemberList();
         getManagerList();
-
         getUserInfo();
         getUserProductInfoList();
         clearPwdUpdateModal();
@@ -66,42 +64,30 @@
                             }
                         }
                     ],
-
                 });
 
-
                 var table = $('#userTable').DataTable();
-
 
                 $('#userTable tbody').on('click', 'tr .btn', function () {
                     var tr = $(this).closest('tr');
                     var dt = table.row( tr ).data();
 
                     if($(this).text() == "Edit"){
-
                         $(".modal-body #email").val( dt.email)
                         $(".modal-body #company2").val( dt.company)
                         $('input:radio[name=auth]:input[value=ROLE_USER]').attr("checked", true);
                         $('#membermodify').modal("show");
-
                     } else if($(this).text() == "Del"){
-
                         document.getElementById("emailChk").innerHTML=dt.email;
                         document.getElementById("rscGrpChk").innerHTML=dt.rscGrp;
                         $('#deleteModal').modal("show");
                         //deleteUser();
-
                     }
                 });
-
-
-
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
     }
 
     function getManagerList() {
@@ -130,22 +116,15 @@
                         {data: "auth"},
                         {data: "regDate"},
                     ],
-
                 });
-
-
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
     }
 
-
-
     function deleteUser(){
-
+        let delcomp = $('#delcomp').text();
 
         $.ajax({
             url: "/deleteUser",
@@ -154,15 +133,12 @@
                 email: document.getElementById('emailChk').innerHTML,
                 rscGrp: document.getElementById('rscGrpChk').innerHTML
             },
-
             success: function (data) {
-                window.alert("삭제가 완료되었습니다.");
+                window.alert(delcomp);
                 location.reload();
-
             }
         })
     }
-
 
     function getUserInfo() {
 
@@ -184,7 +160,6 @@
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
     }
 
     function changePwd() {
@@ -192,9 +167,12 @@
         var newPwd = $('#newPwInput').val();
         var confirmPwd = $('#confirmPwInput').val();
 
+        let enterval = $('#enterval').text();
+        let samepw = $('#samepw').text();
+        let pwunmatch = $('#pwunmatch').text();
 
         if(currentPwd == '' || newPwd == '' || confirmPwd == '') {
-            alert('값을 입력해 주세요.');
+            alert(enterval);
             $('#currentPwInput').val();
             $('#newPwInput').val();
             $('#confirmPwInput').val();
@@ -202,19 +180,20 @@
         }
 
         if(currentPwd == newPwd) {
-            alert('동일한 패스워드로는 변경 할 수 없습니다.');
+            alert(samepw);
             return;
         }
 
         if(newPwd != confirmPwd){
-            alert('비밀번호가 일치하지 않습니다.');
+            alert(pwunmatch);
             return;
         }
-
         modifyUserPwd();
     }
 
     function modifyUserPwd(){
+        let pwchanged = $('#pwchanged').text();
+
         $.ajax({
             url: "/modifyUserPwd",
             type: "POST",
@@ -227,7 +206,7 @@
                 if(data != '') {
                     alert(data);
                 } else {
-                    alert("비밀번호가 변경되었습니다.");
+                    alert(pwchanged);
                     $('#userPasswordModal').modal("hide");
                     clearPwdUpdateModal();
                 }
@@ -243,8 +222,13 @@
         var SC = ["!","@","#","$","%","^","&","*"];
         var check_SC = 0;
 
+        let pw8to16 = $('#pw8to16').text();
+        let pwspecial = $('#pwspecial').text();
+        let pwmatch = $('#pwmatch').text();
+        let pwunmatch = $('#pwunmatch').text();
+
         if(newPwd.length < 8 || newPwd.length>16){
-            window.alert('비밀번호는 8글자 이상, 16글자 이하만 이용 가능합니다.');
+            window.alert(pw8to16);
             $('#newPwInput').val('');
             return;
         }
@@ -254,18 +238,18 @@
             }
         }
         if(check_SC == 0){
-            window.alert('특수문자를 한 개 이상 포함해야합니다.')
+            window.alert(pwspecial)
             $('#newPwInput').val('');
             return;
         }
 
         if(newPwd != '' && confirmPwd != ''){
             if(newPwd == confirmPwd){
-                $('#checkPw').text('비밀번호가 일치합니다.');
+                $('#checkPw').text(pwmatch);
                 $("#checkPw").css("color","blue");
             }
             else{
-                $('#checkPw').text('비밀번호가 일치하지 않습니다.');
+                $('#checkPw').text(pwunmatch);
                 $("#checkPw").css("color","red");
             }
         }
@@ -340,10 +324,7 @@
                             }
                         }
                     ]
-
                 });
-
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -373,6 +354,8 @@
             //console.log('tdLen : ' + tdLen);
             //console.log('division : ' + division);
 
+            let threshold = $('#usuccess').text();
+
             for(var i=0; i < trLen; i++) {                                      // tr loop
                 var vo = new Object();                                          // vo to send to controller
                 var tr = $(this).find("tr").eq(i);                              // find tr value
@@ -387,7 +370,7 @@
                             //console.log(child.prop("checked"));
                         } else if(type == 'number') {
                             if(child.val() == null || child.val() == '') {
-                                alert("임계치는 0 ~ 100 사이로 설정 가능합니다.");
+                                alert(threshold);
                                 tableRetChk = false;
                                 return false;
                             }
@@ -395,7 +378,7 @@
                             //console.log(num);
                             vo.criticalValue = child.val()
                             if(num < 0 || num > 100) {
-                                alert("임계치는 0 ~ 100 사이로 설정 가능합니다.");
+                                alert(threshold);
                                 tableRetChk = false;
                                 return false;
                             }
@@ -428,6 +411,9 @@
         param.list = list;
         param.company = $('#companyInput').val();
 
+        let usuccess = $('#usuccess').text();
+        let ufail = $('#ufail').text();
+
         $.ajax({
             url: "/setUserInfoSave",
             type: "POST",
@@ -437,12 +423,11 @@
             },
             success: function (data) {
                 if(data == true) {
-                    window.alert("업데이트에 성공했습니다.");
+                    window.alert(usuccess);
                     location.reload();
                 } else {
-                    window.alert("업데이트에 실패했습니다.");
+                    window.alert(ufail);
                 }
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -458,26 +443,30 @@
 
 </script>
 
-
 <body id="page-top">
 
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:insert="sidemenu.html :: side_menu"></div>
-
-
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
-
             <div th:insert="topmenu.html :: top_menu"></div>
-
-
-
             <span id="userEmail" th:text="${session['email']}" hidden="true"> </span>
+
+            <span id="delcomp" th:text="#{label.delcomp}" hidden="true"> </span>
+            <span id="enterval" th:text="#{label.enterval}" hidden="true"> </span>
+            <span id="samepw" th:text="#{label.samepw}" hidden="true"> </span>
+            <span id="pwchanged" th:text="#{label.pwchanged}" hidden="true"> </span>
+
+            <span id="pw8to16" th:text="#{label.pw8to16}" hidden="true"> </span>
+            <span id="pwspecial" th:text="#{label.pwspecial}" hidden="true"> </span>
+            <span id="pwmatch" th:text="#{label.pwmatch}" hidden="true"> </span>
+            <span id="pwunmatch" th:text="#{label.pwunmatch}" hidden="true"> </span>
+            <span id="threshold" th:text="#{label.threshold}" hidden="true"> </span>
+            <span id="usuccess" th:text="#{label.usuccess}" hidden="true"> </span>
+            <span id="ufail" th:text="#{label.ufail}" hidden="true"> </span>
+
             <!-- Page Heading -->
             <div class="d-sm-flex align-items-center justify-content-between mb-2 ml-4" >
                 <h1 class="h3 mb-0 text-gray-800" th:text="#{label.userinformation}"> </h1>
@@ -487,7 +476,6 @@
                 <!-- Area Chart -->
                 <div class="col-xl-6 col-lg-5">
                     <div class="card shadow">
-
                         <!-- Card Body -->
                         <div class="card-body">
                             <div class="card shadow h-100">
@@ -543,45 +531,31 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <!-- Begin Page Content -->
             <div class="container-fluid"  th:if="${session['auth']} =='ROLE_ADMIN'">
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800" th:text="#{label.usermanagement}"></h1>
 
                 </div>
-
                 <div class="row">
-
                     <!-- Area Chart -->
                     <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-
                             <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="color:white;">
                                 <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.userlist}"></h6>
-
                                 <span id="emailChk"  hidden="true"></span>
                                 <span id="rscGrpChk"  hidden="true"></span>
                                 <li class="nav-item dropdown no-arrow" >
-
-
-
                                     <a type="button"  class="btn btn-primary" data-toggle="modal"
-                                       data-target="#memberModal" hidden="true">
-                                        사용자 추가
+                                       data-target="#memberModal" hidden="true" th:text="#{label.adduser}">
                                     </a>
-
-
                                     <a type="button" class="btn btn-primary" data-toggle="modal"
-                                       data-target="#deleteModal"  hidden="true">
-                                        사용자 제거
+                                       data-target="#deleteModal"  hidden="true" th:text="#{label.removeuser}">
                                     </a>
-
                                 </li>
                             </div>
                             <!-- Card Body -->
@@ -591,66 +565,44 @@
                                         <table class="table table-bordered" id="userTable" cellspacing="0">
                                             <thead style="text-align: center; position: sticky; top: 0px; background: white; ">
                                             <tr>
-
                                                 <th th:text="#{label.company}"></th>
                                                 <th>Email</th>
                                                 <th th:text="#{label.usertype}"></th>
                                                 <th th:text="#{label.regdate}"></th>
                                                 <th></th>
-
                                             </tr>
                                             </thead>
-
                                             <tbody style="text-align: center">
-
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
             <div class="container-fluid"  th:if="${session['auth']} =='ROLE_MANAGER'">
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <h1 class="h3 mb-0 text-gray-800"  th:text="#{label.usermanagement}"></h1>
-
                 </div>
-
                 <div class="row">
-
                     <!-- Area Chart -->
                     <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-
-                            <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="color:white;">
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="color:white;">
                                 <h6 class="m-0 font-weight-bold text-primary" th:text="#{label.userlist}">  </h6>
-
                                 <span id="emailChk"  hidden="true"></span>
                                 <span id="rscGrpChk"  hidden="true"></span>
                                 <li class="nav-item dropdown no-arrow" >
                                     <a type="button"  class="btn btn-primary" data-toggle="modal"
-                                       data-target="#memberModal" hidden="true">
-                                        사용자 추가
+                                       data-target="#memberModal" hidden="true" th:text="#{label.adduser}">
                                     </a>
-
-
                                     <a type="button" class="btn btn-primary" data-toggle="modal"
-                                       data-target="#deleteModal"  hidden="true">
-                                        사용자 제거
+                                       data-target="#deleteModal"  hidden="true" th:text="#{label.removeuser}">
                                     </a>
-
                                 </li>
                             </div>
                             <!-- Card Body -->
@@ -660,46 +612,32 @@
                                         <table class="table table-bordered" id="manageTable" cellspacing="0">
                                             <thead style="text-align: center; position: sticky; top: 0px; background: white; ">
                                             <tr>
-
                                                 <th th:text="#{label.company}"></th>
                                                 <th>Email</th>
                                                 <th th:text="#{label.usertype}"></th>
                                                 <th th:text="#{label.regdate}"></th>
                                             </tr>
                                             </thead>
-
                                             <tbody style="text-align: center">
-
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
-
                 </div>
-
             </div>
 
-
-
             <div class="container-fluid"  th:if="${session['auth']} =='ROLE_USER'" hidden="true">
-
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mt-4 mb-2">
                     <h1 class="h3 mb-0 text-gray-800" th:text="#{label.resourceinfolist}"> </h1>
                 </div>
-
                 <div class="row">
                     <!-- Area Chart -->
                     <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-4">
-
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="card shadow h-100 py-2">
@@ -732,28 +670,20 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-
                 <button class="btn btn-primary"  id ="userInfoSaveBtn" th:text="#{label.save}"></button>
             </div>
-
         </div>
-
         <footer th:replace="mainfooter.html :: footer"></footer>
-
     </div>
-
-
 </div>
-
 
 <div class="modal fade" id="memberModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">사용자 정보</h5>
+                <h5 class="modal-title" id="exampleModalLabel" th:text="#{label.userinformation}"></h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -765,75 +695,62 @@
                                            <span style="color: red"> TM을 설치한 후에 진행하시고, 리소스 그룹명을 정확히 입력해주시기 바랍니다. </span>
                                        </div>
                                    </div>-->
-
                     <div class="row mt-1 mb-3">
                         <div class="col-xl-3 col-lg-6">
                             <span class="text-dark"> Email: </span>
                         </div>
-
-                        <input type="text" name="email" placeholder="이메일 입력해주세요">
-
+                        <input type="text" name="email" placeholder="Email">
                     </div>
+
                     <div class="row mb-3">
                         <div class="col-xl-3 col-lg-6">
                             <span class="text-dark"> Password: </span>
                         </div>
-                        <input type="password" name="passwd" placeholder="비밀번호">
+                        <input type="password" name="passwd" placeholder="password">
                     </div>
+
                     <div class="row mb-3">
                         <div class="col-xl-3 col-lg-6">
-                            <span class="text-dark"> 권한: </span>
+                            <span class="text-dark" th:text="#{label.auth}"></span>
                         </div>
                         <!--<input type="text" name="auth" placeholder="권한">-->
-
                         <label class="radio-inline mr-1">
-                            <input type="radio" name="auth" id="inlineRadio1" value="ROLE_USER"> 사용자
+                            <input type="radio" name="auth" id="inlineRadio1" value="ROLE_USER" th:text="#{label.user}">
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="auth" id="inlineRadio2" value="ROLE_ADMIN"> 관리자
+                            <input type="radio" name="auth" id="inlineRadio2" value="ROLE_ADMIN" th:text="#{label.admin}">
                         </label>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-xl-3 col-lg-6">
-                            <span class="text-dark"> 리소스그룹: </span>
+                            <span class="text-dark" th:text="#{label.rscgrp}"> : </span>
                         </div>
                         <input type="text" name="rscGrp">
                     </div>
 
-
                     <div class="row mb-3">
                         <div class="col-xl-3 col-lg-6">
-                            <span class="text-dark"> TM IP 주소: </span>
+                            <span class="text-dark" th:text="#{label.tmipaddr}"></span>
                         </div>
                         <input type="text" name="ipAddr">
                     </div>
-
-
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit">등록</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
-
+                    <button class="btn btn-primary" type="submit" th:text="#{label.register}"></button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{label.cancel}"></button>
                 </div>
-
             </form>
         </div>
     </div>
-
 </div>
-
-
-
-
-
 
 <div class="modal fade" id="membermodify" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel2">사용자 수정</h5>
+                <h5 class="modal-title" id="exampleModalLabel2" th:text="#{label.useredit}"></h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -845,53 +762,43 @@
                                            <span style="color: red"> TM을 설치한 후에 진행하시고, 리소스 그룹명을 정확히 입력해주시기 바랍니다. </span>
                                        </div>
                                    </div>-->
-
                     <div class="row mt-1 mb-3">
                         <div class="col-xl-3 col-lg-6">
                             <span class="text-dark"> Email: </span>
                         </div>
-
                         <input type="text" name="email" id="email" readonly>
-
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-xl-3 col-lg-6">
-                            <span class="text-dark"> 회사명: </span>
+                            <span class="text-dark" th:text="#{label.companyname}"> </span>
                         </div>
                         <input type="text" name="company" id="company2">
                     </div>
 
-
                     <div class="row mb-3">
                         <div class="col-xl-3 col-lg-6">
-                            <span class="text-dark"> 사용자 유형: </span>
+                            <span class="text-dark" th:text="#{label.usertype}"> : </span>
                         </div>
                         <!--<input type="text" name="auth" placeholder="권한">-->
-
                         <label class="radio-inline mr-1">
-                            <input type="radio" name="auth" id="inlineRadio11" value="ROLE_USER"> 사용자
+                            <input type="radio" name="auth" id="inlineRadio11" value="ROLE_USER" th:text="#{label.user}">
                         </label>
                         <label class="radio-inline  mr-1">
-                            <input type="radio" name="auth" id="inlineRadio22" value="ROLE_MANAGER"> 매니저
+                            <input type="radio" name="auth" id="inlineRadio22" value="ROLE_MANAGER" th:text="#{label.manager}">
                         </label>
                         <label class="radio-inline  mr-1">
-                            <input type="radio" name="auth" id="inlineRadio33" value="ROLE_ADMIN"> 관리자
+                            <input type="radio" name="auth" id="inlineRadio33" value="ROLE_ADMIN" th:text="#{label.admin}">
                         </label>
                     </div>
-
-
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit">수정</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
-
+                    <button class="btn btn-primary" type="submit" th:text="#{label.edit}"></button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{label.cancel}"></button>
                 </div>
-
             </form>
         </div>
     </div>
-
 </div>
 
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -899,23 +806,19 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">삭제하시겠습니까?</h5>
+                <h5 class="modal-title" id="deleteModalLabel" th:text="#{label.wantdelete}"></h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div>
-
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit" onclick="deleteUser()">삭제</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
-
+                    <button class="btn btn-primary" type="submit" onclick="deleteUser()" th:text="#{label.delete}"></button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{label.cancel}"></button>
                 </div>
-
             </div>
         </div>
     </div>
-
 </div>
 
 <div class="modal fade" id="userPasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -976,7 +879,6 @@
                 </button>
             </div>
             <div>
-
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{label.cancel}"></button>
                 </div>
@@ -986,7 +888,6 @@
 </div>
 
 </body>
-
 
 </html>
 

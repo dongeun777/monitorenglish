@@ -4,10 +4,8 @@
 
 </head>
 
-
 <script type="text/javascript">
     let sessionRsc =  "";
-
 
     window.onload = function () {
         sessionRsc = document.getElementById("rscgrp").innerText;
@@ -22,13 +20,10 @@
             , monthNames: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'] //달력의 월 부분 Tooltip 텍스트
         });
 
-
         $('#datePicker').datepicker('setDate', 'today');
 
         getCostList();
-
     }
-
 
     function getCostList() {
 
@@ -77,49 +72,30 @@
                     usage_cell = usage_cell.replace(",","");
                     sumUsage += usage_cell * 1;
                     sumMoney += usage_cell * 1 ;
-
-
                 }
-
                 document.getElementById("usage").innerText = sumUsage / 1000 + "GB";
-
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-
     }
 
-
-
-
 </script>
-
 
 <body id="page-top">
 
 <!-- Page Wrapper -->
 <div id="wrapper">
-
     <div th:insert="sidemenu.html :: side_menu"></div>
-
-
     <div id="content-wrapper" class="d-flex flex-column">
-
         <!-- Main Content -->
         <div id="content">
-
-
             <div th:insert="topmenu.html :: top_menu"></div>
-
-
-
             <!-- Begin Page Content -->
             <div class="container-fluid">
-
                 <!-- Page Heading -->
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800" >log처리량조회</h1>
+                    <h1 class="h3 mb-0 text-gray-800" th:text="#{label.loginquiry}"></h1>
                     <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                 </div>
 
@@ -127,7 +103,7 @@
                     <div class="col-xl-12" style="background: left;">
                         <div class="card  border-left-primary  shadow mb-1">
                             <div class="input-group mt-2 ml-2 mb-2" style="width: 215px;">
-                                <span class="m-1 font-size-115 ml-1 mr-2">월별조회</span>
+                                <span class="m-1 font-size-115 ml-1 mr-2" th:text="#{label.monthlyinquiry}"></span>
                                 <input type="text" id="datePicker" class="form-control"
                                        style="width:95px; height: 31px; border-top-left-radius: 0.3em; border-bottom-left-radius: 0.3em;">
                                 <div class="input-group-append">
@@ -137,9 +113,8 @@
                                 </div>
                             </div>
 
-
                             <div class="input-group mt-2 ml-2 mb-2" style="width: 250px;">
-                                <span class="h5 mb-0 font-weight-bold text-gray-800 ml-1">총 LOG처리량: </span>
+                                <span class="h5 mb-0 font-weight-bold text-gray-800 ml-1" th:text="#{label.totlogthrput}"></span>
                                 <div class="h5 mb-0  font-weight-bold text-gray-800 ml-1" id="usage"></div>
                             </div>
                         </div>
@@ -148,7 +123,6 @@
                     <div class="col-xl-12">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-
                             <!-- Card Body -->
                             <div class="card-body"  style="height: 450px">
                                 <div class="card shadow h-100 py-2" >
@@ -156,30 +130,21 @@
                                         <table class="table table-bordered" id="userTable" cellspacing="0" >
                                             <thead style="text-align: center; position: sticky; top: 0px; background: white;">
                                             <tr>
-
                                                 <th th:text="#{label.date}"></th>
                                                 <th th:text="#{label.tmlog}"></th>
                                                 <th th:text="#{label.amount}"></th>
-
                                             </tr>
                                             </thead>
                                             <tbody style="text-align: center">
-
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
 
         <footer th:replace="mainfooter.html :: footer"></footer>
@@ -203,15 +168,11 @@
                 margin-right: 15px;
                 margin-top: 2px;
             }
-
-
         </style>
     </div>
-
 
 </div>
 
 </body>
-
 
 </html>

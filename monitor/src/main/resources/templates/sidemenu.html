@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
-
-
 <div th:fragment="side_menu">
     <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
         <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/main">
-
             <div class="sidebar-brand-text mx-3">Monitoring System</div>
         </a>
 
@@ -23,7 +20,6 @@
                 <span>Dashboard</span></a>
         </li>
 
-
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities2"
                aria-expanded="true" aria-controls="collapseUtilities2">
@@ -33,13 +29,11 @@
             <div id="collapseUtilities2" class="collapse" aria-labelledby="headingUtilities"
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <a class="collapse-item" href="/cost"  hidden ="true" >log처리량조회</a>
-                    <a class="collapse-item" href="/billing">청구금액조회</a>
+                    <a class="collapse-item" href="/cost"  hidden ="true"  th:text="#{label.loginquiry}"></a>
+                    <a class="collapse-item" href="/billing" th:text="#{label.billinginquiry}"></a>
                 </div>
             </div>
         </li>
-
-
 
         <li class="nav-item active" th:if="${session['rscgrp']} !=''">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
@@ -51,7 +45,7 @@
                  data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="/resource" th:text="#{label.resourcemanagement}"></a>
-                    <a class="collapse-item" href="/productlist">보유리소스관리</a>
+                    <a class="collapse-item" href="/productlist" th:text="#{label.resourceinfolist}"></a>
                 </div>
             </div>
         </li>
@@ -68,7 +62,6 @@
                 <span >보유리소스정보</span></a>
         </li>-->
 
-
         <!-- Nav Item - Utilities Collapse Menu -->
         <li class="nav-item active">
             <a class="nav-link" href="/member">
@@ -76,13 +69,11 @@
                 <span th:text="#{label.usermanagement}"></span></a>
         </li>
 
-
         <li class="nav-item active" th:if="${session['auth']} !='ROLE_USER'">
             <a class="nav-link" href="/customer">
                 <i class="fas fa-fw fa-search"></i>
                 <span th:text="#{label.customerinfo}"></span></a>
         </li>
-
 
         <li class="nav-item active">
             <a class="nav-link" href="/list">
@@ -90,24 +81,20 @@
                 <span>Q&A</span></a>
         </li>
 
-        <li class="nav-item active"  hidden="true" th:if="${session['rscgrp']} !=''">
+        <li class="nav-item active" hidden="true" th:if="${session['rscgrp']} !=''">
             <a class="nav-link" href="/product">
                 <i class="fas fa-fw fa-plus"></i>
-                <span>제품추가</span></a>
+                <span th:text="#{label.addproduct}"></span></a>
         </li>
 
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">
             <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
-
     </ul>
-
 </div>
 <!--
 
@@ -118,15 +105,8 @@
         <i class="fa fa-bars"></i>
     </button>
 
-
-
     &lt;!&ndash; Topbar Navbar &ndash;&gt;
     <ul class="navbar-nav ml-auto">
-
-
-
-
-
 
         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -160,14 +140,10 @@
                 </a>
             </div>
         </li>
-
     </ul>
-
 </nav>
 -->
 
-
 <!-- Page Wrapper -->
-
 
 </html>

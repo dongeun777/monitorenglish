@@ -15,26 +15,23 @@
 <!--                            <li><a class="dropdown-item" href="#">제품소개</a></li>-->
 <!--                        </ul>-->
 <!--                    </li>-->
-                    <li class="nav-item"><a class="nav-link" href="/home">소개</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/" th:text="#{label.intro}"></a></li>
 <!--                    <li class="nav-item"><a class="nav-link" href="/homesolution">솔루션</a></li>-->
                     <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="/homesolution" role="button" data-bs-toggle="dropdown" aria-expanded="false">솔루션</a>
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="/homesolution" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{label.solution}"></a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
-                        <li><a class="dropdown-item" href="/homesolution">전체 솔루션 소개</a></li>
-                        <li><a class="dropdown-item" href="/spiderTm">SPIDER TM</a></li>
+                        <li><a class="dropdown-item" href="/homesolution" th:text="#{label.fullsolintro}"></a></li>
+                        <!--<li><a class="dropdown-item" href="/spiderTm">SPIDER TM</a></li>-->
                     </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="/homefaq">Q&A</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/homeguide">가이드센터</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/homeguide" th:text="#{label.guidecenter}"></a></li>
                     <hr style="width: 0;  border-right: 2px solid #C7C8C9;  height: calc(4.375rem - 3rem);  margin: auto 1rem; ">
-                    <li class="nav-item" ><a class="nav-link" href="/">MONITORING LOGIN</a></li>
-
-
+                    <li class="nav-item" ><a class="nav-link" href="/login">MONITORING LOGIN</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-
 
 </div>
 
