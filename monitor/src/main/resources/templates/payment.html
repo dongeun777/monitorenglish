@@ -73,6 +73,72 @@
         })
     }
 
+    function testBilling() {
+
+        // 인증 토큰 발급받기
+        $.ajax({
+            url: "https://api.iamport.kr/users/getToken",
+            type: "POST",
+            beforeSend: function (req) {
+                req.setRequestHeader("Content-Type", "application/json");
+            },
+            data: {
+                imp_key: "1117314894269411",
+                imp_secret: "4MVoXXO470Ns6eh1JwDE0MPLmAVGQ10VOVkMT9Q19DtgRLiAhVfhI434FYLw0LsPHMBAWrB645mWQFx7"
+            },
+            success: function (data) {
+                var access_token = data;
+
+                // 빌링키 발급 요청
+                $.ajax({
+                    url: "https://api.iamport.kr/subscribe/customers/" + sessionEmail,
+                    type: "POST",
+                    beforeSend: function (req) {
+                        req.setRequestHeader("Authorization", access_token);
+                    },
+                    data: {
+                        card_number: card_number,
+                        expiry: expiry,
+                        birth: birth,
+                        pwd_2digits: pwd_2digit
+                    },
+                    success: function(data) {
+                        window.alert(done);
+                    }
+                })
+            }
+        })
+    }
+
+    function testPayment() {
+
+        console.log("run testPayment()");
+
+        var card_number = $('input[name=card_number]').val();
+        var expiry = $('input[name=expiry]').val();
+        var birth = $('input[name=birth]').val();
+        var pwd_2digit = $('input[name=pwd_2digit]').val();
+
+        done = $('#paymentcomp').text();
+
+        $.ajax({
+            url: "/paymentOverToken.do",
+            type: "POST",
+            data: {
+                pg: "paymentwall",
+                card: card_number,
+                expiry: expiry,
+                birth: birth,
+                cardPw2digit: pwd_2digit
+            },
+            success: function (data) {
+                console.log("getToken Success!!")
+
+            }
+        });
+    }
+
+
 </script>
 
 <body id="page-top">
@@ -105,7 +171,8 @@
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="card shadow h-100 py-2" >
-                                    <form action="/subscription/issue-billing" method="post">
+                                    <form action="/subscription/issue-billing" method="post" onsubmit="testPayment();">
+<!--                                    <form method="post" action="testBilling()">-->
                                         <div>
                                             <label for="card_number" th:text="#{label.cardnum}"></label>
                                             <input id="card_number" type="text" name="card_number">
@@ -118,11 +185,16 @@
                                             <label for="birth" th:text="#{label.birthdate}"></label>
                                             <input id="birth" type="text" name="birth">
                                         </div>
+                                        <div>
+                                            <label for="cvc" th:text="#{label.cvc}"></label>
+                                            <input id="cvc" type="text" name="cvc">
+                                        </div>
                                         <input type="submit" th:text="#{label.payment}">
                                     </form>
                                 </div>
                                 <button onclick="test()">test</button>
-                                <button onclick="test2()" th:text="#{label.paymentinfo}"></button>
+                                <button onclick="testBilling()" th:text="#{label.paymentinfo}"></button>
+
                             </div>
                         </div>
                     </div>

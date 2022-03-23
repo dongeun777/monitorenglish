@@ -14,6 +14,8 @@ public class BillingVo {
     private String log;
     private String billingsum;
 
+    private String cvc;
+
 
 
     public String getCard() {
@@ -97,4 +99,9 @@ public class BillingVo {
     public void setBillingtype(String billingtype) {
         this.billingtype = billingtype;
     }
+
+    public String getCvc() { return cvc; }
+
+    public void setCvc(String cvc) { this.cvc = cvc; }
+
 }

@@ -253,7 +253,8 @@
             name : 'Cloud Register',
             amount : 0, // 결제창에 표시될 금액. 실제 승인이 이뤄지지는 않습니다. (PC에서는 가격이 표시되지 않음)
             customer_uid : sessionEmail, //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다.
-            buyer_email :sessionEmail
+            buyer_email :sessionEmail,
+
         }, function(rsp) {
             if ( rsp.success ) {
 
@@ -286,18 +287,68 @@
             }
         });
 
-        $.ajax({
-            url: "/billingKey.do",
-            type: "POST",
-            data: {
-                pg:"test",
-                email: sessionEmail
-            },
-            success: function (data) {
+        // $.ajax({
+        //     url: "/billingKey.do",
+        //     type: "POST",
+        //     data: {
+        //         pg:"test",
+        //         email: sessionEmail
+        //     },
+        //     success: function (data) {
+        //
+        //     }
+        // });
 
-            }
+    }
+
+    // paymentwall 해외결제
+    function billingRegOverseas() {
+        console.log(new Date().getTime());
+        // console.log("paymentwall");
+
+        let IMP = window.IMP;   // 생략 가능
+        IMP.init("imp75713203");
+
+        let registrationcomplete = $('#registrationcomplete').text();
+
+        IMP.request_pay({
+            pg: 'paymentwall',
+            pay_method: 'card',
+            merchant_uid: new Date().getTime(),
+            name: 'test',
+            amount: 100,
+            buyer_email: sessionEmail,  // 필수 파라미터
+            currency: 'KRW',
+            customer_uid: sessionEmail  // 지정해야만 재결제를 위한 빌링키를 저장하게 된다.
+        }, function (rsp) {
+           if (rsp.success) {
+               let msg = registrationcomplete;
+               document.getElementById('paymentChk').innerText = "true";
+               alert(msg);
+
+               $.ajax({
+                   url: "/billingKey.do",
+                   type: "POST",
+                   data: {
+                       pg:"test",
+                       email: sessionEmail
+                   },
+                   success: function (data) {
+                   }
+               });
+           }
+           else {
+               // console.log("[fail] " + rsp);
+           }
         });
+    }
 
+    // billingReg() 결제 테스트
+    var openWin;
+    function testBilling() {
+        window.name = "parentForm";
+
+        openWin = window.open("payment", "ChildForm", "width=1000, height=640");
     }
 
     function grpChange() {
@@ -368,7 +419,7 @@
         }*/
         if ($('input:checkbox[id="agreement"]').is(":checked") == true) $('#checkDeploy').modal("show");
         else alert(youmustagreetodistribute);
-        //document.getElementById("rscgrp").innerText;
+        //document.getElementById("scarp").innerText;
     }
 
     function clearChart() {
@@ -525,20 +576,25 @@
             data: {
                 card: document.getElementById("card").value,
                 expiry: document.getElementById("expiry").value,
-                birth: document.getElementById("birth").value
+                birth: document.getElementById("birth").value,
+                cvc: document.getElementById("cvc").value
             },
             success: function (data) {
-                alert(registrationcomplete)
+                alert(registrationcomplete);
                 document.getElementById("paymentChk").innerText ="true";
-                $.ajax({
-                    url: "/monthlyBilling.do",
-                    type: "POST",
-                    success: function (data) {
-                        alert(regularpaymenttest);
-                    }, error: function (request, status, error) {
-                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-                    }
-                });
+
+
+                // $.ajax({
+                //     url: "/monthlyBilling.do",
+                //     type: "POST",
+                //     success: function (data) {
+                //         alert(regularpaymenttest);
+                //     }, error: function (request, status, error) {
+                //         console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                //     }
+                // });
+
+
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -1856,14 +1912,14 @@
                                         <input type="radio" name="costTotal" id="inlineRadio33" value="Re3" th:text="#{label.year3}">
                                     </label>
                                 </div>
-                                <div class="row ml-2" style="margin-top: -20px;">
-                                    <label class="radio-inline mr-5 ml-5 mt-2 ">
-                                    </label>
-                                    <label class="radio-inline mr-3 mt-2 ml-5" th:text="#{label.discount40}">
-                                    </label>
-                                    <label class="radio-inline mr-1 mt-2 ml-3" th:text="#{label.discount50}">
-                                    </label>
-                                </div>
+<!--                                <div class="row ml-2" style="margin-top: -20px;">-->
+<!--                                    <label class="radio-inline mr-5 ml-5 mt-2 ">-->
+<!--                                    </label>-->
+<!--                                    <label class="radio-inline mr-3 mt-2 ml-5" th:text="#{label.discount40}">-->
+<!--                                    </label>-->
+<!--                                    <label class="radio-inline mr-1 mt-2 ml-3" th:text="#{label.discount50}">-->
+<!--                                    </label>-->
+<!--                                </div>-->
                                 <div>
                                     <div class="card-body">
                                         <div class="card border-left-primary shadow py-2"
@@ -2009,11 +2065,14 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary mt-1" onclick='billingReg()' th:text="#{label.paymentinfo}"></button>
+                                        <button th:if="${session['country']} =='KR'" class="btn btn-primary mt-1" onclick='billingReg()' th:text="#{label.OverseasPayment}"></button>
+                                        <button th:if="${session['country']} !='KR'" class="btn btn-primary mt-1" data-toggle="modal" data-target="#billingModal" th:text="#{label.OverseasPayment}"></button>
                                         <button class="btn btn-primary mt-1"
                                                 style="float: right;" onclick='goAgreement()' th:text="#{label.startdistribution}">
                                         </button>
                                     </div>
+
+
                                 </div>
                             </div>
                         </div>
@@ -2106,10 +2165,14 @@
                         <label for="birth" th:text="#{label.birthday}"></label>
                         <input class="form-control"  id="birth" type="text" name="birth" placeholder="YYMMDD">
                     </div>
+                    <div>
+                        <label for="cvc" th:text="#{label.cvc}"></label>
+                        <input class="form-control"  id="cvc" type="text" name="cvc" placeholder="XXX">
+                    </div>
                 </div>
 
                 <div class="modal-footer">
-                    <a class="btn btn-primary" onclick="billingRegister()" th:text="#{label.register}"></a>
+                    <a class="btn btn-primary" onclick="billingRegister()" data-dismiss="modal" th:text="#{label.register}"></a>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                 </div>
 

@@ -10,6 +10,7 @@ import igloosec.monitor.service.MemberService;
 import igloosec.monitor.service.ResourceService;
 import igloosec.monitor.vo.*;
 import org.apache.commons.codec.binary.Base32;
+import org.apache.tomcat.util.json.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -303,7 +304,7 @@ public class HomeController {
         //TOTPTokenValidation.
         //업로드시주석해제
 
-        if (TOTPTokenValidation.validate(inputCode,userSecretKey)||memberVo.getEmail().equals("dongeun.kim@igloosec.com")) {
+        if (TOTPTokenValidation.validate(inputCode,userSecretKey)) {
        //     if (TOTPTokenValidation.validate(inputCode,userSecretKey)) {
             MemberVo user = homeService.selectMember(memberVo.getEmail());
             System.out.println(user.getAuth());
@@ -313,6 +314,7 @@ public class HomeController {
             session.setAttribute("rscgrp",user.getRscGrp());
             session.setAttribute("step",user.getStep());
             session.setAttribute("rowkey",user.getRowkey());
+            session.setAttribute("country",user.getCustomer_country());
             return "success";
         }
         else {
@@ -333,9 +335,7 @@ public class HomeController {
 
     @ResponseBody
     @RequestMapping(value = "/billingRegister.do")
-    public String paymentTest(BillingVo param, HttpSession session) {
-
-
+    public int paymentTest(BillingVo param, HttpSession session) {
 
         //token 생성
         RestTemplate restTemplate = new RestTemplate();
@@ -381,31 +381,146 @@ public class HomeController {
         headers2.setBearerAuth(access_token);
 
 
-
         Date date_now = new Date(System.currentTimeMillis());
         SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
+        String formatDate = fourteen_format.format(date_now).toString();
 
         Map<String, Object> map2 = new HashMap<>();
         map2.put("customer_uid",session.getAttribute("email"));
-        map2.put("merchant_uid", fourteen_format.format(date_now).toString());
+//        map2.put("customer_uid", "lkheework@gmail.com");
+        map2.put("merchant_uid", formatDate);
         //map2.put("merchant_uid", "why");
         map2.put("amount", 100);
-
        //map2.put("amount",  list.get(0).getCostInBillingCurrency());
         map2.put("name", "First Register");
         map2.put("buyer_email", session.getAttribute("email"));
+//        map2.put("buyer_email", "lkheework@gmail.com");
         map2.put("card_number", param.getCard());
         map2.put("expiry", param.getExpiry());
         map2.put("birth", param.getBirth());
+        map2.put("cvc", param.getCvc());
+        map2.put("pg", "paymentwall");
 
+        BillingVo temp = new BillingVo();
+//        temp.setEmail(session.getAttribute("email"));
+        temp.setEmail("lkheework@gmail.com");
+        temp.setPaydate(formatDate.substring(0, 4) + "-"  + formatDate.substring(4, 6));
+        temp.setResource("0");
+        temp.setLog("0");
+        temp.setBillingsum("0");
+        temp.setBillingtype("등록");
+        temp.setPg("paymentwall");
 
 
         Gson var2 = new Gson();
         String json2 = var2.toJson(map2);
         System.out.println(json2);
         HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
-       return restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity2, String.class);
+        String resJsonStr = restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity2, String.class);
 
+        Map<String, Object> resMap = var2.fromJson(resJsonStr, Map.class);
+
+
+        if((Double)resMap.get("code") == 0) {
+            homeService.insertBilling(temp);
+            homeService.updateUserPg(temp);
+        }
+        else {
+
+        }
+
+        return (int)resMap.get("code");
+
+    }
+
+
+    // 해외결제 - 인증 토큰 발급 받기
+    @ResponseBody
+    @PostMapping(value = "/paymentOverToken.do")
+    public String paymentOverGetToken(BillingVo param, HttpSession session) {
+
+        //token 생성
+        RestTemplate restTemplate = new RestTemplate();
+
+        //서버로 요청할 Header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("imp_key", "1117314894269411");
+        map.put("imp_secret", "4MVoXXO470Ns6eh1JwDE0MPLmAVGQ10VOVkMT9Q19DtgRLiAhVfhI434FYLw0LsPHMBAWrB645mWQFx7");
+
+
+        Gson var = new Gson();
+        String json=var.toJson(map);
+        //서버로 요청할 Body
+
+        HttpEntity<String> entity = new HttpEntity<>(json,headers);
+        String token = restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
+
+        //String token = pay.getToken();
+        Gson str = new Gson();
+        token = token.substring(token.indexOf("response") + 10);
+        token = token.substring(0, token.length() - 1);
+
+        GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
+
+        String access_token = vo.getAccess_token();
+        System.out.println(access_token);
+
+        Date date_now = new Date(System.currentTimeMillis());
+        SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
+
+
+        // 빌링키 발급 요청
+
+        // Authorization header에 인증 토큰 추가
+        HttpHeaders headers2 = new HttpHeaders();
+        headers2.setContentType(MediaType.APPLICATION_JSON);
+        headers2.set("Authorization", access_token);
+
+        Map<String, Object> map2 = new HashMap<>();
+//        map2.put("merchant_uid", new Date().getTime()+"");
+//        map2.put("amount", "100");
+//        map2.put("card_number", param.getCard().replace("-",""));
+//        map2.put("expiry", param.getExpiry().replace("-",""));
+//        map2.put("birth", param.getBirth());
+//        map2.put("cvc", param.getCvc());
+//        map2.put("customer_uid", "customer_00");
+//        map2.put("pg", "paymentwall");
+////        map2.put("buyer_email", session.getAttribute("email"));
+//        map2.put("buyer_email", "lkheework@gmail.com");
+
+        map2.put("customer_uid", "customer_01");
+        map2.put("merchant_uid", fourteen_format.format(date_now).toString());
+        map2.put("amount", 100);
+        map2.put("card_number", "4242-4242-4242-4242");
+        map2.put("expiry", "2026-03");
+        map2.put("birth", "830226");
+        map2.put("cvc", "189");
+        map2.put("browser_ip", "46.165.250.78");
+        map2.put("pg", "paymentwall");
+        map2.put("buyer_email", "lkheework@gmail.com");
+
+        Gson gson = new Gson();
+        String json2 = gson.toJson(map2);
+
+
+        HttpEntity<String> entity2 = new HttpEntity<>(json2,headers2);
+        String resJsonStr = restTemplate.postForObject("http://api.iamport.kr/subscribe/payments/onetime", entity2, String.class);
+
+        Map<String, Object> resMap = gson.fromJson(resJsonStr, Map.class);
+
+        if((Double)resMap.get("code") == 0) {  // 빌링키 발급 성공
+
+        }
+        else {  // 빌링키 발급 실패
+
+        }
+
+
+        return "success";
     }
 
 

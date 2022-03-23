@@ -222,9 +222,11 @@ public class ScheduleService {
     }
 
 
+    // 국내 결제 (KCP)
     //@Scheduled(cron = "0 0/5 * * * *")
     //@Scheduled(cron = "0 5 1 * * *") // TCLOUD-54
     @Scheduled(cron = "0 0 5 1  * *") // TCLOUD-54
+//    @Scheduled(cron = "0 00 13 *  * *") // Test
     public void payment() {
 
         //token 생성
@@ -262,6 +264,7 @@ public class ScheduleService {
         List<MemberVo> list = homeService.getPaymentGroup();
         RestTemplate restTemplate2 =null;
 
+//        /*
         if (list != null) {
 
             for (int i = 0 ; i < list.size(); i++) {
@@ -279,11 +282,12 @@ public class ScheduleService {
                 Map<String, Object> map2 = new HashMap<>();
                 map2.put("customer_uid", list.get(i).getEmail());
                 map2.put("merchant_uid", list.get(i).getEmail()+fourteen_format.format(date_now).toString());
-                //map2.put("merchant_uid", "why")map2.put("amount", 100);
-                map2.put("amount", Integer.parseInt(list.get(i).getCostInBillingCurrency()));
+                //map2.put("merchant_uid", "why")
+                map2.put("amount", 100);
+//                map2.put("amount", Integer.parseInt(list.get(i).getCostInBillingCurrency()));
                 map2.put("name", "Monthly Billing");
-
                 map2.put("buyer_email", list.get(i).getEmail());
+
                 BillingVo temp = new BillingVo();
                 temp.setEmail(list.get(i).getEmail());
                 temp.setResource(list.get(i).getCostInBillingCurrency());
@@ -301,6 +305,86 @@ public class ScheduleService {
                 restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
             }
         }
+//         */
+        logger.info("[Monthly Billing] End");
+    }
+
+    // 해외 결제 (paymentwall)
+    @Scheduled(cron = "0 33 10 *  * *") // Test
+//    @Scheduled(cron = "0 0 5 1  * *") // Test
+    public void paymentOverseas() {
+
+        //token 생성
+        RestTemplate restTemplate = new RestTemplate();
+
+        //서버로 요청할 Header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("imp_key", "1117314894269411");
+        map.put("imp_secret", "4MVoXXO470Ns6eh1JwDE0MPLmAVGQ10VOVkMT9Q19DtgRLiAhVfhI434FYLw0LsPHMBAWrB645mWQFx7");
+
+        Gson var = new Gson();
+        String json=var.toJson(map);
+        //서버로 요청할 Body
+
+        HttpEntity<String> entity = new HttpEntity<>(json,headers);
+        String token = restTemplate.postForObject("https://api.iamport.kr/users/getToken", entity, String.class);
+
+        Gson str = new Gson();
+        token = token.substring(token.indexOf("response") + 10);
+        token = token.substring(0, token.length() - 1);
+
+        GetTokenVO vo = str.fromJson(token, GetTokenVO.class);
+
+        String access_token = vo.getAccess_token();
+        System.out.println(access_token);
+
+        //결제 정보 가져오기
+        List<MemberVo> list = homeService.getPaymentGroupOverseas();
+        RestTemplate restTemplate2 =null;
+
+        if (list != null) {
+
+            for (int i = 0 ; i < list.size(); i++) {
+
+                restTemplate2 = new RestTemplate();
+
+                HttpHeaders headers2 = new HttpHeaders();
+                headers2.setContentType(MediaType.APPLICATION_JSON);
+                headers2.setBearerAuth(access_token);
+                //headers2.setBearerAuth("dd8c18caf6cb16e058f90683e62e8258f2684b23");
+
+                Date date_now = new Date(System.currentTimeMillis());
+                SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
+                String paydate = fourteen_format.format(date_now).toString();
+                Map<String, Object> map2 = new HashMap<>();
+                map2.put("customer_uid", list.get(i).getEmail());
+                map2.put("merchant_uid", list.get(i).getEmail()+fourteen_format.format(date_now).toString());
+                map2.put("currency", "USD");
+//                map2.put("amount", 1);
+                map2.put("amount", Integer.parseInt(list.get(i).getCostInBillingCurrency()));
+                map2.put("name", "Monthly Billing");
+                map2.put("buyer_email", list.get(i).getEmail());
+
+                BillingVo temp = new BillingVo();
+                temp.setEmail(list.get(i).getEmail());
+                temp.setResource(list.get(i).getCostInBillingCurrency());
+                temp.setLog("0");
+                temp.setBillingsum(Integer.toString((Integer.parseInt(list.get(i).getCostInBillingCurrency()) + Integer.parseInt("0"))));
+                temp.setPaydate(paydate.substring(0, 4) + "-" + paydate.substring(4, 6));
+                temp.setBillingtype("정기결제");
+                homeService.insertBilling(temp);
+
+                Gson var2 = new Gson();
+                String json2 = var2.toJson(map2);
+                System.out.println(json2);
+                HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
+                restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
+            }
+        }
+
         logger.info("[Monthly Billing] End");
     }
 

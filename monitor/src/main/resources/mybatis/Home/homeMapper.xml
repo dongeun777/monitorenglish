@@ -77,7 +77,6 @@
         where customer_email ='${emailStr}'
     </select>
 
-
     <select id="selectLogList" parameterType="UsageVo" resultType="UsageVo">
         select equip,usages,logid from USER_EQUIP_LIST where email ='${emailparam}'
     </select>
@@ -156,8 +155,9 @@
     </select>
 
     <select id="selectMember" resultType="MemberVo" parameterType="String">
-        SELECT * FROM USER_LIST
-        where email = #{email}
+        SELECT  * FROM USER_LIST a , leads_info b
+        where a.email = b.customer_email and a.email = #{email}
+            limit 1
     </select>
 
     <select id="selectShellParam" resultType="UsageVo" parameterType="String">
@@ -239,11 +239,19 @@
 
     <select id="getPaymentGroup" resultType="MemberVo" >
           SELECT  b.email as email, round(SUM(costInBillingCurrency),0) + (select (CASE WHEN b.cost_type ='noRe' THEN noRe WHEN  b.cost_type ='Re1' THEN Re1 ELSE Re3 END)  from license a where a.size =b.vm_series_id ) as costInBillingCurrency
-          FROM USED_AMOUNT a,USER_LIST b
-        WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),6,2)AND substring(DATE,7,10) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),1,4)
-          and resourceGroupName in ( select rscGrp from USER_LIST pa where   IFNULL(pg, '') !='')
+          FROM USED_AMOUNT a,USER_LIST b, leads_info li
+          WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),6,2)AND substring(DATE,7,10) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),1,4)
+          and resourceGroupName in ( select rscGrp from USER_LIST pa where   IFNULL(pg, '') !='') and li.customer_email = b.email and li.customer_country = 'KR'
         GROUP BY resourceGroupName;
 
+    </select>
+
+    <select id="getPaymentGroupOverseas" resultType="MemberVo">
+        SELECT  b.email as email, exchangeRatePricingToBilling, round(SUM(costInUsd),0) + round((select (CASE WHEN b.cost_type ='noRe' THEN noRe WHEN  b.cost_type ='Re1' THEN Re1 ELSE Re3 END)  from license a where a.size =b.vm_series_id ) / exchangeRatePricingToBilling, 0) as costInBillingCurrency
+        FROM USED_AMOUNT a,USER_LIST b, leads_info li
+        WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),6,2)AND substring(DATE,7,10) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),1,4)
+          and resourceGroupName in ( select rscGrp from USER_LIST pa where   IFNULL(pg, '') !='') and li.customer_email = b.email and li.customer_country != 'KR'
+        GROUP BY resourceGroupName;
     </select>
 
     <select id="getBillingList" resultType="BillingVo"  parameterType="BillingVo" >
