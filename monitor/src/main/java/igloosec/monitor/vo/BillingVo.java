@@ -15,6 +15,10 @@ public class BillingVo {
     private String billingsum;
 
     private String cvc;
+    private String license;
+    private String currency;
+
+    private String role;
 
 
 
@@ -104,4 +108,27 @@ public class BillingVo {
 
     public void setCvc(String cvc) { this.cvc = cvc; }
 
+    public String getLicense() {
+        return license;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }

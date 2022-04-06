@@ -335,7 +335,7 @@ public class HomeController {
 
     @ResponseBody
     @RequestMapping(value = "/billingRegister.do")
-    public int paymentTest(BillingVo param, HttpSession session) {
+    public double paymentTest(BillingVo param, HttpSession session) {
 
         //token 생성
         RestTemplate restTemplate = new RestTemplate();
@@ -390,7 +390,8 @@ public class HomeController {
 //        map2.put("customer_uid", "lkheework@gmail.com");
         map2.put("merchant_uid", formatDate);
         //map2.put("merchant_uid", "why");
-        map2.put("amount", 100);
+        map2.put("currency", "USD");
+        map2.put("amount", 1);
        //map2.put("amount",  list.get(0).getCostInBillingCurrency());
         map2.put("name", "First Register");
         map2.put("buyer_email", session.getAttribute("email"));
@@ -402,14 +403,15 @@ public class HomeController {
         map2.put("pg", "paymentwall");
 
         BillingVo temp = new BillingVo();
-//        temp.setEmail(session.getAttribute("email"));
-        temp.setEmail("lkheework@gmail.com");
+        temp.setEmail(session.getAttribute("email").toString());
+//        temp.setEmail("lkheework@gmail.com");
         temp.setPaydate(formatDate.substring(0, 4) + "-"  + formatDate.substring(4, 6));
         temp.setResource("0");
-        temp.setLog("0");
+        temp.setLicense("0");
         temp.setBillingsum("0");
         temp.setBillingtype("등록");
         temp.setPg("paymentwall");
+        temp.setCurrency("USD");
 
 
         Gson var2 = new Gson();
@@ -421,7 +423,7 @@ public class HomeController {
         Map<String, Object> resMap = var2.fromJson(resJsonStr, Map.class);
 
 
-        if((Double)resMap.get("code") == 0) {
+        if((double)resMap.get("code") == 0) {
             homeService.insertBilling(temp);
             homeService.updateUserPg(temp);
         }
@@ -429,7 +431,7 @@ public class HomeController {
 
         }
 
-        return (int)resMap.get("code");
+        return (double) resMap.get("code");
 
     }
 
@@ -536,10 +538,11 @@ public class HomeController {
         BillingVo temp = new BillingVo();
         temp.setEmail(param.getEmail());
         temp.setResource("0");
-        temp.setLog("0");
+        temp.setLicense("0");
         temp.setBillingsum("0");
         temp.setPaydate(paydate.substring(0, 4) + "-" + paydate.substring(4, 6));
         temp.setBillingtype("등록");
+        temp.setCurrency("KRW");
 
 
         homeService.insertBilling(temp);
@@ -551,9 +554,11 @@ public class HomeController {
 
     @ResponseBody
     @RequestMapping(value = "/getBillingList.do")
-    public List<BillingVo> getBillingList(Model model,  BillingVo param)  {
+    public List<BillingVo> getBillingList(HttpSession session, Model model,  BillingVo param)  {
 
 
+        param.setEmail(session.getAttribute("email").toString());
+        param.setRole(session.getAttribute("auth").toString());
         List<BillingVo> list = homeService.getBillingList(param);
 
         model.addAttribute("list",list);
@@ -699,7 +704,10 @@ public class HomeController {
 
     @ResponseBody
     @RequestMapping(value = "/getMeterDetailList.do")
-    public List<UsageVo> getMeterDetailList(Model model, UsageVo param) {
+    public List<UsageVo> getMeterDetailList(HttpSession session, Model model, UsageVo param) {
+
+        String customer_country = session.getAttribute("country").toString();
+        param.setCountry(customer_country);
 
         List<UsageVo>  list = homeService.selectMeterDetail(param);
         if (list != null){

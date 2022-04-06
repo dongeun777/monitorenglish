@@ -26,8 +26,16 @@
         $(function () {
             // 실제로 보여지는 날짜를 정의.
             $('#txt-work-month').text(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) );
+
             // monthpicker 에서 사용할 초기 날짜 정의
-            $('#monthpicker').val(new Date().getFullYear() + '-' + (new Date().getMonth() + 1));
+            var nowMonth = new Date().getMonth() + 1;
+            if(nowMonth <= 9) {
+                $('#monthpicker').val(new Date().getFullYear() + '-0' + nowMonth);
+            }
+            else {
+                $('#monthpicker').val(new Date().getFullYear() + '-' + nowMonth);
+            }
+
             getBillingList();
             // monthpicker 적용
             $('#monthpicker').bootstrapMonthpicker({
@@ -93,8 +101,9 @@
                         {data: "paydate"},
                         {data: "billingtype"},
                         {data: "resource"},
-                        {data: "log"},
-                        {data: "billingsum"}
+                        {data: "license"},
+                        {data: "billingsum"},
+                        {data: "currency"}
                     ],
                     columnDefs: [{
                         targets: [4, 5, 6], render: $.fn.dataTable.render.number(',')
@@ -161,8 +170,9 @@
                                                 <th th:text="#{label.billingmonth}"></th>
                                                 <th th:text="#{label.category}"></th>
                                                 <th th:text="#{label.resourceusageamount}"></th>
-                                                <th th:text="#{label.logusageamount}"></th>
+                                                <th th:text="#{label.license}"></th>
                                                 <th th:text="#{label.total}"></th>
+                                                <th th:text="#{label.billingCurrency}"></th>
                                             </tr>
                                             </thead>
                                             <tbody style="text-align: center">

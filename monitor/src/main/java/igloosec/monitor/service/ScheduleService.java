@@ -226,7 +226,6 @@ public class ScheduleService {
     //@Scheduled(cron = "0 0/5 * * * *")
     //@Scheduled(cron = "0 5 1 * * *") // TCLOUD-54
     @Scheduled(cron = "0 0 5 1  * *") // TCLOUD-54
-//    @Scheduled(cron = "0 00 13 *  * *") // Test
     public void payment() {
 
         //token 생성
@@ -290,12 +289,13 @@ public class ScheduleService {
 
                 BillingVo temp = new BillingVo();
                 temp.setEmail(list.get(i).getEmail());
-                temp.setResource(list.get(i).getCostInBillingCurrency());
-                temp.setLog("0");
+                temp.setResource(list.get(i).getBillingResource());
+                temp.setLicense(list.get(i).getBillingLicense());
                 temp.setBillingsum(Integer.toString((Integer.parseInt(list.get(i).getCostInBillingCurrency()) + Integer.parseInt("0"))));
                 temp.setPaydate(paydate.substring(0, 4) + "-" + paydate.substring(4, 6));
                 temp.setBillingtype("정기결제");
-                homeService.insertBilling(temp);
+                temp.setCurrency("KRW");
+
 
                 Gson var2 = new Gson();
                 String json2 = var2.toJson(map2);
@@ -303,15 +303,17 @@ public class ScheduleService {
                 HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
                 //return restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity2, String.class);
                 restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
+
+                homeService.insertBilling(temp);
             }
         }
 //         */
         logger.info("[Monthly Billing] End");
     }
 
+
     // 해외 결제 (paymentwall)
-    @Scheduled(cron = "0 33 10 *  * *") // Test
-//    @Scheduled(cron = "0 0 5 1  * *") // Test
+    @Scheduled(cron = "0 0 5 1  * *")
     public void paymentOverseas() {
 
         //token 생성
@@ -354,7 +356,6 @@ public class ScheduleService {
                 HttpHeaders headers2 = new HttpHeaders();
                 headers2.setContentType(MediaType.APPLICATION_JSON);
                 headers2.setBearerAuth(access_token);
-                //headers2.setBearerAuth("dd8c18caf6cb16e058f90683e62e8258f2684b23");
 
                 Date date_now = new Date(System.currentTimeMillis());
                 SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -363,18 +364,20 @@ public class ScheduleService {
                 map2.put("customer_uid", list.get(i).getEmail());
                 map2.put("merchant_uid", list.get(i).getEmail()+fourteen_format.format(date_now).toString());
                 map2.put("currency", "USD");
-//                map2.put("amount", 1);
-                map2.put("amount", Integer.parseInt(list.get(i).getCostInBillingCurrency()));
+                map2.put("amount", 1);
+//                map2.put("amount", Integer.parseInt(list.get(i).getCostInBillingCurrency()));
                 map2.put("name", "Monthly Billing");
                 map2.put("buyer_email", list.get(i).getEmail());
 
                 BillingVo temp = new BillingVo();
                 temp.setEmail(list.get(i).getEmail());
                 temp.setResource(list.get(i).getCostInBillingCurrency());
-                temp.setLog("0");
+                temp.setResource(list.get(i).getBillingResource());
+                temp.setLicense(list.get(i).getBillingLicense());
                 temp.setBillingsum(Integer.toString((Integer.parseInt(list.get(i).getCostInBillingCurrency()) + Integer.parseInt("0"))));
                 temp.setPaydate(paydate.substring(0, 4) + "-" + paydate.substring(4, 6));
                 temp.setBillingtype("정기결제");
+                temp.setCurrency("USD");
                 homeService.insertBilling(temp);
 
                 Gson var2 = new Gson();

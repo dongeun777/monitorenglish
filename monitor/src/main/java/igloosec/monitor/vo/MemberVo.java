@@ -63,6 +63,9 @@ public class MemberVo implements UserDetails {
     private String phoneNum;
     private String customer_country;
 
+    private String billingResource;
+    private String billingLicense;
+
     public MemberVo() {
     }
 
@@ -426,5 +429,21 @@ public class MemberVo implements UserDetails {
 
     public void setExchangeRatePricingToBilling(String exchangeRatePricingToBilling) {
         this.exchangeRatePricingToBilling = exchangeRatePricingToBilling;
+    }
+
+    public String getBillingResource() {
+        return billingResource;
+    }
+
+    public void setBillingResource(String billingResource) {
+        this.billingResource = billingResource;
+    }
+
+    public String getBillingLicense() {
+        return billingLicense;
+    }
+
+    public void setBillingLicense(String billingLicense) {
+        this.billingLicense = billingLicense;
     }
 }
