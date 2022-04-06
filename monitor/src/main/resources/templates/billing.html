@@ -9,24 +9,24 @@
 
     window.onload = function () {
         sessionRsc = document.getElementById("rscgrp").innerText;
-/*
-        $("#datePicker").datepicker({
-            dateFormat: 'yy-mm' //Input Display Format 변경
-            , showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
-            , showMonthAfterYear: true //년도 먼저 나오고, 뒤에 월 표시
-            , changeYear: false //콤보박스에서 년 선택 가능
-            , changeMonth: false //콤보박스에서 월 선택 가능
-            , yearSuffix: "년" //달력의 년도 부분 뒤에 붙는 텍스트
-            , monthNamesShort: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'] //달력의 월 부분 텍스트
-            , monthNames: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'] //달력의 월 부분 Tooltip 텍스트
-        });
+        /*
+                $("#datePicker").datepicker({
+                    dateFormat: 'yy-mm' //Input Display Format 변경
+                    , showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+                    , showMonthAfterYear: true //년도 먼저 나오고, 뒤에 월 표시
+                    , changeYear: false //콤보박스에서 년 선택 가능
+                    , changeMonth: false //콤보박스에서 월 선택 가능
+                    , yearSuffix: "년" //달력의 년도 부분 뒤에 붙는 텍스트
+                    , monthNamesShort: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'] //달력의 월 부분 텍스트
+                    , monthNames: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'] //달력의 월 부분 Tooltip 텍스트
+                });
 
-        $('#datePicker').datepicker('setDate', 'today');
-*/
+                $('#datePicker').datepicker('setDate', 'today');
+        */
 
         $(function () {
             // 실제로 보여지는 날짜를 정의.
-            $('#txt-work-month').text(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) );
+            $('#txt-work-month').text(new Date().getFullYear() + '-' + (new Date().getMonth() + 1));
             // monthpicker 에서 사용할 초기 날짜 정의
             $('#monthpicker').val(new Date().getFullYear() + '-' + (new Date().getMonth() + 1));
             getBillingList();
@@ -35,7 +35,7 @@
                 // from: '2014-05',
                 // to: '2014-10',
                 // 달을 선택한 다음의 이벤트 정의
-                onSelect: function(value) {
+                onSelect: function (value) {
                     var workMonthStr = '';
                     /*
                     * monthpicker 라이브러리에서 기본으로 "-" 를 사용
@@ -47,7 +47,7 @@
                         if (_idx == 0)
                             workMonthStr += _date + '-';
                         if (_idx == 1)
-                            workMonthStr += _date ;
+                            workMonthStr += _date;
                     });
 
                     // 표시
@@ -117,29 +117,29 @@
 <!-- Page Wrapper -->
 <div id="wrapper">
     <div th:insert="sidemenu.html :: side_menu"></div>
-    <div id="content-wrapper" class="d-flex flex-column">
+    <div id="content-wrapper" className="d-flex flex-column">
         <!-- Main Content -->
         <div id="content">
             <div th:insert="topmenu.html :: top_menu"></div>
             <!-- Begin Page Content -->
-            <div class="container-fluid">
+            <div className="container-fluid">
                 <!-- Page Heading -->
-                <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <h1 class="h3 mb-0 text-gray-800" th:text="#{label.billinginquiry}"></h1>
+                <div className="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 className="h3 mb-0 text-gray-800" th:text="#{label.billinginquiry}"></h1>
                     <span id="rscgrp" hidden="true" th:text="${session['rscgrp']}"> </span>
                 </div>
 
-                <div class="row">
-                    <div class="col-xl-12 col-lg-10">
-                        <div class="card shadow mb-1">
-                            <div class="input-group mt-2 ml-2 mb-2" style="width: 415px;" >
-                                <span class="m-1 font-size-115 ml-1 mr-2" th:text="#{label.monthlyinquiry}"></span>
-                                <span hidden="true" id ="txt-work-month"> </span>
-                                <input type="text" id="monthpicker" class="form-control"
+                <div className="row">
+                    <div className="col-xl-12 col-lg-10">
+                        <div className="card shadow mb-1">
+                            <div className="input-group mt-2 ml-2 mb-2" style="width: 415px;">
+                                <span className="m-1 font-size-115 ml-1 mr-2" th:text="#{label.monthlyinquiry}"></span>
+                                <span hidden="true" id="txt-work-month"> </span>
+                                <input type="text" id="monthpicker" className="form-control"
                                        style="width:95px; height: 31px; border-top-left-radius: 0.3em; border-bottom-left-radius: 0.3em;">
-                                <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button" onclick='getBillingList()'>
-                                        <i class="fas fa-search fa-sm "></i>
+                                <div className="input-group-append">
+                                    <button className="btn btn-primary" type="button" onClick='getBillingList()'>
+                                        <i className="fas fa-search fa-sm "></i>
                                     </button>
                                 </div>
                             </div>
@@ -147,14 +147,14 @@
                     </div>
 
                     <!-- Area Chart -->
-                    <div class="col-xl-12 col-lg-10">
-                        <div class="card shadow mb-4">
+                    <div className="col-xl-12 col-lg-10">
+                        <div className="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                             <!-- Card Body -->
-                            <div class="card-body">
-                                <div class="card shadow h-100 py-2">
-                                    <div class="table-responsive" style="overflow:auto; ">
-                                        <table class="table table-bordered" id="userTable" cellspacing="0">
+                            <div className="card-body">
+                                <div className="card shadow h-100 py-2">
+                                    <div className="table-responsive" style="overflow:auto; ">
+                                        <table className="table table-bordered" id="userTable" cellSpacing="0">
                                             <thead style="text-align: center; position: sticky; top: 0px; ">
                                             <tr>
                                                 <th th:text="#{label.pgcompany}"></th>

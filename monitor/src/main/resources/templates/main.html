@@ -361,11 +361,11 @@
 
     function goAgreement() {
         let youmustagreetodistribute = $('#youmustagreetodistribute').text();
-/*
-        if(document.getElementById("paymentChk").innerText !="true") {
-            alert("결제정보를 입력하셔야 진행이 가능합니다.")
-            return;
-        }*/
+        /*
+                if(document.getElementById("paymentChk").innerText !="true") {
+                    alert("결제정보를 입력하셔야 진행이 가능합니다.")
+                    return;
+                }*/
         if ($('input:checkbox[id="agreement"]').is(":checked") == true) $('#checkDeploy').modal("show");
         else alert(youmustagreetodistribute);
         //document.getElementById("rscgrp").innerText;
@@ -1325,17 +1325,17 @@
             </div>
         </li>
 
-  <!--      <li class="nav-item active" th:if="${session['rscgrp']} !=''">
-            <a class="nav-link" href="/resource">
-                <i class="fas fa-fw fa-chart-pie"></i>
-                <span th:text="#{label.resourcemanagement}"></span></a>
-        </li>
+        <!--      <li class="nav-item active" th:if="${session['rscgrp']} !=''">
+                  <a class="nav-link" href="/resource">
+                      <i class="fas fa-fw fa-chart-pie"></i>
+                      <span th:text="#{label.resourcemanagement}"></span></a>
+              </li>
 
-        <li class="nav-item active" th:if="${session['rscgrp']} !=''">
-            <a class="nav-link" href="/productlist">
-                <i class="fas fa-fw fa-list"></i>
-                <span >보유리소스정보</span></a>
-        </li>-->
+              <li class="nav-item active" th:if="${session['rscgrp']} !=''">
+                  <a class="nav-link" href="/productlist">
+                      <i class="fas fa-fw fa-list"></i>
+                      <span >보유리소스정보</span></a>
+              </li>-->
 
         <!-- Nav Item - Utilities Collapse Menu -->
         <li class="nav-item active">
@@ -1784,11 +1784,11 @@
                                         </div>
                                     </div>
                                     <button class="btn btn-primary ml-4" onclick='registerLog()' th:text="#{label.register}"></button>
- <!--                                   <button class="btn btn-primary mt-1" style="display: block; position: absolute; bottom: 20px;"
-                                            onclick='goChoice()'><i
-                                            class="fa fa-arrow-alt-circle-left mr-1"></i>Back
-                                    </button>
--->
+                                    <!--                                   <button class="btn btn-primary mt-1" style="display: block; position: absolute; bottom: 20px;"
+                                                                               onclick='goChoice()'><i
+                                                                               class="fa fa-arrow-alt-circle-left mr-1"></i>Back
+                                                                       </button>
+                                   -->
                                 </div>
                             </div>
                         </div>
@@ -2127,21 +2127,21 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-            <!--    <div class="modal-body">
+                <!--    <div class="modal-body">
 
-                    <span class="m-1 font-size-115 mt-2 mr-2">제품ID를 정해주세요</span>
+                        <span class="m-1 font-size-115 mt-2 mr-2">제품ID를 정해주세요</span>
 
-                    <div class="input-group" >
-                        <input class="form-control"
-                               id="rscname" style="border-top-right-radius: .35rem;border-bottom-right-radius: .35rem;">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button" onclick='rscCheck()'>
-                                중복체크
-                            </button>
+                        <div class="input-group" >
+                            <input class="form-control"
+                                   id="rscname" style="border-top-right-radius: .35rem;border-bottom-right-radius: .35rem;">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick='rscCheck()'>
+                                    중복체크
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    <span class="m-1 font-size-115 mt-3 mr-2" hidden ="true" id="resultSpan"></span>
-                </div>-->
+                        <span class="m-1 font-size-115 mt-3 mr-2" hidden ="true" id="resultSpan"></span>
+                    </div>-->
                 <div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" type="submit" onclick='createvm()' id="deployBtn" th:text="#{label.distribution}">
