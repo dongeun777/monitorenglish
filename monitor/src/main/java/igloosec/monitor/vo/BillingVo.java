@@ -14,6 +14,12 @@ public class BillingVo {
     private String log;
     private String billingsum;
 
+    private String cvc;
+    private String license;
+    private String currency;
+
+    private String role;
+
 
 
     public String getCard() {
@@ -96,5 +102,33 @@ public class BillingVo {
 
     public void setBillingtype(String billingtype) {
         this.billingtype = billingtype;
+    }
+
+    public String getCvc() { return cvc; }
+
+    public void setCvc(String cvc) { this.cvc = cvc; }
+
+    public String getLicense() {
+        return license;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

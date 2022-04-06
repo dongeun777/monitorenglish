@@ -33,7 +33,7 @@
 
     </update>
 
-    <update id="goBack" parameterType="String">
+    <update id="" parameterType="String">
         update product_apply SET pStep = 0 where apply_id = #{email};
 
     </update>

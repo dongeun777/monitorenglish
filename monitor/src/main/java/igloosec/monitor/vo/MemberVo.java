@@ -36,6 +36,7 @@ public class MemberVo implements UserDetails {
     private String logid;
 
     private String costInBillingCurrency;
+    private String exchangeRatePricingToBilling;
 
     private String usage_data;
 
@@ -60,6 +61,13 @@ public class MemberVo implements UserDetails {
     private String autoscalingYN;
     private int criticalValue;
     private String phoneNum;
+    private String customer_country;
+
+    private String billingResource;
+    private String billingLicense;
+
+    public MemberVo() {
+    }
 
     public String getEmail() {
         return email;
@@ -405,5 +413,37 @@ public class MemberVo implements UserDetails {
 
     public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
+    }
+
+    public String getCustomer_country() {
+        return customer_country;
+    }
+
+    public void setCustomer_country(String customer_country) {
+        this.customer_country = customer_country;
+    }
+
+    public String getExchangeRatePricingToBilling() {
+        return exchangeRatePricingToBilling;
+    }
+
+    public void setExchangeRatePricingToBilling(String exchangeRatePricingToBilling) {
+        this.exchangeRatePricingToBilling = exchangeRatePricingToBilling;
+    }
+
+    public String getBillingResource() {
+        return billingResource;
+    }
+
+    public void setBillingResource(String billingResource) {
+        this.billingResource = billingResource;
+    }
+
+    public String getBillingLicense() {
+        return billingLicense;
+    }
+
+    public void setBillingLicense(String billingLicense) {
+        this.billingLicense = billingLicense;
     }
 }

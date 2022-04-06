@@ -162,6 +162,9 @@ public class HomeService {
     public List<MemberVo> getPaymentGroup() { return mapper.getPaymentGroup();
     }
 
+    public List<MemberVo> getPaymentGroupOverseas() { return mapper.getPaymentGroupOverseas();
+    }
+
     public List<BillingVo> getBillingList(BillingVo param) { return mapper.getBillingList(param);
     }
 

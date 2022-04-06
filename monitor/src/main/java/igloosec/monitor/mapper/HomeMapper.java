@@ -67,6 +67,8 @@ public interface HomeMapper {
 
     List<MemberVo> getPaymentGroup();
 
+    List<MemberVo> getPaymentGroupOverseas();
+
     List<BillingVo> getBillingList(BillingVo param);
 
     void insertBilling(BillingVo temp);

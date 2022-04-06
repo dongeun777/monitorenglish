@@ -35,6 +35,8 @@
     var sumbefore = 0;
     var thisLabel = "";
     var lastLabel = "";
+    let sumCost = 0;
+    let sumCostBefore = 0;
 
     let parameter = "";
     let lastparameter = "";
@@ -44,6 +46,7 @@
     let sessionRsc = "";
     let sessionStep = 0;
     let sessionEmail = "";
+    let sessionCountry = "";
 
     window.onload = function () {
 
@@ -52,6 +55,7 @@
         sessionAuth = document.getElementById("auth").innerText;
         sessionStep = document.getElementById("step").innerText * 1;
         sessionEmail = document.getElementById("email").innerText;
+        sessionCountry = document.getElementById("country").innerText;
 
         document.getElementById("div_load_image").hidden = true;
 
@@ -60,6 +64,7 @@
         let step3deploying = $('#step3deploying').text();
 
         let averagedailythroughput = $('#averagedailythroughput').text();
+        let amountCloudUsage = $('#amountCloudUsage').text();
         let amountlogusage = $('#amountlogusage').text();
         let logthroughput = $('#logthroughput').text();
 
@@ -93,7 +98,8 @@
 
             //document.getElementById("thisMon1").innerText = monthVal + '월처리량'
             //document.getElementById("thisMon1").innerText = monthVal + document.getElementById("thisMon1").innerText;
-            document.getElementById("thisMon2").innerText = monthValprop + ' ' + averagedailythroughput
+            // document.getElementById("thisMon2").innerText = monthValprop + ' ' + averagedailythroughput
+            document.getElementById("thisMon2").innerText = monthValprop + ' ' + amountCloudUsage
             document.getElementById("thisMon3").innerText = monthValprop + ' ' + amountlogusage
             document.getElementById("thisMon4").innerText = monthValprop + ' ' + logthroughput
             thisLabel = monthValprop;
@@ -253,7 +259,8 @@
             name : 'Cloud Register',
             amount : 0, // 결제창에 표시될 금액. 실제 승인이 이뤄지지는 않습니다. (PC에서는 가격이 표시되지 않음)
             customer_uid : sessionEmail, //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다.
-            buyer_email :sessionEmail
+            buyer_email :sessionEmail,
+
         }, function(rsp) {
             if ( rsp.success ) {
 
@@ -286,18 +293,68 @@
             }
         });
 
-        $.ajax({
-            url: "/billingKey.do",
-            type: "POST",
-            data: {
-                pg:"test",
-                email: sessionEmail
-            },
-            success: function (data) {
+        // $.ajax({
+        //     url: "/billingKey.do",
+        //     type: "POST",
+        //     data: {
+        //         pg:"test",
+        //         email: sessionEmail
+        //     },
+        //     success: function (data) {
+        //
+        //     }
+        // });
 
-            }
+    }
+
+    // paymentwall 해외결제
+    function billingRegOverseas() {
+        console.log(new Date().getTime());
+        // console.log("paymentwall");
+
+        let IMP = window.IMP;   // 생략 가능
+        IMP.init("imp75713203");
+
+        let registrationcomplete = $('#registrationcomplete').text();
+
+        IMP.request_pay({
+            pg: 'paymentwall',
+            pay_method: 'card',
+            merchant_uid: new Date().getTime(),
+            name: 'test',
+            amount: 100,
+            buyer_email: sessionEmail,  // 필수 파라미터
+            currency: 'KRW',
+            customer_uid: sessionEmail  // 지정해야만 재결제를 위한 빌링키를 저장하게 된다.
+        }, function (rsp) {
+           if (rsp.success) {
+               let msg = registrationcomplete;
+               document.getElementById('paymentChk').innerText = "true";
+               alert(msg);
+
+               $.ajax({
+                   url: "/billingKey.do",
+                   type: "POST",
+                   data: {
+                       pg:"test",
+                       email: sessionEmail
+                   },
+                   success: function (data) {
+                   }
+               });
+           }
+           else {
+               // console.log("[fail] " + rsp);
+           }
         });
+    }
 
+    // billingReg() 결제 테스트
+    var openWin;
+    function testBilling() {
+        window.name = "parentForm";
+
+        openWin = window.open("payment", "ChildForm", "width=1000, height=640");
     }
 
     function grpChange() {
@@ -368,7 +425,7 @@
                 }*/
         if ($('input:checkbox[id="agreement"]').is(":checked") == true) $('#checkDeploy').modal("show");
         else alert(youmustagreetodistribute);
-        //document.getElementById("rscgrp").innerText;
+        //document.getElementById("scarp").innerText;
     }
 
     function clearChart() {
@@ -525,20 +582,25 @@
             data: {
                 card: document.getElementById("card").value,
                 expiry: document.getElementById("expiry").value,
-                birth: document.getElementById("birth").value
+                birth: document.getElementById("birth").value,
+                cvc: document.getElementById("cvc").value
             },
             success: function (data) {
-                alert(registrationcomplete)
+                alert(registrationcomplete);
                 document.getElementById("paymentChk").innerText ="true";
-                $.ajax({
-                    url: "/monthlyBilling.do",
-                    type: "POST",
-                    success: function (data) {
-                        alert(regularpaymenttest);
-                    }, error: function (request, status, error) {
-                        console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-                    }
-                });
+
+
+                // $.ajax({
+                //     url: "/monthlyBilling.do",
+                //     type: "POST",
+                //     success: function (data) {
+                //         alert(regularpaymenttest);
+                //     }, error: function (request, status, error) {
+                //         console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+                //     }
+                // });
+
+
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
@@ -829,8 +891,8 @@
                 }
 
                 document.getElementById("usage").innerText = sumUsage / 1000 + " GB";
-                if (sumUsage == 0) document.getElementById("everage").innerText = "0 MB";
-                else document.getElementById("everage").innerText = Math.round(sumUsage / tablelength) + " MB";
+                // if (sumUsage == 0) document.getElementById("everage").innerText = "0 MB";
+                // else document.getElementById("everage").innerText = Math.round(sumUsage / tablelength) + " MB";
 
                 document.getElementById("money").innerText = " " + comma(Math.round(sumMoney)) + " " + krwon;
                 sumMoney = Math.round(sumMoney);
@@ -864,6 +926,11 @@
 
     function getMeterDetailList(rscParam) {
 
+        let krwon = $('#krwon').text();
+        var aMonthAgoYear;
+        var aMonthAgoMonth;
+
+        // 이번달
         $.ajax({
             url: "/getMeterDetailList.do",
             type: "GET",
@@ -873,6 +940,8 @@
                 rscparam: rscParam
             },
             success: function (data) {
+                tablelength = data.length;
+
                 meterDetailTable = $('#meterDetailTable').dataTable({
                     aaData: data,
                     destroy: true,
@@ -886,11 +955,65 @@
                     searching: false,
                     columns: [
                         {data: "meterSubCategory"},
-                        {data: "quantity"}
-                    ]
+                        {data: "quantity"},
+                        {data: "costInBillingCurrency"}
+                    ],
+                    columnDefs: [{
+                        targets: [1,2],
+                        className: 'alRight'
+                    }]
                 });
+
+                var rows = document.getElementById("meterDetailTable").getElementsByTagName("tr");
+
+                sumCost = 0;
+                for (var r = 1; r < tablelength + 1; r++) {
+                    var cells = rows[r].getElementsByTagName("td");
+                    var cost_cell = cells[2].innerText;
+                    var cost = parseInt(cost_cell.split(' ')[0]);
+                    sumCost += cost;
+                }
+
+                if(sessionCountry == "KR") {
+                    document.getElementById("everage").innerText = comma(sumCost) + " " + krwon;
+                }
+                else {
+                    document.getElementById("everage").innerText = comma(sumCost) + " " + krwon;
+                }
+
             }, error: function (request, status, error) {
                 console.log("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+
+        // 지난 달
+
+        if(parameterMonth == "01") {
+            aMonthAgoMonth = "12";
+            aMonthAgoYear = parameterYear - 1;
+        }
+        else {
+            aMonthAgoMonth = parameterMonth - 1;
+            aMonthAgoYear = parameterYear;
+        }
+
+        if(aMonthAgoMonth < 10) {
+            aMonthAgoMonth = "0" + aMonthAgoMonth;
+        }
+
+        $.ajax({
+            url : "/getMeterDetailList.do",
+            type : "GET",
+            data : {
+                paraYear: aMonthAgoYear,
+                paraMonth: aMonthAgoMonth,
+                rscparam: rscParam
+            },
+            success : function (data) {
+                $(data).each(function () {
+                    sumCostBefore += parseInt(this.costInBillingCurrency.split(" ")[0]);
+                    console.log("sumCostBefore : " + sumCostBefore);
+                });
             }
         });
     }
@@ -966,8 +1089,10 @@
                 createChart();
 
                 //document.getElementById("beforedata").innerText = sumbefore / 1000 + "GB";
-                barData.push(Math.round(sumbefore * 3.497));
-                barData.push(Math.round(sumMoney));
+                // barData.push(Math.round(sumbefore * 3.497));
+                // barData.push(Math.round(sumMoney));
+                barData.push(sumCostBefore);
+                barData.push(sumCost);
 
                 createBarChart();
 
@@ -1400,10 +1525,12 @@
                         <span id="auth" hidden="true" th:text="${session['auth']}"> </span>
                         <span id="step" hidden="true" th:text="${session['step']}"> </span>
                         <span id="lang" hidden="true" th:text="${session['lang']}"> </span>
+                        <span id="country" hidden="true" th:text="${session['country']}"></span>
                         <span id="paymentChk" hidden="true" >false</span>
 
                         <span id="amountused" hidden="true" th:text="#{label.amountused}"> </span>
-                        <span id="averagedailythroughput" hidden="true" th:text="#{label.averagedailythroughput}"> </span>
+<!--                        <span id="averagedailythroughput" hidden="true" th:text="#{label.averagedailythroughput}"> </span>-->
+                        <span id="amountCloudUsage" hidden="true" th:text="#{label.amountCloudUsage}"> </span>
                         <span id="amountlogusage" hidden="true" th:text="#{label.amountlogusage}"> </span>
                         <span id="logthroughput" hidden="true" th:text="#{label.logthroughput}"> </span>
                         <span id="jan" hidden="true" th:text="#{label.jan}"> </span>
@@ -1603,7 +1730,7 @@
                             <!-- Card Body -->
                             <div class="card-body">
                                 <div class="chart-area">
-                                    <canvas id="myDailyChart" style="height: 500px !important;"></canvas>
+                                    <canvas id="myDailyChart" style="height: 450px !important;"></canvas>
                                 </div>
                                 <div class="mt-4 text-center small">
                                     <i class="fas fa-circle text-primary"></i>
@@ -1703,6 +1830,7 @@
                                             <tr>
                                                 <th th:text="#{label.type}"></th>
                                                 <th th:text="#{label.usage}"></th>
+                                                <th th:text="#{label.amount}"></th>
                                             </tr>
                                             </thead>
                                             <tbody style="text-align: center">
@@ -1856,14 +1984,14 @@
                                         <input type="radio" name="costTotal" id="inlineRadio33" value="Re3" th:text="#{label.year3}">
                                     </label>
                                 </div>
-                                <div class="row ml-2" style="margin-top: -20px;">
-                                    <label class="radio-inline mr-5 ml-5 mt-2 ">
-                                    </label>
-                                    <label class="radio-inline mr-3 mt-2 ml-5" th:text="#{label.discount40}">
-                                    </label>
-                                    <label class="radio-inline mr-1 mt-2 ml-3" th:text="#{label.discount50}">
-                                    </label>
-                                </div>
+<!--                                <div class="row ml-2" style="margin-top: -20px;">-->
+<!--                                    <label class="radio-inline mr-5 ml-5 mt-2 ">-->
+<!--                                    </label>-->
+<!--                                    <label class="radio-inline mr-3 mt-2 ml-5" th:text="#{label.discount40}">-->
+<!--                                    </label>-->
+<!--                                    <label class="radio-inline mr-1 mt-2 ml-3" th:text="#{label.discount50}">-->
+<!--                                    </label>-->
+<!--                                </div>-->
                                 <div>
                                     <div class="card-body">
                                         <div class="card border-left-primary shadow py-2"
@@ -2009,11 +2137,14 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <button class="btn btn-primary mt-1" onclick='billingReg()' th:text="#{label.paymentinfo}"></button>
+                                        <button th:if="${session['country']} =='KR'" class="btn btn-primary mt-1" onclick='billingReg()' th:text="#{label.OverseasPayment}"></button>
+                                        <button th:if="${session['country']} !='KR'" class="btn btn-primary mt-1" data-toggle="modal" data-target="#billingModal" th:text="#{label.OverseasPayment}"></button>
                                         <button class="btn btn-primary mt-1"
                                                 style="float: right;" onclick='goAgreement()' th:text="#{label.startdistribution}">
                                         </button>
                                     </div>
+
+
                                 </div>
                             </div>
                         </div>
@@ -2048,11 +2179,13 @@
             </div>
             <!-- End of Main Content -->
 
-            <!-- Footer -->
-            <footer th:replace="mainfooter.html :: footer"></footer>
+<!--            &lt;!&ndash; Footer &ndash;&gt;-->
+<!--            <footer th:replace="mainfooter.html :: footer"></footer>-->
             <!-- End of Footer -->
         </div>
         <!-- End of Content Wrapper -->
+        <!-- Footer -->
+        <footer th:replace="mainfooter.html :: footer"></footer>
     </div>
     <!-- End of Page Wrapper -->
 
@@ -2106,10 +2239,14 @@
                         <label for="birth" th:text="#{label.birthday}"></label>
                         <input class="form-control"  id="birth" type="text" name="birth" placeholder="YYMMDD">
                     </div>
+                    <div>
+                        <label for="cvc" th:text="#{label.cvc}"></label>
+                        <input class="form-control"  id="cvc" type="text" name="cvc" placeholder="XXX">
+                    </div>
                 </div>
 
                 <div class="modal-footer">
-                    <a class="btn btn-primary" onclick="billingRegister()" th:text="#{label.register}"></a>
+                    <a class="btn btn-primary" onclick="billingRegister()" data-dismiss="modal" th:text="#{label.register}"></a>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                 </div>
 
@@ -2152,6 +2289,12 @@
             </div>
         </div>
     </div>
+
+    <style type="text/css">
+        .alRight {
+            text-align: right;
+        }
+    </style>
 </body>
 
 </html>

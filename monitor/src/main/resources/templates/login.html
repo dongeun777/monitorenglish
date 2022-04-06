@@ -81,7 +81,10 @@
             },
             success: function (data) {
                 if(data=='success' ) location.href="/main";
-                else window.alert(code)
+                else {
+                    window.alert(code);
+                    // document.getElementById("mfaId").innerText = null;
+                }
             }
         });
     }
@@ -98,7 +101,7 @@
                     <!-- Nested Row within Card Body -->
                     <div class="row" >
                         <div class="col-lg-6 d-none d-lg-block"
-                             style="background: url(image/IGLOO.jpg) no-repeat; background-position: center; background-size: contain;"></div>
+                             style="background: url(image/IGLOO.jpg) no-repeat; background-position: center; "></div>
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">

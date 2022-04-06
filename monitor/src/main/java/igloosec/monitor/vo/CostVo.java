@@ -6,6 +6,7 @@ public class CostVo {
     private String usage_cost;
     private String rscparam;
 
+
     public String getUsage_data() {
         return usage_data;
     }

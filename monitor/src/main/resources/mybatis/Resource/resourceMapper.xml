@@ -39,7 +39,7 @@
         SELECT rsg_grp AS rscparam
              ,FORMAT(total / 1024,0) as total
              ,CONCAT(round(((total - free) / total) * 100,2),'%') AS usageDiskPer
-             ,b.cpu
+             ,b.cpu+9--------------9999999999
              ,b.ram as memory
         FROM
             (

@@ -16,27 +16,36 @@
 
 
     <select id="selectMeterDetail" parameterType="UsageVo" resultType="UsageVo">
-        SELECT meterCategory,'Storage' as meterSubCategory,CONCAT(ROUND(quantity,2)*10,'K' ) AS quantity, unitOfMeasure FROM(
-
-             SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM USED_AMOUNT
+        SELECT meterCategory,'Storage' as meterSubCategory,CONCAT(ROUND(quantity,2)*10,'K' ) AS quantity, unitOfMeasure, CASE WHEN '${country}' != 'KR' THEN CONCAT(usd,' $') ELSE CONCAT(kor,' KRW') END as costInBillingCurrency
+        FROM(
+             SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure ,round(sum(costInUsd),0) as usd ,round(sum(costInBillingCurrency),0) as kor FROM USED_AMOUNT
              WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
              GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
         )a where quantity <![CDATA[>=]]> 0.01 and meterSubCategory LIKE '%Managed Disks' and unitOfMeasure ='10K'
         UNION
-        SELECT meterCategory,'Virtual Machines' as meterSubCategory,CONCAT(ROUND(quantity,2)*10 , CASE WHEN unitOfMeasure Like '10%' THEN substring(unitOfMeasure,3,5) WHEN unitOfMeasure LIKE '1 %' THEN substring(unitOfMeasure,3,10) ELSE substring(unitOfMeasure,2,10) END ) AS quantity, unitOfMeasure FROM(
-
-            SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM USED_AMOUNT
+        SELECT meterCategory,'Virtual Machines' as meterSubCategory,CONCAT(ROUND(quantity,2)*10 , CASE WHEN unitOfMeasure Like '10%' THEN substring(unitOfMeasure,3,5) WHEN unitOfMeasure LIKE '1 %' THEN substring(unitOfMeasure,3,10) ELSE substring(unitOfMeasure,2,10) END ) AS quantity, unitOfMeasure, CASE WHEN '${country}' != 'KR' THEN CONCAT(usd,' $') ELSE CONCAT(kor,' KRW') END as costInBillingCurrency
+        FROM(
+            SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure,round(sum(costInUsd),0) as usd ,round(sum(costInBillingCurrency),0) as kor
+            FROM USED_AMOUNT
             WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
             GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
         )b where quantity <![CDATA[>=]]> 0.01 and meterSubCategory LIKE 'Virtual Machines%'
         UNION
-        SELECT meterCategory, meterSubCategory,CONCAT(ROUND(quantity,2)*10 , CASE WHEN unitOfMeasure Like '10%' THEN substring(unitOfMeasure,3,5) WHEN unitOfMeasure LIKE '1 %' THEN substring(unitOfMeasure,3,10) ELSE substring(unitOfMeasure,2,10) END ) AS quantity, unitOfMeasure FROM(
+        SELECT meterCategory, meterSubCategory,CONCAT(ROUND(quantity,2)*10 , CASE WHEN unitOfMeasure Like '10%' THEN substring(unitOfMeasure,3,5) WHEN unitOfMeasure LIKE '1 %' THEN substring(unitOfMeasure,3,10) ELSE substring(unitOfMeasure,2,10) END ) AS quantity, unitOfMeasure, CASE WHEN '${country}' != 'KR' THEN CONCAT(usd,' $') ELSE CONCAT(kor,' KRW') END as costInBillingCurrency
+        FROM(
 
-         SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure FROM USED_AMOUNT
+         SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure,round(sum(costInUsd),0) as usd ,round(sum(costInBillingCurrency),0) as kor
+         FROM USED_AMOUNT
          WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}' and meterSubCategory NOT LIKE 'Virtual Machines%'
          GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
      )c where quantity <![CDATA[>=]]> 0.01 and meterSubCategory NOT LIKE '%Managed Disks'
-
+        UNION
+        SELECT meterCategory,'Storage2' as meterSubCategory,CONCAT(ROUND(quantity,2)*10,'K/Month' ) AS quantity, unitOfMeasure, CASE WHEN '${country}' != 'KR' THEN CONCAT(usd,' $') ELSE CONCAT(kor,' KRW') END as costInBillingCurrency
+        FROM(
+                SELECT meterCategory,meterSubCategory, sum(quantity) AS quantity, unitOfMeasure ,round(sum(costInUsd),0) as usd ,round(sum(costInBillingCurrency),0) as kor FROM USED_AMOUNT
+                WHERE substring(DATE,1,2) ='${paraMonth}' AND substring(DATE,7,10) ='${paraYear}' and resourceGroupName ='${rscparam}'
+                GROUP BY meterCategory, unitOfMeasure, meterSubCategory ORDER BY quantity desc
+     )d where quantity >= 0.01 and (meterSubCategory LIKE '%Managed Disks' or meterSubCategory LIKE '%disks' ) and unitOfMeasure ='1/Month'
     </select>
 
 
@@ -76,7 +85,6 @@
         from leads_info
         where customer_email ='${emailStr}'
     </select>
-
 
     <select id="selectLogList" parameterType="UsageVo" resultType="UsageVo">
         select equip,usages,logid from USER_EQUIP_LIST where email ='${emailparam}'
@@ -156,8 +164,9 @@
     </select>
 
     <select id="selectMember" resultType="MemberVo" parameterType="String">
-        SELECT * FROM USER_LIST
-        where email = #{email}
+        SELECT  * FROM USER_LIST a , leads_info b
+        where a.email = b.customer_email and a.email = #{email}
+            limit 1
     </select>
 
     <select id="selectShellParam" resultType="UsageVo" parameterType="String">
@@ -233,23 +242,52 @@
         select ul.email, round(a.threeyearCostTotal * (SELECT exchangeRatePricingToBilling FROM USED_AMOUNT ORDER BY DATE DESC LIMIT 1),-3) as costInBillingCurrency
         from USER_LIST ul, azurecost a
         where ul.vm_series_id = a.id and ul.cost_type = 'Re3' and IFNULL(ul.vm_series_id,"") !=''
-    </select>-->
-
+    </select>
 
 
     <select id="getPaymentGroup" resultType="MemberVo" >
           SELECT  b.email as email, round(SUM(costInBillingCurrency),0) + (select (CASE WHEN b.cost_type ='noRe' THEN noRe WHEN  b.cost_type ='Re1' THEN Re1 ELSE Re3 END)  from license a where a.size =b.vm_series_id ) as costInBillingCurrency
-          FROM USED_AMOUNT a,USER_LIST b
-        WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),6,2)AND substring(DATE,7,10) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),1,4)
-          and resourceGroupName in ( select rscGrp from USER_LIST pa where   IFNULL(pg, '') !='')
+          FROM USED_AMOUNT a,USER_LIST b, leads_info li
+          WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),6,2)AND substring(DATE,7,10) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),1,4)
+          and resourceGroupName in ( select rscGrp from USER_LIST pa where   IFNULL(pg, '') !='') and li.customer_email = b.email and li.customer_country = 'KR'
         GROUP BY resourceGroupName;
 
     </select>
 
+    <select id="getPaymentGroupOverseas" resultType="MemberVo">
+        SELECT  b.email as email, exchangeRatePricingToBilling, round(SUM(costInUsd),0) + round((select (CASE WHEN b.cost_type ='noRe' THEN noRe WHEN  b.cost_type ='Re1' THEN Re1 ELSE Re3 END)  from license a where a.size =b.vm_series_id ) / exchangeRatePricingToBilling, 0) as costInBillingCurrency
+        FROM USED_AMOUNT a,USER_LIST b, leads_info li
+        WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),6,2)AND substring(DATE,7,10) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),1,4)
+          and resourceGroupName in ( select rscGrp from USER_LIST pa where   IFNULL(pg, '') !='') and li.customer_email = b.email and li.customer_country != 'KR'
+        GROUP BY resourceGroupName;
+    </select>
+    -->
+
+    <select id="getPaymentGroup" resultType="MemberVo" >
+        SELECT *, (billingResource + billingLicense) as costInBillingCurrency
+        FROM
+            (SELECT  b.email as email, round(SUM(costInBillingCurrency),0) as billingResource, round((select (CASE WHEN b.cost_type ='noRe' THEN noRe WHEN  b.cost_type ='Re1' THEN Re1 ELSE Re3 END)  from license a where a.size =b.vm_series_id ), 0) as billingLicense
+             FROM USED_AMOUNT a,USER_LIST b, leads_info li
+             WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),6,2)AND substring(DATE,7,10) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),1,4)
+               and resourceGroupName in ( select rscGrp from USER_LIST pa where   IFNULL(pg, '') !='') and li.customer_email = b.email and li.customer_country = 'KR'
+        GROUP BY resourceGroupName) newT
+    </select>
+
+    <select id="getPaymentGroupOverseas" resultType="MemberVo">
+        SELECT *, (billingResource + billingLicense) as costInBillingCurrency
+        FROM
+            (SELECT  b.email as email, exchangeRatePricingToBilling, round(SUM(costInUsd),0) as billingResource, ROUND((select (CASE WHEN b.cost_type ='noRe' THEN noRe WHEN  b.cost_type ='Re1' THEN Re1 ELSE Re3 END)  from license a where a.size =b.vm_series_id ) / exchangeRatePricingToBilling, 0) as billingLicense
+             FROM USED_AMOUNT a,USER_LIST b, leads_info li
+             WHERE a.resourceGroupName = b.rscGrp and substring(DATE,1,2) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),6,2)AND substring(DATE,7,10) =SUBSTRING( DATE_SUB(  curdate(),  INTERVAL 1 month  ),1,4)
+               and resourceGroupName in ( select rscGrp from USER_LIST pa where   IFNULL(pg, '') !='') and li.customer_email = b.email and li.customer_country != 'KR'
+        GROUP BY resourceGroupName) newT;
+    </select>
+
     <select id="getBillingList" resultType="BillingVo"  parameterType="BillingVo" >
-        select a.email,b.pg as pg, paydate, resource, log, billingsum,billingtype
+        select a.email,b.pg as pg, paydate, resource, license, billingsum,billingtype, currency
         from billing a, USER_LIST b
-        where a.email = b.email and a.paydate = #{paydate}
+        where a.email = b.email and a.paydate = #{paydate} AND (CASE WHEN #{role} = 'ROLE_USER' THEN a.email = #{email} ELSE 1 = 1 END)
+
     </select>
 
 
@@ -258,18 +296,20 @@
                                   email
                                  ,paydate
                                  ,resource
-                                 ,log
+                                 ,license
                                  ,billingsum
                                  ,billingtype
+                                 ,currency
         )
         VALUES
         (
             #{email}
         ,#{paydate}
         ,#{resource}
-        ,#{log}
+        ,#{license}
         ,#{billingsum}
         ,#{billingtype}
+        ,#{currency}
         )
 
     </insert>
