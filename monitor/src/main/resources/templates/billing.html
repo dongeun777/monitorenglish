@@ -25,15 +25,15 @@
 
             getBillingList();
             // monthpicker 적용
-            $('#monthpicker').bootstrapMonthpicker({
+            /*$('#monthpicker').bootstrapMonthpicker({
                 // from: '2014-05',
                 // to: '2014-10',
                 // 달을 선택한 다음의 이벤트 정의
                 onSelect: function(value) {
                     var workMonthStr = '';
-                    /*
+                    /!*
                     * monthpicker 라이브러리에서 기본으로 "-" 를 사용
-                    **************************************/
+                    **************************************!/
                     var splitDate = $.trim(value).split("-");
 
                     // 표한하고 싶으신 포맷으로 알아서 정의하시면 됩니다.
@@ -48,7 +48,33 @@
                     $('#txt-work-month').text(workMonthStr);
                     getBillingList();
                 }
+            });*/
+
+
+            $( "#monthpicker" ).datepicker({
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: 'yy-mm',
+                onClose: function(dateText, inst) {
+                    var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                    $(this).datepicker('setDate', new Date(year, month, 1));
+                },
+                beforeShow : function(input, inst) {
+                    if ((datestr = $(this).val()).length > 0) {
+                        actDate = datestr.split('-');
+                        year = actDate[0];
+                        month = actDate[1]-1;
+                        $(this).datepicker('option', 'defaultDate', new Date(year, month));
+                        $(this).datepicker('setDate', new Date(year, month));
+                    }
+                }
             });
+
+
+
+
             // #choice-work-month 에 monthpicker 이벤트 정의
             $('#choice-work-month').click(function () {
                 $('#monthpicker').click();
@@ -127,11 +153,11 @@
                 <div class="row">
                     <div class="col-xl-12 col-lg-10">
                         <div class="card shadow mb-1">
-                            <div class="input-group mt-2 ml-2 mb-2" style="width: 415px;" >
+                            <div class="input-group mt-2 ml-2 mb-2" style="width: 200px;" >
                                 <span class="m-1 font-size-115 ml-1 mr-2" th:text="#{label.monthlyinquiry}"></span>
                                 <span hidden="true" id ="txt-work-month"> </span>
                                 <input type="text" id="monthpicker" class="form-control"
-                                       style="width:95px; height: 31px; border-top-left-radius: 0.3em; border-bottom-left-radius: 0.3em;">
+                                       style="width:60px; height: 31px; border-top-left-radius: 0.3em; border-bottom-left-radius: 0.3em;">
                                 <div class="input-group-append">
                                     <button class="btn btn-primary" type="button" onclick='getBillingList()'>
                                         <i class="fas fa-search fa-sm "></i>
@@ -175,8 +201,9 @@
         </div>
 
         <footer th:replace="mainfooter.html :: footer"></footer>
-        <link href="css/bootstrap-monthpicker.css" rel="stylesheet">
-        <script type="text/javascript" src="js/bootstrap-monthpicker.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
         <script type="text/javascript"
                 src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -203,6 +230,11 @@
                 margin-top: 2px;
                 margin-bottom: 5px;
             }
+
+            .ui-datepicker table{
+                display: none;
+            }
+
         </style>
     </div>
 </div>
