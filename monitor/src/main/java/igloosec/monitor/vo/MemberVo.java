@@ -65,6 +65,7 @@ public class MemberVo implements UserDetails {
 
     private String billingResource;
     private String billingLicense;
+    private String pg;
 
     public MemberVo() {
     }
@@ -445,5 +446,13 @@ public class MemberVo implements UserDetails {
 
     public void setBillingLicense(String billingLicense) {
         this.billingLicense = billingLicense;
+    }
+
+    public String getPg() {
+        return pg;
+    }
+
+    public void setPg(String pg) {
+        this.pg = pg;
     }
 }

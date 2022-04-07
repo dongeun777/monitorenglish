@@ -226,6 +226,7 @@ public class ScheduleService {
     //@Scheduled(cron = "0 0/5 * * * *")
     //@Scheduled(cron = "0 5 1 * * *") // TCLOUD-54
     @Scheduled(cron = "0 0 5 1  * *") // TCLOUD-54
+//    @Scheduled(cron = "0 20 13 *  * *") // Test
     public void payment() {
 
         //token 생성
@@ -268,24 +269,35 @@ public class ScheduleService {
 
             for (int i = 0 ; i < list.size(); i++) {
 
-                restTemplate2 = new RestTemplate();
-
-                HttpHeaders headers2 = new HttpHeaders();
-                headers2.setContentType(MediaType.APPLICATION_JSON);
-                headers2.setBearerAuth(access_token);
-                //headers2.setBearerAuth("dd8c18caf6cb16e058f90683e62e8258f2684b23");
-
                 Date date_now = new Date(System.currentTimeMillis());
                 SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
                 String paydate = fourteen_format.format(date_now).toString();
-                Map<String, Object> map2 = new HashMap<>();
-                map2.put("customer_uid", list.get(i).getEmail());
-                map2.put("merchant_uid", list.get(i).getEmail()+fourteen_format.format(date_now).toString());
-                //map2.put("merchant_uid", "why")
-                map2.put("amount", 100);
+
+                // 카드결제 시에만 아임포트에 결제요청
+                if(list.get(i).getPg() != "cash") {
+                    restTemplate2 = new RestTemplate();
+
+                    HttpHeaders headers2 = new HttpHeaders();
+                    headers2.setContentType(MediaType.APPLICATION_JSON);
+                    headers2.setBearerAuth(access_token);
+                    //headers2.setBearerAuth("dd8c18caf6cb16e058f90683e62e8258f2684b23");
+
+                    Map<String, Object> map2 = new HashMap<>();
+                    map2.put("customer_uid", list.get(i).getEmail());
+                    map2.put("merchant_uid", list.get(i).getEmail()+fourteen_format.format(date_now).toString());
+                    //map2.put("merchant_uid", "why")
+                    map2.put("amount", 100);
 //                map2.put("amount", Integer.parseInt(list.get(i).getCostInBillingCurrency()));
-                map2.put("name", "Monthly Billing");
-                map2.put("buyer_email", list.get(i).getEmail());
+                    map2.put("name", "Monthly Billing");
+                    map2.put("buyer_email", list.get(i).getEmail());
+
+                    Gson var2 = new Gson();
+                    String json2 = var2.toJson(map2);
+                    System.out.println(json2);
+                    HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
+                    //return restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity2, String.class);
+                    restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
+                }
 
                 BillingVo temp = new BillingVo();
                 temp.setEmail(list.get(i).getEmail());
@@ -295,14 +307,6 @@ public class ScheduleService {
                 temp.setPaydate(paydate.substring(0, 4) + "-" + paydate.substring(4, 6));
                 temp.setBillingtype("정기결제");
                 temp.setCurrency("KRW");
-
-
-                Gson var2 = new Gson();
-                String json2 = var2.toJson(map2);
-                System.out.println(json2);
-                HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
-                //return restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/onetime", entity2, String.class);
-                restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
 
                 homeService.insertBilling(temp);
             }
@@ -314,6 +318,7 @@ public class ScheduleService {
 
     // 해외 결제 (paymentwall)
     @Scheduled(cron = "0 0 5 1  * *")
+//    @Scheduled(cron = "0 30 13 *  * *")   // Test
     public void paymentOverseas() {
 
         //token 생성
@@ -351,23 +356,33 @@ public class ScheduleService {
 
             for (int i = 0 ; i < list.size(); i++) {
 
-                restTemplate2 = new RestTemplate();
-
-                HttpHeaders headers2 = new HttpHeaders();
-                headers2.setContentType(MediaType.APPLICATION_JSON);
-                headers2.setBearerAuth(access_token);
-
                 Date date_now = new Date(System.currentTimeMillis());
                 SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
                 String paydate = fourteen_format.format(date_now).toString();
-                Map<String, Object> map2 = new HashMap<>();
-                map2.put("customer_uid", list.get(i).getEmail());
-                map2.put("merchant_uid", list.get(i).getEmail()+fourteen_format.format(date_now).toString());
-                map2.put("currency", "USD");
-                map2.put("amount", 1);
+
+                // 카드결제 시에만 아임포트에 결제요청
+                if(list.get(i).getPg() != "cash") {
+                    restTemplate2 = new RestTemplate();
+
+                    HttpHeaders headers2 = new HttpHeaders();
+                    headers2.setContentType(MediaType.APPLICATION_JSON);
+                    headers2.setBearerAuth(access_token);
+
+                    Map<String, Object> map2 = new HashMap<>();
+                    map2.put("customer_uid", list.get(i).getEmail());
+                    map2.put("merchant_uid", list.get(i).getEmail()+fourteen_format.format(date_now).toString());
+                    map2.put("currency", "USD");
+                    map2.put("amount", 1);
 //                map2.put("amount", Integer.parseInt(list.get(i).getCostInBillingCurrency()));
-                map2.put("name", "Monthly Billing");
-                map2.put("buyer_email", list.get(i).getEmail());
+                    map2.put("name", "Monthly Billing");
+                    map2.put("buyer_email", list.get(i).getEmail());
+
+                    Gson var2 = new Gson();
+                    String json2 = var2.toJson(map2);
+                    System.out.println(json2);
+                    HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
+                    restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
+                }
 
                 BillingVo temp = new BillingVo();
                 temp.setEmail(list.get(i).getEmail());
@@ -378,13 +393,8 @@ public class ScheduleService {
                 temp.setPaydate(paydate.substring(0, 4) + "-" + paydate.substring(4, 6));
                 temp.setBillingtype("정기결제");
                 temp.setCurrency("USD");
-                homeService.insertBilling(temp);
 
-                Gson var2 = new Gson();
-                String json2 = var2.toJson(map2);
-                System.out.println(json2);
-                HttpEntity<String> entity2 = new HttpEntity<>(json2, headers2);
-                restTemplate2.postForObject("https://api.iamport.kr/subscribe/payments/again", entity2, String.class);
+                homeService.insertBilling(temp);
             }
         }
 

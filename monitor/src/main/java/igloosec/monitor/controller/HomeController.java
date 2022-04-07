@@ -334,6 +334,31 @@ public class HomeController {
     private ImportPay pay;
 
     @ResponseBody
+    @RequestMapping(value = "/insertBillingCash.do")
+    public boolean insertBillingCash(HttpSession session) {
+
+        Date date_now = new Date(System.currentTimeMillis());
+        SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyyMMddHHmmss");
+        String formatDate = fourteen_format.format(date_now).toString();
+
+        BillingVo vo = new BillingVo();
+        vo.setEmail(session.getAttribute("email").toString());
+        vo.setPaydate(formatDate.substring(0, 4) + "-"  + formatDate.substring(4, 6));
+        vo.setResource("0");
+        vo.setLicense("0");
+        vo.setBillingsum("0");
+        vo.setBillingtype("등록");
+        if (session.getAttribute("country") == "KR") vo.setCurrency("KRW");
+        else vo.setCurrency("USD");
+        vo.setPg("cash");
+
+        homeService.insertBilling(vo);
+        homeService.updateUserPg(vo);
+
+        return true;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/billingRegister.do")
     public double paymentTest(BillingVo param, HttpSession session) {
 

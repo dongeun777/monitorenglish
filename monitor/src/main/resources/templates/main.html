@@ -141,6 +141,7 @@
                 document.getElementById("loading").hidden = true;
                 getLogList();
                 getPeriod();
+                paymentStatChange();
             } else if (sessionStep == 0) {
                 //$('#step1bar').css({"background": "darkblue"});
                 document.getElementById("step1").setAttribute("class", "step-item active");
@@ -195,11 +196,11 @@
     let tempVal = 0;
     let logSumVal = 0;
 
-    function monthValfun(monthVal){
+    function monthValfun(monthVal) {
 
         let monthValprop = "";
 
-        switch (monthVal){
+        switch (monthVal) {
             case 1:
                 monthValprop = $('#jan').text();
                 break;
@@ -238,6 +239,23 @@
                 break;
         }
         return monthValprop;
+    }
+
+    function paymentStatChange() {
+
+        var sel = $('#paymentMethod option:selected').val();
+
+        if(sel == "cash") {
+            $('#btnPaymentRegKR').prop("disabled", true);
+            $('#btnPaymentRegETC').prop("disabled", true);
+            document.getElementById("paymentChk").innerText = "true";
+
+        }
+        else {
+            $('#btnPaymentRegKR').prop("disabled", false);
+            $('#btnPaymentRegETC').prop("disabled", false);
+            document.getElementById("paymentChk").innerText = "false";
+        }
     }
 
     function billingReg(){
@@ -418,11 +436,11 @@
 
     function goAgreement() {
         let youmustagreetodistribute = $('#youmustagreetodistribute').text();
-        /*
-                if(document.getElementById("paymentChk").innerText !="true") {
-                    alert("결제정보를 입력하셔야 진행이 가능합니다.")
-                    return;
-                }*/
+
+        if(document.getElementById("paymentChk").innerText !="true") {
+            alert("결제정보를 입력하셔야 진행이 가능합니다.")
+            return;
+        }
         if ($('input:checkbox[id="agreement"]').is(":checked") == true) $('#checkDeploy').modal("show");
         else alert(youmustagreetodistribute);
         //document.getElementById("scarp").innerText;
@@ -679,6 +697,24 @@
         getMeterDetailList($("#grpSelcet2 option:selected").val());
         getUsageList($("#grpSelcet2 option:selected").val());
         getResourceUsage($("#grpSelcet2 option:selected").val());
+    }
+
+    function checkCreateVm() {
+        var sel = $('#paymentMethod option:selected').val();
+
+        if(sel == "cash") {
+            $.ajax({
+                url: "/insertBillingCash.do",
+                type: "GET",
+                success : function (data) {
+
+                }, error : function (data) {
+
+                }
+            });
+        }
+
+        createvm();
     }
 
     function createvm() {
@@ -2135,15 +2171,21 @@
                                                        for="agreement" th:text="#{label.agreeabove}"></label>
                                             </span>
                                         </div>
+                                        <div class="ml-4" style="margin-top: 20px;">
+                                            <label for="paymentMethod" th:text="#{label.paymentMethod}" style="font-weight: bold; margin-right: 6px;" class="text-dark"></label>
+                                            <select name="paymentMethod" id="paymentMethod" onchange="paymentStatChange()">
+                                                <option value="card">Card</option>
+                                                <option value="cash">Cash</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div>
-                                        <button th:if="${session['country']} =='KR'" class="btn btn-primary mt-1" onclick='billingReg()' th:text="#{label.OverseasPayment}"></button>
-                                        <button th:if="${session['country']} !='KR'" class="btn btn-primary mt-1" data-toggle="modal" data-target="#billingModal" th:text="#{label.OverseasPayment}"></button>
+                                        <button id="btnPaymentRegKR" th:if="${session['country']} =='KR'" class="btn btn-primary mt-1" onclick='billingReg()' th:text="#{label.OverseasPayment}"></button>
+                                        <button id="btnPaymentRegETC" th:if="${session['country']} !='KR'" class="btn btn-primary mt-1" data-toggle="modal" data-target="#billingModal" th:text="#{label.OverseasPayment}"></button>
                                         <button class="btn btn-primary mt-1"
                                                 style="float: right;" onclick='goAgreement()' th:text="#{label.startdistribution}">
                                         </button>
                                     </div>
-
 
                                 </div>
                             </div>
@@ -2281,7 +2323,7 @@
                     </div>-->
                 <div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit" onclick='createvm()' id="deployBtn" th:text="#{label.distribution}">
+                        <button class="btn btn-primary" type="submit" onclick='checkCreateVm()' id="deployBtn" th:text="#{label.distribution}">
                         </button>
                         <button class="btn btn-secondary" type="button" data-dismiss="modal" th:text="#{label.cancel}"></button>
                     </div>
