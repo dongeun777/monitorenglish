@@ -67,7 +67,7 @@ public class HomeController {
 
     private static final String MAIL_HOST = "outlook.office365.com";
     private static final int MAIL_PORT = 587;
-    private static final String MAIL_FROM = "igloocld@igloosec.com";
+    private static final String MAIL_FROM = "igloocld@igloo.co.kr";
     @GetMapping("/login")
     public String home(Model model) {
 
@@ -1034,7 +1034,7 @@ public class HomeController {
 
         String host = "outlook.office365.com";
         int port = 587;
-        String from = "igloocld@igloosec.com";
+        String from = "igloocld@igloo.co.kr";
 
         Properties props = System.getProperties();
 
@@ -1076,7 +1076,7 @@ public class HomeController {
 
         String host = "outlook.office365.com";
         int port = 587;
-        String from = "igloocld@igloosec.com";
+        String from = "igloocld@igloo.co.kr";
 
         Properties props = System.getProperties();
 
@@ -1376,7 +1376,7 @@ public class HomeController {
 
         String host = "outlook.office365.com";
         int port = 587;
-        String from = "igloocld@igloosec.com";
+        String from = "igloocld@igloo.co.kr";
 
         Properties props = System.getProperties();
 
@@ -1683,7 +1683,7 @@ public class HomeController {
 
         String host = "outlook.office365.com";
         int port = 587;
-        String from = "igloocld@igloosec.com";
+        String from = "igloocld@igloo.co.kr";
         String emailstr=email;
         emailstr = emailstr.replace("@","");
         emailstr = emailstr.replace(".","");
@@ -2007,7 +2007,7 @@ public class HomeController {
 
         public MyAuthentication() {
 
-            pa = new PasswordAuthentication("igloocld@igloosec.com", "d+jndkm#dd9msdf%ds9f8gsFDGKdfg(");
+            pa = new PasswordAuthentication("igloocld@igloo.co.kr", "d+jndkm#dd9msdf%ds9f8gsFDGKdfg(");
 
         }
 

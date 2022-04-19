@@ -173,4 +173,8 @@ public class HomeService {
 
     public void updateUserPg(BillingVo param) { mapper.updateUserPg(param);
     }
+
+    public List<MemberVo> checkLogOver() { return mapper.checkLogOver();
+    }
+
 }

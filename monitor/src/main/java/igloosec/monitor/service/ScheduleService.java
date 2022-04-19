@@ -10,6 +10,7 @@ import igloosec.monitor.CommonUtil;
 import igloosec.monitor.ConfigUtils;
 import igloosec.monitor.HttpRequest;
 import igloosec.monitor.MailSending;
+import igloosec.monitor.controller.HomeController;
 import igloosec.monitor.mapper.HomeMapper;
 import igloosec.monitor.mapper.MemberMapper;
 import igloosec.monitor.mapper.ResourceMapper;
@@ -30,6 +31,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -220,6 +227,26 @@ public class ScheduleService {
 
         logger.info("[SET CONFIG] config settings [{}]", list.size());
     }
+
+
+
+    //@Scheduled(cron = "0 0/5 * * * *")  // 5분마다
+    @Scheduled(cron = "0 0 10 * * *")  // 1분마다
+    public void sendLogOverMail() throws MessagingException {
+        // config 조회
+        List<MemberVo> list = homeService.checkLogOver();
+
+        if (list != null) {
+            for (int i = 0 ; i < list.size(); i++) {
+
+                MailSending mail = new MailSending();
+                mail.sendMailLogExceeded(list.get(i).getEmail());
+                logger.info("[sendLogOverMail] LogOver list [{}]", list.size());
+            }
+
+        }
+    }
+
 
 
     // 국내 결제 (KCP)
@@ -454,4 +481,8 @@ public class ScheduleService {
 
         logger.info("[DISK AUTOSCALING] End disk autoscaling operation");
     }
+
+
+
+
 }

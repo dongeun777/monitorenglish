@@ -9,7 +9,7 @@ public class MailSending {
 
     private static final String MAIL_HOST = "outlook.office365.com";
     private static final int MAIL_PORT = 587;
-    private static final String MAIL_FROM = "igloocld@igloosec.com";
+    private static final String MAIL_FROM = "igloocld@igloo.co.kr";
 
     /*
     public static void main(String[] args) {
@@ -23,7 +23,33 @@ public class MailSending {
     }
     */
 
-    // critical value exceeded
+    // critical value exceededsendMailLogExceeded
+    public void sendMailLogExceeded(String email) throws MessagingException {
+        Session session = setMail();
+        Message mimeMessage = new MimeMessage(session);
+        mimeMessage.setFrom(new InternetAddress(MAIL_FROM));
+        mimeMessage.setRecipient(Message.RecipientType.TO,
+                new InternetAddress(email));
+        mimeMessage.setSubject("Log usage exceeded");
+        String title = "Log usage exceeded";
+        String body = "<tr>\n" +
+                "\t\t\t<td colspan='2' valign=\"top\"><strong class=\"\">" +
+                "The Log usage has exceeded the value you set.</strong></td>\n" +
+                "\t\t</tr>\n";
+
+        String content = setContent(title, body);
+        System.out.println(content);
+        mimeMessage.setContent(content,"text/html; charset=UTF-8");
+
+        Transport transport = session.getTransport();
+
+        transport.connect();
+
+        transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+        transport.close();
+    }
+
+
     public void sendMailCriticalValueExceeded(String email, double currentDiskSize, double criticalValue) throws MessagingException {
         Session session = setMail();
         Message mimeMessage = new MimeMessage(session);
@@ -328,7 +354,7 @@ public class MailSending {
     public class MyAuthentication extends Authenticator {
         PasswordAuthentication pa;
         public MyAuthentication() {
-            pa = new PasswordAuthentication("igloocld@igloosec.com", "d+jndkm#dd9msdf%ds9f8gsFDGKdfg(");
+            pa = new PasswordAuthentication("igloocld@igloo.co.kr", "d+jndkm#dd9msdf%ds9f8gsFDGKdfg(");
         }
         public PasswordAuthentication getPasswordAuthentication() {
             return pa;

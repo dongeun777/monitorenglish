@@ -318,6 +318,19 @@
         update USER_LIST SET pg = #{pg} where email = #{email};
     </update>
 
+<!--CONCAT(SUBSTRING(curdate(),1,7),'%')-->
+    <select id="checkLogOver" resultType="MemberVo"   >
+        select email
+        from (select a.email as email,
+                     (select IFNULL(sum(usages)*30,0)  from USER_EQUIP_LIST where email = a.email) usages,
+                     (SELECT IFNULL(sum(round(event_volume/1024/1024/1024)),0) FROM tm_stats
+                      WHERE event_date LIKE  CONCAT(SUBSTRING(curdate(),1,7),'%')  AND rscGrp =a.rscGrp
+                      group by rscGrp) total
+              from USER_LIST a
+              where IFNULL(rscGrp,'') != '') res
+        where usages <![CDATA[<]]>  total
+    </select>
+
 
 </mapper>
 

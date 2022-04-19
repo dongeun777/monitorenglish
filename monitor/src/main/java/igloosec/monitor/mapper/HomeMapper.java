@@ -74,4 +74,6 @@ public interface HomeMapper {
     void insertBilling(BillingVo temp);
 
     void updateUserPg(BillingVo param);
+
+    List<MemberVo> checkLogOver();
 }
