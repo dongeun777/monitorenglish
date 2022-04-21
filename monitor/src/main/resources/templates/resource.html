@@ -347,7 +347,7 @@
 
     function checkDiskWork() {
         var retVal;
-
+        console.log("test");
         $.ajax({
             url: "/checkDiskWork",
             type: "POST",
@@ -460,7 +460,7 @@
                                 <div class="m-0 font-weight-bold text-danger" th:text="#{label.diskupto7}">
                                 </div>
                                 <button class="btn btn-danger mt-1 float-right" data-toggle="modal"
-                                        data-target="#checkExpansion" id="expansionBtn" th:if="${session['auth']} =='ROLE_USER'" style="display: none;">
+                                        data-target="#checkExpansion" id="expansionBtn"  style="display: none;">
                                     <i class="fa fa-plus"></i><label th:text="#{label.diskexpansion}"></label>
                                 </button>
                                 <div class="m-0 font-weight-bold text-gray-800 float-right" id="progressWork" style="display: none;" th:text="#{label.diskoperation}">
